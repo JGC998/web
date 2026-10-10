@@ -1,0 +1,34 @@
+# Redirecciones de las URLs de la antigua web (WordPress) a la nueva estructura.
+# Formato Cloudflare Pages: <origen> <destino> <código>
+
+# Productos
+/elevacion-2/                  /productos/elevacion/                               301
+/elevacion/                    /productos/elevacion/                               301
+/acero-elevacion-pagina-2/     /productos/elevacion/#paneles-de-explosion          301
+/bandas-transportadoras/       /productos/bandas-transportadoras/                  301
+/bandas-transportadoras-2/     /productos/bandas-transportadoras/#tambores         301
+/bandas-pvc/                   /productos/bandas-pvc/                              301
+/bandas-pvc-pagina-2/          /productos/bandas-pvc/#plasticos-tecnicos           301
+/faldetas/                     /productos/faldetas/                                301
+
+# Legales
+/aviso-legal/                  /legal/aviso-legal/                                 301
+/politica-de-privacidad/       /legal/politica-de-privacidad/                      301
+/politica-de-cookies/          /legal/politica-de-cookies/                         301
+/politica-de-redes-sociales/   /legal/politica-de-redes-sociales/                  301
+
+# Otras páginas antiguas
+/contact-us/                   /contacto/                                          301
+/home/                         /                                                   301
+/noticias/page/*               /noticias/                                          301
+/category/*                    /noticias/                                          301
+/author/*                      /noticias/                                          301
+/feed/                         /                                                   301
+/wp-admin/*                    /                                                   301
+/wp-login.php                  /                                                   301
+
+# Entradas del blog (/AAAA/MM/DD/slug/) -> listado de noticias
+/2013/*                        /noticias/                                          301
+/2014/*                        /noticias/                                          301
+/2019/*                        /noticias/                                          301
+
