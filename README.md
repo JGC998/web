@@ -39,6 +39,8 @@ Web estática de **Comercial de Recambios Montemayor, S.L.** (CRM), reconstruida
 ├── favicon.svg
 ├── _redirects                    # Redirecciones 301 de las URLs antiguas de WordPress
 ├── _headers                      # Cabeceras HTTP (seguridad y caché)
+├── wrangler.jsonc                # Configuración del despliegue en Cloudflare
+├── .assetsignore                 # Archivos que no se publican
 ├── robots.txt
 └── sitemap.xml
 ```
@@ -54,15 +56,15 @@ python -m http.server 8000
 # y abrir http://localhost:8000
 ```
 
-## Despliegue en Cloudflare Pages
+## Despliegue en Cloudflare
 
-1. En Cloudflare: **Workers & Pages → Create → Pages → Connect to Git** y elegir este repositorio.
-2. Configuración de build:
-   - **Framework preset:** None
-   - **Build command:** *(vacío)*
-   - **Build output directory:** `/`
-3. Desplegar. Cada `git push` a `main` vuelve a publicar la web.
-4. Para usar el dominio: **Custom domains → Set up a domain**.
+La web se despliega como **Cloudflare Worker con contenido estático**, conectado a este repositorio. Cada `git push` a `main` vuelve a publicarla: Cloudflare ejecuta `npx wrangler deploy`, que lee `wrangler.jsonc`.
+
+- `wrangler.jsonc`: nombre del Worker, carpeta publicada (`.`) y uso de `404.html` para las páginas que no existen.
+- `.assetsignore`: archivos del repo que **no** se publican (`.git`, este README, la configuración…). Si se añade al repo algún archivo que no deba verse en la web, hay que añadirlo aquí.
+- `_redirects` y `_headers` también funcionan en Workers.
+
+Para usar el dominio propio: en el Worker, **Settings → Domains & Routes → Add → Custom domain**.
 
 ## Cómo editar contenido
 

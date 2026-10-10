@@ -11,3 +11,6 @@ desktop.ini
 # Varios
 node_modules/
 *.log
+
+# Wrangler (Cloudflare)
+.wrangler/

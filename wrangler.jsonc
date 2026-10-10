@@ -1,0 +1,15 @@
+{
+  // Configuración para desplegar la web como Cloudflare Worker con contenido estático.
+  // Cloudflare ejecuta "npx wrangler deploy" y publica los archivos de este directorio.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "web",
+  "compatibility_date": "2026-10-06",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".",
+    // Sirve 404.html cuando una página no existe
+    "not_found_handling": "404-page"
+  }
+}
