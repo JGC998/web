@@ -1,0 +1,111 @@
+/* =========================================================
+   TEMA 2 — Orgánico Moderno
+   Blanco cálido, formas tipo blob, verde vibrante, tipografía
+   redondeada. Estética startup moderna, 100% luminosa.
+   ========================================================= */
+
+:root {
+  --rd-bg: #ffffff;
+  --rd-bg-soft: #f0f8f2;
+  --rd-surface: #ffffff;
+  --rd-text: #122118;
+  --rd-text-muted: #5b6e60;
+  --rd-accent: #2fae62;
+  --rd-accent-contrast: #ffffff;
+  --rd-border: #e2ece4;
+
+  --rd-radius: 20px;
+  --rd-radius-lg: 32px;
+  --rd-radius-sm: 14px;
+  --rd-shadow: 0 24px 48px rgba(47, 174, 98, 0.16);
+  --rd-card-border: 1px solid var(--rd-border);
+  --rd-btn-border: 2px solid transparent;
+
+  --rd-font-head: "Outfit", system-ui, sans-serif;
+  --rd-font-body: "Inter", system-ui, sans-serif;
+
+  --rd-container: 1180px;
+  --rd-gutter: clamp(20px, 5vw, 48px);
+}
+
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; }
+
+.rd-hero { position: relative; overflow: hidden; }
+
+.rd-hero::before {
+  content: "";
+  position: absolute;
+  top: -18%;
+  right: -12%;
+  z-index: -1;
+  width: min(560px, 60vw);
+  aspect-ratio: 1;
+  background: var(--rd-bg-soft);
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+}
+
+.rd-eyebrow {
+  padding: 6px 14px;
+  background: var(--rd-bg-soft);
+  border-radius: 999px;
+}
+
+.rd-stats {
+  margin-inline: var(--rd-gutter);
+  padding-block: 28px;
+  background: var(--rd-bg-soft);
+  border-radius: var(--rd-radius-lg);
+}
+
+.rd-card {
+  box-shadow: var(--rd-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rd-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 32px 60px rgba(47, 174, 98, 0.24);
+}
+
+.rd-about__media {
+  border-radius: 58% 42% 38% 62% / 55% 40% 60% 45%;
+  box-shadow: var(--rd-shadow);
+}
+
+.rd-cta {
+  margin-inline: var(--rd-gutter);
+  background: var(--rd-bg-soft);
+  border-radius: var(--rd-radius-lg);
+}
+
+/* ---------- Botones ---------- */
+
+.rd-btn { border-radius: 999px; }
+
+.rd-btn--primary {
+  background: linear-gradient(135deg, #37bd6e, #279654);
+  color: var(--rd-accent-contrast);
+  box-shadow: 0 14px 28px rgba(47, 174, 98, 0.32);
+}
+
+.rd-btn--primary:hover { box-shadow: 0 18px 34px rgba(47, 174, 98, 0.42); }
+
+.rd-btn--ghost {
+  background: var(--rd-bg-soft);
+  color: var(--rd-text);
+  border-color: transparent;
+}
+
+.rd-btn--ghost:hover { background: #e4f2e8; }
+
+.rd-btn--outline {
+  background: transparent;
+  color: var(--rd-accent);
+  border-color: var(--rd-accent);
+}
+
+.rd-btn--outline:hover { background: var(--rd-accent); color: var(--rd-accent-contrast); }
+
+.rd-brand__mark { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+
+.rd-footer { background: var(--rd-bg-soft); }

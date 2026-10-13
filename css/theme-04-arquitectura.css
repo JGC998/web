@@ -1,0 +1,102 @@
+/* =========================================================
+   TEMA 4 — Editorial Arquitectura
+   Papel frío, serif editorial, líneas finas, sin sombras ni
+   radios. Aire de estudio de arquitectura / revista de diseño.
+   ========================================================= */
+
+:root {
+  --rd-bg: #f7f6f3;
+  --rd-bg-soft: #efeee9;
+  --rd-surface: #ffffff;
+  --rd-text: #1c1d1b;
+  --rd-text-muted: #6b6d66;
+  --rd-accent: #2f6b45;
+  --rd-accent-contrast: #ffffff;
+  --rd-border: #d8d6cd;
+
+  --rd-radius: 0px;
+  --rd-radius-lg: 0px;
+  --rd-radius-sm: 0px;
+  --rd-shadow: none;
+  --rd-card-border: 1px solid var(--rd-border);
+  --rd-btn-border: 1.5px solid var(--rd-text);
+
+  --rd-font-head: "Newsreader", Georgia, serif;
+  --rd-font-body: "Inter", system-ui, sans-serif;
+
+  --rd-container: 1180px;
+  --rd-gutter: clamp(20px, 5vw, 48px);
+}
+
+h1, h2, h3 { font-weight: 500; }
+
+.rd-header { border-bottom: 1px solid var(--rd-border); }
+
+.rd-brand { font-family: var(--rd-font-head); font-style: italic; font-weight: 600; }
+
+.rd-eyebrow {
+  font-family: var(--rd-font-head);
+  font-style: italic;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1.05rem;
+  color: var(--rd-accent);
+}
+
+.rd-hero__title { max-width: 16ch; }
+
+.rd-stats {
+  border-block: 1px solid var(--rd-border);
+}
+
+.rd-stat__num { font-weight: 500; }
+
+.rd-card { box-shadow: none; }
+
+.rd-card:hover { border-color: var(--rd-accent); }
+
+.rd-card__body h3 { font-weight: 600; }
+
+.rd-about { background: var(--rd-bg-soft); }
+
+.rd-about__media { border: 1px solid var(--rd-border); }
+
+.rd-cta { border-top: 1px solid var(--rd-border); border-bottom: 1px solid var(--rd-border); }
+
+/* ---------- Botones ---------- */
+
+.rd-btn {
+  border-radius: 0;
+  font-family: var(--rd-font-head);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.rd-btn--primary {
+  background: var(--rd-accent);
+  color: var(--rd-accent-contrast);
+  border-color: var(--rd-accent);
+}
+
+.rd-btn--primary:hover { background: #244f33; border-color: #244f33; }
+
+.rd-btn--ghost {
+  background: transparent;
+  color: var(--rd-text);
+}
+
+.rd-btn--ghost:hover { background: var(--rd-text); color: var(--rd-bg); }
+
+.rd-btn--outline {
+  background: transparent;
+  color: var(--rd-accent);
+  border-color: var(--rd-accent);
+}
+
+.rd-btn--outline:hover { background: var(--rd-accent); color: var(--rd-accent-contrast); }
+
+.rd-brand__mark { border-radius: 0; font-family: var(--rd-font-head); font-style: italic; }
+
+.rd-footer { background: var(--rd-bg-soft); }

@@ -1,0 +1,112 @@
+/* =========================================================
+   TEMA 5 — Glass Suave
+   Gradiente verde-menta a blanco, tarjetas de cristal
+   esmerilado, formas redondeadas. Estética SaaS moderna.
+   ========================================================= */
+
+:root {
+  --rd-bg: #f3fbf6;
+  --rd-bg-soft: rgba(255, 255, 255, 0.5);
+  --rd-surface: rgba(255, 255, 255, 0.6);
+  --rd-text: #16241c;
+  --rd-text-muted: #52695c;
+  --rd-accent: #22b573;
+  --rd-accent-contrast: #ffffff;
+  --rd-border: rgba(22, 36, 28, 0.1);
+
+  --rd-radius: 22px;
+  --rd-radius-lg: 28px;
+  --rd-radius-sm: 14px;
+  --rd-shadow: 0 20px 45px rgba(34, 181, 115, 0.16);
+  --rd-card-border: 1px solid rgba(255, 255, 255, 0.7);
+  --rd-btn-border: 2px solid transparent;
+
+  --rd-font-head: "Poppins", system-ui, sans-serif;
+  --rd-font-body: "Inter", system-ui, sans-serif;
+
+  --rd-container: 1180px;
+  --rd-gutter: clamp(20px, 5vw, 48px);
+
+  --rd-header-bg: rgba(255, 255, 255, 0.55);
+}
+
+body {
+  background:
+    radial-gradient(60% 50% at 85% -10%, rgba(34, 181, 115, 0.18), transparent 60%),
+    radial-gradient(50% 40% at 0% 20%, rgba(34, 181, 115, 0.1), transparent 60%),
+    linear-gradient(180deg, #eafaf1 0%, #f7fbf8 40%, #ffffff 100%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.01em; }
+
+.rd-header {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--rd-border);
+}
+
+.rd-stats {
+  margin-inline: var(--rd-gutter);
+  background: var(--rd-surface);
+  border: 1px solid var(--rd-border);
+  border-radius: var(--rd-radius-lg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.rd-card {
+  background: var(--rd-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--rd-shadow);
+}
+
+.rd-card:hover {
+  box-shadow: 0 28px 60px rgba(34, 181, 115, 0.22);
+}
+
+.rd-about__media { box-shadow: var(--rd-shadow); }
+
+.rd-cta {
+  margin-inline: var(--rd-gutter);
+  background: var(--rd-surface);
+  border: 1px solid var(--rd-border);
+  border-radius: var(--rd-radius-lg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--rd-shadow);
+}
+
+/* ---------- Botones ---------- */
+
+.rd-btn { border-radius: 999px; }
+
+.rd-btn--primary {
+  background: linear-gradient(135deg, #22b573, #1a8f5b);
+  color: var(--rd-accent-contrast);
+  box-shadow: 0 10px 24px rgba(34, 181, 115, 0.3);
+}
+
+.rd-btn--primary:hover { box-shadow: 0 14px 30px rgba(34, 181, 115, 0.4); }
+
+.rd-btn--ghost {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--rd-text);
+  border-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.rd-btn--ghost:hover { background: rgba(255, 255, 255, 0.85); }
+
+.rd-btn--outline {
+  background: transparent;
+  color: var(--rd-accent);
+  border-color: var(--rd-accent);
+}
+
+.rd-btn--outline:hover { background: var(--rd-accent); color: var(--rd-accent-contrast); }
+
+.rd-brand__mark { border-radius: 50%; }
+
+.rd-footer { background: transparent; border-top: 1px solid var(--rd-border); }

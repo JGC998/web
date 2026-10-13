@@ -1,0 +1,92 @@
+/* =========================================================
+   Panel flotante para saltar entre los 6 prototipos de
+   /nuevo-diseno/ (clásico + 5 formatos). Navegación real
+   entre páginas, no intercambio de hoja de estilos.
+   ========================================================= */
+
+.rd-fmtnav {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.rd-fmtnav__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  min-width: 220px;
+  background: rgba(20, 22, 21, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.rd-fmtnav[data-open="false"] .rd-fmtnav__panel {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.94) translateY(6px);
+  pointer-events: none;
+}
+
+.rd-fmtnav__title {
+  margin: 2px 4px 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.rd-fmtnav__link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rd-fmtnav__link:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.rd-fmtnav__link[aria-current="page"] {
+  background: rgba(46, 146, 51, 0.22);
+}
+
+.rd-fmtnav__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(20, 22, 21, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.rd-fmtnav__toggle-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2e9233;
+}
+
+@media (max-width: 560px) {
+  .rd-fmtnav { left: 12px; bottom: 12px; right: 12px; }
+  .rd-fmtnav__panel { min-width: 0; }
+  .rd-fmtnav__toggle { justify-content: center; width: 100%; }
+}

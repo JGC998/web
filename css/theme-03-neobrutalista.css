@@ -1,0 +1,105 @@
+/* =========================================================
+   TEMA 3 — Neobrutalista
+   Fondo papel claro, bordes negros gruesos, sombras duras
+   desplazadas, tipografía enorme. Gráfico y de tendencia actual.
+   ========================================================= */
+
+:root {
+  --rd-bg: #f5f3e6;
+  --rd-bg-soft: #ece6cf;
+  --rd-surface: #ffffff;
+  --rd-text: #111111;
+  --rd-text-muted: #45433c;
+  --rd-accent: #19c37d;
+  --rd-accent-contrast: #0a0a0a;
+  --rd-border: #111111;
+
+  --rd-radius: 6px;
+  --rd-radius-lg: 6px;
+  --rd-radius-sm: 6px;
+  --rd-shadow: 8px 8px 0 var(--rd-text);
+  --rd-card-border: 3px solid var(--rd-border);
+  --rd-btn-border: 3px solid var(--rd-text);
+
+  --rd-font-head: "Archivo Black", "Inter", system-ui, sans-serif;
+  --rd-font-body: "Inter", system-ui, sans-serif;
+
+  --rd-container: 1180px;
+  --rd-gutter: clamp(20px, 5vw, 48px);
+}
+
+h1, h2, h3 { font-weight: 400; text-transform: uppercase; letter-spacing: -0.01em; }
+
+.rd-header { border-bottom: 3px solid var(--rd-border); }
+
+.rd-eyebrow {
+  padding: 4px 10px;
+  background: var(--rd-text);
+  color: var(--rd-accent);
+  border-radius: var(--rd-radius);
+}
+
+.rd-hero__title { font-size: clamp(2.4rem, 5.6vw, 4rem); }
+
+.rd-stats {
+  background: var(--rd-accent);
+  border-block: 3px solid var(--rd-border);
+}
+
+.rd-stats .rd-stat__num { color: var(--rd-text); }
+
+.rd-stats .rd-stat__label { color: rgba(10, 10, 10, 0.75); font-weight: 600; }
+
+.rd-card {
+  box-shadow: var(--rd-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rd-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0 var(--rd-text);
+}
+
+.rd-about__media { border: 3px solid var(--rd-border); box-shadow: var(--rd-shadow); }
+
+.rd-cta {
+  background: var(--rd-text);
+  color: #fff;
+}
+
+.rd-cta .rd-cta__inner p { color: rgba(255, 255, 255, 0.8); }
+
+/* ---------- Botones ---------- */
+
+.rd-btn { border-radius: var(--rd-radius); text-transform: uppercase; letter-spacing: 0.02em; }
+
+.rd-btn--primary {
+  background: var(--rd-accent);
+  color: var(--rd-accent-contrast);
+  box-shadow: var(--rd-shadow);
+}
+
+.rd-btn--primary:hover { transform: translate(-3px, -3px); box-shadow: 11px 11px 0 var(--rd-text); }
+
+.rd-btn--ghost {
+  background: #fff;
+  color: var(--rd-text);
+  border-color: var(--rd-text);
+  box-shadow: var(--rd-shadow);
+}
+
+.rd-btn--ghost:hover { transform: translate(-3px, -3px); box-shadow: 11px 11px 0 var(--rd-text); }
+
+.rd-cta .rd-btn--ghost { background: transparent; color: #fff; border-color: #fff; box-shadow: 8px 8px 0 rgba(255, 255, 255, 0.4); }
+
+.rd-btn--outline {
+  background: transparent;
+  color: var(--rd-text);
+  border-color: var(--rd-text);
+}
+
+.rd-btn--outline:hover { background: var(--rd-accent); }
+
+.rd-brand__mark { border-radius: var(--rd-radius); background: var(--rd-text); color: var(--rd-accent); box-shadow: 3px 3px 0 var(--rd-accent); }
+
+.rd-footer { background: var(--rd-bg-soft); border-top: 3px solid var(--rd-border); }
