@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formato Scrollytelling — Prototipo CRM</title>
+  <meta name="description" content="Prototipo de formato scrollytelling inmersivo para crmsl.es.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+
+  <link rel="stylesheet" href="/css/format-scrollytelling.css">
+  <link rel="stylesheet" href="/css/format-nav.css">
+</head>
+<body data-format="scrollytelling">
+
+  <a class="sy-brand" href="#inicio">CRM Componentes</a>
+
+  <nav class="sy-dots" aria-label="Secciones">
+    <a href="#inicio" aria-label="Inicio"></a>
+    <a href="#cifras" aria-label="Cifras"></a>
+    <a href="#productos" aria-label="Productos"></a>
+    <a href="#nosotros" aria-label="Nosotros"></a>
+    <a href="#contacto" aria-label="Contacto"></a>
+  </nav>
+
+  <main class="sy-scroller">
+
+    <section class="sy-slide" id="inicio">
+      <div class="sy-slide__inner rd-reveal">
+        <span class="sy-eyebrow">Desde 1994 · La Rambla, Córdoba</span>
+        <h1>Precisión industrial para elevación y transporte</h1>
+        <p>Fabricación a medida y stock permanente de bandas transportadoras, faldetas y sistemas de elevación.</p>
+        <div class="sy-btn-row">
+          <a class="sy-btn sy-btn--primary" href="#productos">Ver productos</a>
+          <a class="sy-btn sy-btn--ghost" href="#contacto">Contactar</a>
+        </div>
+      </div>
+      <span class="sy-cue" aria-hidden="true">Desliza ↓</span>
+    </section>
+
+    <section class="sy-slide sy-slide--dark" id="cifras">
+      <div class="sy-slide__inner rd-reveal">
+        <span class="sy-eyebrow">Treinta años de trayectoria</span>
+        <div class="sy-stats">
+          <div class="sy-stat"><span>30+</span>Años de experiencia</div>
+          <div class="sy-stat"><span>100%</span>Stock permanente</div>
+          <div class="sy-stat"><span>4</span>Líneas de producto</div>
+          <div class="sy-stat"><span>1994</span>Empresa familiar</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sy-slide" id="productos">
+      <div class="sy-slide__inner rd-reveal">
+        <span class="sy-eyebrow">Catálogo</span>
+        <h2>Cuatro líneas, un mismo compromiso</h2>
+        <div class="sy-products">
+          <a href="/productos/elevacion/">Elevación</a>
+          <a href="/productos/bandas-transportadoras/">Bandas transportadoras</a>
+          <a href="/productos/faldetas/">Faldetas</a>
+          <a href="/productos/bandas-pvc/">Bandas PVC</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="sy-slide sy-slide--accent" id="nosotros">
+      <div class="sy-slide__inner rd-reveal">
+        <span class="sy-eyebrow">Nuestra seña de identidad</span>
+        <p class="sy-quote">“Calidad antes que cantidad: servicio cercano y personalizado, no volumen.”</p>
+      </div>
+    </section>
+
+    <section class="sy-slide sy-slide--dark" id="contacto">
+      <div class="sy-slide__inner rd-reveal">
+        <h2>¿Necesitas asesoramiento o un presupuesto?</h2>
+        <p>Nuestro equipo te ayuda a elegir el producto adecuado para tu instalación.</p>
+        <div class="sy-btn-row">
+          <a class="sy-btn sy-btn--primary" href="tel:+34957682819">Llamar ahora</a>
+          <a class="sy-btn sy-btn--ghost" href="mailto:info@crmsl.es">Escríbenos</a>
+        </div>
+        <footer class="sy-footer">
+          <span>© <span data-year></span> Comercial de Recambios Montemayor, S.L.</span>
+          <span>P.I. Los Alfares, La Rambla (Córdoba)</span>
+        </footer>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/assets/js/formats.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formato Bento Grid — Prototipo CRM</title>
+  <meta name="description" content="Prototipo de formato Bento Grid para crmsl.es.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+
+  <link rel="stylesheet" href="/css/format-bento.css">
+  <link rel="stylesheet" href="/css/format-nav.css">
+</head>
+<body data-format="bento">
+
+  <header class="fb-header">
+    <div class="fb-container fb-header__inner">
+      <a class="fb-brand" href="#top">CRM Componentes</a>
+      <nav aria-label="Principal">
+        <ul class="fb-nav">
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <a class="fb-btn fb-btn--primary" href="tel:+34957682819">Llamar</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="fb-container">
+      <div class="fb-grid" id="productos">
+
+        <section class="fb-cell fb-cell--hero">
+          <span class="fb-eyebrow">Desde 1994 · La Rambla, Córdoba</span>
+          <h1>Componentes de precisión para elevación y transporte industrial</h1>
+          <p>Fabricación a medida y stock permanente de bandas transportadoras, faldetas y sistemas de elevación.</p>
+          <div class="fb-btn-row">
+            <a class="fb-btn fb-btn--primary" href="#productos">Ver productos</a>
+            <a class="fb-btn fb-btn--ghost" href="#contacto">Contactar</a>
+          </div>
+        </section>
+
+        <section class="fb-cell fb-cell--stats" aria-label="Datos clave">
+          <div class="fb-stat"><span>30+</span>Años</div>
+          <div class="fb-stat"><span>100%</span>Stock</div>
+          <div class="fb-stat"><span>4</span>Líneas</div>
+          <div class="fb-stat"><span>1994</span>Origen</div>
+        </section>
+
+        <a class="fb-cell fb-cell--product fb-cell--p1" href="/productos/elevacion/" style="background-image:url('/assets/img/inicio/destacado-elevacion.jpg')">
+          <span class="fb-cell__label">Elevación</span>
+        </a>
+
+        <a class="fb-cell fb-cell--product fb-cell--p2" href="/productos/bandas-transportadoras/" style="background-image:url('/assets/img/inicio/destacado-bandas-transportadoras.jpg')">
+          <span class="fb-cell__label">Bandas transportadoras</span>
+        </a>
+
+        <a class="fb-cell fb-cell--product fb-cell--p3" href="/productos/faldetas/" style="background-image:url('/assets/img/inicio/destacado-faldetas.jpg')">
+          <span class="fb-cell__label">Faldetas</span>
+        </a>
+
+        <section class="fb-cell fb-cell--quote">
+          <p>“Calidad antes que cantidad: servicio cercano y personalizado, no volumen.”</p>
+        </section>
+
+        <a class="fb-cell fb-cell--product fb-cell--p4" href="/productos/bandas-pvc/" style="background-image:url('/assets/img/inicio/destacado-bandas-pvc.jpg')">
+          <span class="fb-cell__label">Bandas PVC</span>
+        </a>
+
+        <section class="fb-cell fb-cell--cta" id="contacto">
+          <div>
+            <h2>¿Necesitas asesoramiento o un presupuesto?</h2>
+            <p>Nuestro equipo te ayuda a elegir el producto adecuado.</p>
+          </div>
+          <div class="fb-btn-row">
+            <a class="fb-btn fb-btn--primary" href="tel:+34957682819">Llamar ahora</a>
+            <a class="fb-btn fb-btn--ghost" href="mailto:info@crmsl.es">Escríbenos</a>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="fb-footer">
+    <div class="fb-container fb-footer__inner">
+      <span>© <span data-year></span> Comercial de Recambios Montemayor, S.L.</span>
+      <span>P.I. Los Alfares, La Rambla (Córdoba)</span>
+    </div>
+  </footer>
+
+  <script src="/assets/js/formats.js" defer></script>
+</body>
+</html>
