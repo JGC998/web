@@ -2,7 +2,7 @@
   // Configuración para desplegar la web como Cloudflare Worker con contenido estático.
   // Cloudflare ejecuta "npx wrangler deploy" y publica los archivos de este directorio.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "web",
+  "name": "web-crm",
   "compatibility_date": "2026-10-06",
   "observability": {
     "enabled": true
