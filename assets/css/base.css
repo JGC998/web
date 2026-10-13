@@ -3,31 +3,40 @@
    ========================================================= */
 
 :root {
-  /* Colores de marca (tomados de la web original) */
-  --green: #2e9233;
-  --green-light: #439d47;
-  --green-dark: #1b6d2a;
-  --green-tint: #eef6ee;
-  --ink: #1c2229;
-  --ink-soft: #2a323b;
-  --text: #3a4149;
-  --muted: #6b737c;
-  --line: #e3e6e9;
+  /* Colores de marca */
+  --green: #237a2f;          /* verde principal (contraste AA sobre blanco) */
+  --green-bright: #2e9233;   /* verde del logo */
+  --green-dark: #17521f;
+  --green-tint: #edf5ee;
+  --ink: #12171c;            /* casi negro, para títulos y fondos oscuros */
+  --ink-soft: #1e252c;
+  --text: #2b3036;
+  --muted: #5b636b;
+  --line: #e4e2dc;
   --bg: #ffffff;
-  --bg-soft: #f5f6f7;
+  --sand: #f6f4ef;           /* neutro cálido para secciones alternas */
 
   /* Tipografía */
-  --font: "Lato", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-head: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   /* Medidas */
   --container: 1200px;
-  --gutter: clamp(16px, 4vw, 32px);
-  --radius: 10px;
+  --gutter: clamp(18px, 4vw, 40px);
+  --radius: 8px;
   --radius-sm: 6px;
-  --header-h: 76px;
-  --shadow: 0 6px 24px rgba(28, 34, 41, 0.08);
-  --shadow-lg: 0 14px 40px rgba(28, 34, 41, 0.16);
+  --header-h: 80px;
+  --callbar-h: 0px;          /* altura de la barra de llamada en móvil */
+  --shadow: 0 1px 2px rgba(18, 23, 28, 0.04), 0 8px 24px rgba(18, 23, 28, 0.06);
+  --shadow-lg: 0 2px 4px rgba(18, 23, 28, 0.05), 0 20px 48px rgba(18, 23, 28, 0.12);
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --header-h: 68px;
+    --callbar-h: 68px;
+  }
 }
 
 *,
@@ -39,7 +48,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-h) + 64px);
+  scroll-padding-top: calc(var(--header-h) + 72px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -56,12 +65,14 @@ html {
 
 body {
   margin: 0;
+  padding-bottom: var(--callbar-h);
   font-family: var(--font);
-  font-size: 1.0625rem;
-  line-height: 1.7;
+  font-size: 1.125rem;       /* 18 px: lectura cómoda en móvil */
+  line-height: 1.65;
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 img {
@@ -85,27 +96,31 @@ h2,
 h3,
 h4,
 h5 {
-  margin: 0 0 0.6em;
+  margin: 0 0 0.55em;
+  font-family: var(--font-head);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: var(--ink);
-  font-weight: 700;
-  line-height: 1.2;
 }
 
 h1 {
-  font-size: clamp(2.2rem, 5vw, 3.6rem);
-  font-weight: 900;
+  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
 }
 
 h2 {
-  font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
 }
 
 h3 {
-  font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+  font-size: clamp(1.25rem, 2vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 h4 {
   font-size: 1.15rem;
+  font-weight: 700;
 }
 
 p,
@@ -114,14 +129,23 @@ ol {
   margin: 0 0 1em;
 }
 
+strong {
+  color: var(--ink);
+}
+
 table {
   border-collapse: collapse;
   width: 100%;
 }
 
 :focus-visible {
-  outline: 3px solid var(--green-light);
-  outline-offset: 2px;
+  outline: 3px solid var(--green-bright);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--green-tint);
+  color: var(--green-dark);
 }
 
 .visually-hidden {
@@ -138,7 +162,7 @@ table {
   left: 16px;
   top: -60px;
   z-index: 200;
-  padding: 10px 16px;
+  padding: 12px 18px;
   background: var(--ink);
   color: #fff;
   border-radius: var(--radius-sm);
