@@ -43,12 +43,7 @@
         <ul class="nav__list">
           <li><a class="nav__link" href="/">Inicio</a></li>
           <li><a class="nav__link" href="/quienes-somos/">Quiénes somos</a></li>
-          <li class="nav__item--parent is-current">
-            <button class="nav__link" type="button" aria-expanded="false" aria-controls="submenu-productos">Productos <svg class="nav__chevron" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4z"/></svg></button>
-            <ul class="nav__sub" id="submenu-productos">
-              <li><a href="/productos/elevacion/">Elevación</a></li><li><a href="/productos/bandas-transportadoras/" aria-current="page">Bandas transportadoras</a></li><li><a href="/productos/faldetas/">Faldetas</a></li><li><a href="/productos/bandas-pvc/">Bandas PVC</a></li><li><a href="/productos/">Ver todos los productos</a></li>
-            </ul>
-          </li>
+          <li><a class="nav__link" href="/productos/">Productos</a></li>
           <li><a class="nav__link" href="/catalogos/">Catálogos</a></li>
           <li><a class="nav__link" href="/noticias/">Noticias</a></li>
           <li><a class="nav__link" href="/contacto/">Contacto</a></li>
@@ -73,12 +68,17 @@
     <nav class="subnav" aria-label="Secciones de Bandas transportadoras">
       <div class="container"><ul><li><a href="#bandas-transportadoras">Bandas Transportadoras</a></li><li><a href="#estaciones">Estaciones</a></li><li><a href="#vulcanizados">Vulcanizados</a></li><li><a href="#grapas">Grapas</a></li><li><a href="#limpiadores-de-bandas">Limpiadores de Bandas</a></li><li><a href="#rodillos">Rodillos</a></li><li><a href="#tambores">Tambores</a></li><li><a href="#materiales-para-vulcanizar">Materiales para Vulcanizar</a></li><li><a href="#piezas-de-goma">Piezas de Goma</a></li><li><a href="#planchas-de-goma">Planchas de Goma</a></li><li><a href="#recubrimientos">Recubrimientos</a></li></ul></div>
     </nav>
-    <section class="product" id="bandas-transportadoras">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">01</span>
-          <h2>Bandas Transportadoras</h2>
+    <details class="product" id="bandas-transportadoras" open>
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">01</span>
+            <h2>Bandas Transportadoras</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <h3>Bandas transportadoras lisas</h3>
@@ -120,13 +120,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="estaciones">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">02</span>
-          <h2>Estaciones</h2>
+    </details>
+    <details class="product" id="estaciones">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">02</span>
+            <h2>Estaciones</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Consulta nuestra gama de soportes y estaciones para rodillos en <a href="http://www.soportespararodilloscrm.com" target="_blank" rel="noopener">www.soportespararodilloscrm.com</a>.</p>
@@ -140,13 +145,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="vulcanizados">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">03</span>
-          <h2>Vulcanizados</h2>
+    </details>
+    <details class="product" id="vulcanizados">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">03</span>
+            <h2>Vulcanizados</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/bandas-transportadoras/vulcanizados-01.jpg" data-gallery="vulcanizados"><img src="/assets/img/productos/bandas-transportadoras/thumbs/vulcanizados-01.jpg" alt="Vulcanizados — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -161,13 +171,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Vulcanizados">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="grapas">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">04</span>
-          <h2>Grapas</h2>
+    </details>
+    <details class="product" id="grapas">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">04</span>
+            <h2>Grapas</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <h3>Grapas de reparación</h3>
@@ -193,13 +208,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="limpiadores-de-bandas">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">05</span>
-          <h2>Limpiadores de Bandas</h2>
+    </details>
+    <details class="product" id="limpiadores-de-bandas">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">05</span>
+            <h2>Limpiadores de Bandas</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>En nuestra gama podrá encontrar modelos para bandas lisas:</p>
@@ -223,13 +243,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="rodillos">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">06</span>
-          <h2>Rodillos</h2>
+    </details>
+    <details class="product" id="rodillos">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">06</span>
+            <h2>Rodillos</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <h3>Barras de impacto</h3>
@@ -248,13 +273,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="tambores">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">07</span>
-          <h2>Tambores</h2>
+    </details>
+    <details class="product" id="tambores">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">07</span>
+            <h2>Tambores</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>En CRM diseñamos y fabricamos tambores de cabeza (rodillos motrices) y tambores de cola capaces de soportar las más duras condiciones y ambientes de trabajo de su transportador de banda, ofreciéndole el mejor desempeño y la máxima fiabilidad.</p>
@@ -269,13 +299,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="materiales-para-vulcanizar">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">08</span>
-          <h2>Materiales para Vulcanizar</h2>
+    </details>
+    <details class="product" id="materiales-para-vulcanizar">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">08</span>
+            <h2>Materiales para Vulcanizar</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <h3>Material para la reparación y vulcanización, tanto en frío como en caliente</h3>
@@ -303,13 +338,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="piezas-de-goma">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">09</span>
-          <h2>Piezas de Goma</h2>
+    </details>
+    <details class="product" id="piezas-de-goma">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">09</span>
+            <h2>Piezas de Goma</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Podemos producir cualquier pieza de goma, en diferentes calidades.</p>
@@ -323,13 +363,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="planchas-de-goma">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">10</span>
-          <h2>Planchas de Goma</h2>
+    </details>
+    <details class="product" id="planchas-de-goma">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">10</span>
+            <h2>Planchas de Goma</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Podemos ofrecerle una amplia gama de planchas de goma, que podemos servirle cortadas a anchos y longitudes y en la calidad solicitada.</p>
@@ -354,13 +399,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="recubrimientos">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">11</span>
-          <h2>Recubrimientos</h2>
+    </details>
+    <details class="product" id="recubrimientos">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">11</span>
+            <h2>Recubrimientos</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <h3>Engomado de tambores</h3>
@@ -384,7 +434,7 @@
 </div>
         </div>
       </div>
-    </section>
+    </details>
     <section class="band">
       <div class="container">
         <div>

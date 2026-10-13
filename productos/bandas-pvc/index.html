@@ -43,12 +43,7 @@
         <ul class="nav__list">
           <li><a class="nav__link" href="/">Inicio</a></li>
           <li><a class="nav__link" href="/quienes-somos/">Quiénes somos</a></li>
-          <li class="nav__item--parent is-current">
-            <button class="nav__link" type="button" aria-expanded="false" aria-controls="submenu-productos">Productos <svg class="nav__chevron" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4z"/></svg></button>
-            <ul class="nav__sub" id="submenu-productos">
-              <li><a href="/productos/elevacion/">Elevación</a></li><li><a href="/productos/bandas-transportadoras/">Bandas transportadoras</a></li><li><a href="/productos/faldetas/">Faldetas</a></li><li><a href="/productos/bandas-pvc/" aria-current="page">Bandas PVC</a></li><li><a href="/productos/">Ver todos los productos</a></li>
-            </ul>
-          </li>
+          <li><a class="nav__link" href="/productos/">Productos</a></li>
           <li><a class="nav__link" href="/catalogos/">Catálogos</a></li>
           <li><a class="nav__link" href="/noticias/">Noticias</a></li>
           <li><a class="nav__link" href="/contacto/">Contacto</a></li>
@@ -73,12 +68,17 @@
     <nav class="subnav" aria-label="Secciones de Bandas PVC">
       <div class="container"><ul><li><a href="#bandas-de-pvc">Bandas de PVC</a></li><li><a href="#bandas-modulares">Bandas Modulares</a></li><li><a href="#cadenas-de-charnelas">Cadenas de Charnelas</a></li><li><a href="#cordones-y-correas">Cordones y Correas</a></li><li><a href="#plasticos-tecnicos">Plásticos Técnicos</a></li><li><a href="#recubrimientos">Recubrimientos</a></li><li><a href="#grapas">Grapas</a></li></ul></div>
     </nav>
-    <section class="product" id="bandas-de-pvc">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">01</span>
-          <h2>Bandas de PVC</h2>
+    <details class="product" id="bandas-de-pvc" open>
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">01</span>
+            <h2>Bandas de PVC</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Las bandas de PVC se utilizan para aplicaciones ligeras de transporte de materiales alimentarios, así como en procesos industriales con propiedades químicas.</p>
@@ -122,13 +122,18 @@
           <tbody><tr><th scope="row">R-20</th><td>Verde / Blanco</td><td>120 mm</td></tr><tr><th scope="row">R/I-30</th><td>Verde / Blanco</td><td>120 mm</td></tr><tr><th scope="row">R/I-40</th><td>Verde / Blanco</td><td>120 mm</td></tr><tr><th scope="row">R/I-50</th><td>Verde / Blanco</td><td>150 mm</td></tr><tr><th scope="row">R/I-60</th><td>Verde / Blanco</td><td>150 mm</td></tr><tr><th scope="row">R-80</th><td>Verde / Blanco</td><td>180 mm</td></tr></tbody>
         </table></div></div></div>
       </div>
-    </section>
-    <section class="product" id="bandas-modulares">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">02</span>
-          <h2>Bandas Modulares</h2>
+    </details>
+    <details class="product" id="bandas-modulares">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">02</span>
+            <h2>Bandas Modulares</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/bandas-pvc/bandas-modulares-01.jpg" data-gallery="bandas-modulares"><img src="/assets/img/productos/bandas-pvc/thumbs/bandas-modulares-01.jpg" alt="Bandas Modulares — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -141,13 +146,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Bandas Modulares">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="cadenas-de-charnelas">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">03</span>
-          <h2>Cadenas de Charnelas</h2>
+    </details>
+    <details class="product" id="cadenas-de-charnelas">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">03</span>
+            <h2>Cadenas de Charnelas</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/bandas-pvc/cadenas-de-charnelas-01.jpg" data-gallery="cadenas-de-charnelas"><img src="/assets/img/productos/bandas-pvc/thumbs/cadenas-de-charnelas-01.jpg" alt="Cadenas de Charnelas — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -157,13 +167,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Cadenas de Charnelas">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="cordones-y-correas">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">04</span>
-          <h2>Cordones y Correas</h2>
+    </details>
+    <details class="product" id="cordones-y-correas">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">04</span>
+            <h2>Cordones y Correas</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/bandas-pvc/cordones-y-correas-01.jpg" data-gallery="cordones-y-correas"><img src="/assets/img/productos/bandas-pvc/thumbs/cordones-y-correas-01.jpg" alt="Cordones y Correas — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -173,13 +188,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Cordones y Correas">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="plasticos-tecnicos">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">05</span>
-          <h2>Plásticos Técnicos</h2>
+    </details>
+    <details class="product" id="plasticos-tecnicos">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">05</span>
+            <h2>Plásticos Técnicos</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/bandas-pvc/plasticos-tecnicos-01.jpg" data-gallery="plasticos-tecnicos"><img src="/assets/img/productos/bandas-pvc/thumbs/plasticos-tecnicos-01.jpg" alt="Plásticos Técnicos — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -190,13 +210,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Plásticos Técnicos">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="recubrimientos">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">06</span>
-          <h2>Recubrimientos</h2>
+    </details>
+    <details class="product" id="recubrimientos">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">06</span>
+            <h2>Recubrimientos</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/bandas-pvc/recubrimientos-01.jpg" data-gallery="recubrimientos"><img src="/assets/img/productos/bandas-pvc/thumbs/recubrimientos-01.jpg" alt="Recubrimientos — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -205,13 +230,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Recubrimientos">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="grapas">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">07</span>
-          <h2>Grapas</h2>
+    </details>
+    <details class="product" id="grapas">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">07</span>
+            <h2>Grapas</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/bandas-pvc/grapas-01.jpg" data-gallery="grapas"><img src="/assets/img/productos/bandas-pvc/thumbs/grapas-01.jpg" alt="Grapas — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -226,7 +256,7 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Grapas">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
+    </details>
     <section class="band">
       <div class="container">
         <div>

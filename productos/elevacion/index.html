@@ -43,12 +43,7 @@
         <ul class="nav__list">
           <li><a class="nav__link" href="/">Inicio</a></li>
           <li><a class="nav__link" href="/quienes-somos/">Quiénes somos</a></li>
-          <li class="nav__item--parent is-current">
-            <button class="nav__link" type="button" aria-expanded="false" aria-controls="submenu-productos">Productos <svg class="nav__chevron" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4z"/></svg></button>
-            <ul class="nav__sub" id="submenu-productos">
-              <li><a href="/productos/elevacion/" aria-current="page">Elevación</a></li><li><a href="/productos/bandas-transportadoras/">Bandas transportadoras</a></li><li><a href="/productos/faldetas/">Faldetas</a></li><li><a href="/productos/bandas-pvc/">Bandas PVC</a></li><li><a href="/productos/">Ver todos los productos</a></li>
-            </ul>
-          </li>
+          <li><a class="nav__link" href="/productos/">Productos</a></li>
           <li><a class="nav__link" href="/catalogos/">Catálogos</a></li>
           <li><a class="nav__link" href="/noticias/">Noticias</a></li>
           <li><a class="nav__link" href="/contacto/">Contacto</a></li>
@@ -73,12 +68,17 @@
     <nav class="subnav" aria-label="Secciones de Elevación">
       <div class="container"><ul><li><a href="#bandas-elevadoras">Bandas Elevadoras</a></li><li><a href="#cangilones">Cangilones</a></li><li><a href="#imanes">Imanes</a></li><li><a href="#paneles-de-explosion">Paneles de Explosión</a></li><li><a href="#sistemas-de-seguridad">Sistemas de Seguridad</a></li><li><a href="#tornillos-y-grapas">Tornillos y Grapas</a></li><li><a href="#cadenas-transportadoras">Cadenas Transportadoras</a></li></ul></div>
     </nav>
-    <section class="product" id="bandas-elevadoras">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">01</span>
-          <h2>Bandas Elevadoras</h2>
+    <details class="product" id="bandas-elevadoras" open>
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">01</span>
+            <h2>Bandas Elevadoras</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Las bandas elevadoras pueden ser de goma o PVC, con diferentes resistencias y calidades:</p>
@@ -100,13 +100,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="cangilones">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">02</span>
-          <h2>Cangilones</h2>
+    </details>
+    <details class="product" id="cangilones">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">02</span>
+            <h2>Cangilones</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Disponemos de una amplia gama de cangilones para elevador fabricados en Europa. Tenemos stock tanto de cangilón plástico como metálico, modelos Eurojet y Jet en diferentes capacidades. Medidas estándar, y se pueden fabricar a medida.</p>
@@ -131,13 +136,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="imanes">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">03</span>
-          <h2>Imanes</h2>
+    </details>
+    <details class="product" id="imanes">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">03</span>
+            <h2>Imanes</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Tubos magnéticos, parrillas e imanes automáticos.</p>
@@ -152,13 +162,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="paneles-de-explosion">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">04</span>
-          <h2>Paneles de Explosión</h2>
+    </details>
+    <details class="product" id="paneles-de-explosion">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">04</span>
+            <h2>Paneles de Explosión</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Los paneles de venteo contra explosiones responden a las exigencias esenciales de seguridad y salud de los equipos destinados a ser utilizados en atmósferas explosivas (Directiva 94/9/CE).</p>
@@ -175,13 +190,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="sistemas-de-seguridad">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">05</span>
-          <h2>Sistemas de Seguridad</h2>
+    </details>
+    <details class="product" id="sistemas-de-seguridad">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">05</span>
+            <h2>Sistemas de Seguridad</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Sensores y detectores para el control y la protección de elevadores y transportadores:</p>
@@ -206,13 +226,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="tornillos-y-grapas">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">06</span>
-          <h2>Tornillos y Grapas</h2>
+    </details>
+    <details class="product" id="tornillos-y-grapas">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">06</span>
+            <h2>Tornillos y Grapas</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <h3>Tornillos para cangilones</h3>
@@ -235,13 +260,18 @@
 </div>
         </div>
       </div>
-    </section>
-    <section class="product" id="cadenas-transportadoras">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">07</span>
-          <h2>Cadenas Transportadoras</h2>
+    </details>
+    <details class="product" id="cadenas-transportadoras">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">07</span>
+            <h2>Cadenas Transportadoras</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Su principal ventaja consiste en poseer un diámetro (C) de rodillo mayor al ancho (A) de la placa; así la cadena logra deslizarse con suavidad y sin rozamientos excesivos.</p>
@@ -253,7 +283,7 @@
 </div>
         </div>
       </div>
-    </section>
+    </details>
     <section class="band">
       <div class="container">
         <div>

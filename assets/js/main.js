@@ -30,29 +30,10 @@
     });
   }
 
-  /* ---------- Desplegable "Productos" ---------- */
-  document.querySelectorAll(".nav__item--parent").forEach(function (item) {
-    var btn = item.querySelector("button");
-    btn.addEventListener("click", function () {
-      var open = item.classList.toggle("is-open");
-      btn.setAttribute("aria-expanded", String(open));
-    });
-    document.addEventListener("click", function (e) {
-      if (!item.contains(e.target) && window.matchMedia("(min-width: 981px)").matches) {
-        item.classList.remove("is-open");
-        btn.setAttribute("aria-expanded", "false");
-      }
-    });
-  });
-
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
     document.body.classList.remove("nav-open");
     if (toggle) toggle.setAttribute("aria-expanded", "false");
-    document.querySelectorAll(".nav__item--parent.is-open").forEach(function (item) {
-      item.classList.remove("is-open");
-      item.querySelector("button").setAttribute("aria-expanded", "false");
-    });
   });
 
   /* ---------- Lightbox para galerías ----------

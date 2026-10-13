@@ -227,79 +227,13 @@
 }
 
 .nav__link:hover,
-.nav__link[aria-current="page"],
-.nav__item--parent.is-current > .nav__link {
+.nav__link[aria-current="page"] {
   color: var(--green);
 }
 
 .nav__link:hover::after,
-.nav__link[aria-current="page"]::after,
-.nav__item--parent.is-current > .nav__link::after {
+.nav__link[aria-current="page"]::after {
   transform: scaleX(1);
-}
-
-.nav__chevron {
-  width: 10px;
-  height: 10px;
-  fill: currentColor;
-  transition: transform 0.2s var(--ease);
-}
-
-.nav__item--parent {
-  position: relative;
-}
-
-.nav__sub {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  min-width: 270px;
-  margin: 0;
-  padding: 8px;
-  list-style: none;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(6px);
-  transition: opacity 0.2s, transform 0.2s var(--ease), visibility 0.2s;
-}
-
-.nav__sub a {
-  display: block;
-  padding: 12px 14px;
-  border-radius: var(--radius-sm);
-  color: var(--ink);
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-}
-
-.nav__sub a:hover,
-.nav__sub a[aria-current="page"] {
-  background: var(--green-tint);
-  color: var(--green-dark);
-}
-
-.nav__sub li:last-child {
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid var(--line);
-}
-
-.nav__item--parent:hover .nav__sub,
-.nav__item--parent:focus-within .nav__sub,
-.nav__item--parent.is-open .nav__sub {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-}
-
-.nav__item--parent.is-open .nav__chevron {
-  transform: rotate(180deg);
 }
 
 /* Botón "Menú" (móvil) — con texto, más fácil de entender que solo el icono */
@@ -405,40 +339,6 @@
 
   .nav__link[aria-current="page"] {
     color: var(--green);
-  }
-
-  .nav__chevron {
-    width: 14px;
-    height: 14px;
-  }
-
-  .nav__sub {
-    position: static;
-    display: none;
-    min-width: 0;
-    padding: 0 0 16px;
-    border: 0;
-    box-shadow: none;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-  }
-
-  .nav__sub a {
-    padding: 14px 16px;
-    font-size: 1.1rem;
-    background: var(--sand);
-    margin-bottom: 6px;
-  }
-
-  .nav__sub li:last-child {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: 0;
-  }
-
-  .nav__item--parent.is-open .nav__sub {
-    display: block;
   }
 
   .nav-open {

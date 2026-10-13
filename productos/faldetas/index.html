@@ -43,12 +43,7 @@
         <ul class="nav__list">
           <li><a class="nav__link" href="/">Inicio</a></li>
           <li><a class="nav__link" href="/quienes-somos/">Quiénes somos</a></li>
-          <li class="nav__item--parent is-current">
-            <button class="nav__link" type="button" aria-expanded="false" aria-controls="submenu-productos">Productos <svg class="nav__chevron" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4z"/></svg></button>
-            <ul class="nav__sub" id="submenu-productos">
-              <li><a href="/productos/elevacion/">Elevación</a></li><li><a href="/productos/bandas-transportadoras/">Bandas transportadoras</a></li><li><a href="/productos/faldetas/" aria-current="page">Faldetas</a></li><li><a href="/productos/bandas-pvc/">Bandas PVC</a></li><li><a href="/productos/">Ver todos los productos</a></li>
-            </ul>
-          </li>
+          <li><a class="nav__link" href="/productos/">Productos</a></li>
           <li><a class="nav__link" href="/catalogos/">Catálogos</a></li>
           <li><a class="nav__link" href="/noticias/">Noticias</a></li>
           <li><a class="nav__link" href="/contacto/">Contacto</a></li>
@@ -73,12 +68,17 @@
     <nav class="subnav" aria-label="Secciones de Faldetas">
       <div class="container"><ul><li><a href="#faldetas">Faldetas</a></li><li><a href="#caramelo">Caramelo</a></li><li><a href="#fieltro">Fieltro</a></li><li><a href="#goma">Goma</a></li><li><a href="#piezas-de-goma">Piezas de Goma</a></li><li><a href="#tacos">Tacos</a></li></ul></div>
     </nav>
-    <section class="product" id="faldetas">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">01</span>
-          <h2>Faldetas</h2>
+    <details class="product" id="faldetas" open>
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">01</span>
+            <h2>Faldetas</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body">
           <div class="product__text">
 <p>Con varios fabricantes de bandas europeos hemos confeccionado una nueva generación de gomas para las faldetas de los vibradores.</p>
@@ -96,13 +96,18 @@
           <tbody><tr><th scope="row">2+1</th><td>2</td><td>6 mm</td></tr><tr><th scope="row">3+1,5</th><td>3</td><td>8 mm</td></tr><tr><th scope="row">4+2</th><td>4</td><td>10 mm</td></tr><tr><th scope="row">6+2</th><td>4</td><td>12/13 mm</td></tr><tr><th scope="row">8+3</th><td>4</td><td>14/15 mm</td></tr></tbody>
         </table></div><p class="note">Se pueden fabricar en otros espesores. Tolerancias ± 1 mm.</p></div>
       </div>
-    </section>
-    <section class="product" id="caramelo">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">02</span>
-          <h2>Caramelo</h2>
+    </details>
+    <details class="product" id="caramelo">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">02</span>
+            <h2>Caramelo</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/faldetas/caramelo-01.jpg" data-gallery="caramelo"><img src="/assets/img/productos/faldetas/thumbs/caramelo-01.jpg" alt="Caramelo — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -120,13 +125,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Caramelo">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="fieltro">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">03</span>
-          <h2>Fieltro</h2>
+    </details>
+    <details class="product" id="fieltro">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">03</span>
+            <h2>Fieltro</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/faldetas/fieltro-01.jpg" data-gallery="fieltro"><img src="/assets/img/productos/faldetas/thumbs/fieltro-01.jpg" alt="Fieltro — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -146,13 +156,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Fieltro">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="goma">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">04</span>
-          <h2>Goma</h2>
+    </details>
+    <details class="product" id="goma">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">04</span>
+            <h2>Goma</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/faldetas/goma-01.jpg" data-gallery="goma"><img src="/assets/img/productos/faldetas/thumbs/goma-01.jpg" alt="Goma — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -174,13 +189,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Goma">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="piezas-de-goma">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">05</span>
-          <h2>Piezas de Goma</h2>
+    </details>
+    <details class="product" id="piezas-de-goma">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">05</span>
+            <h2>Piezas de Goma</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/faldetas/piezas-de-goma-01.jpg" data-gallery="piezas-de-goma"><img src="/assets/img/productos/faldetas/thumbs/piezas-de-goma-01.jpg" alt="Piezas de Goma — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -198,13 +218,18 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Piezas de Goma">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
-    <section class="product" id="tacos">
-      <div class="container">
-        <div class="product__head">
-          <span class="product__num">06</span>
-          <h2>Tacos</h2>
+    </details>
+    <details class="product" id="tacos">
+      <summary class="product__summary">
+        <div class="container">
+          <div class="product__head">
+            <span class="product__num">06</span>
+            <h2>Tacos</h2>
+            <span class="product__toggle" aria-hidden="true"></span>
+          </div>
         </div>
+      </summary>
+      <div class="container">
         <div class="product__body product__body--full">
           <div class="gallery">
 <a href="/assets/img/productos/faldetas/tacos-01.jpg" data-gallery="tacos"><img src="/assets/img/productos/faldetas/thumbs/tacos-01.jpg" alt="Tacos — imagen 1" width="480" height="360" loading="lazy" decoding="async"></a>
@@ -224,7 +249,7 @@
           <p><a class="btn btn--outline" href="mailto:info@crmsl.es?subject=Consulta: Tacos">Consultar disponibilidad</a></p>
         </div>
       </div>
-    </section>
+    </details>
     <section class="band">
       <div class="container">
         <div>
