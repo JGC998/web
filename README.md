@@ -78,6 +78,7 @@ Para usar el dominio propio: en el Worker, **Settings → Domains & Routes → A
   Los enlaces que comparten el mismo `data-gallery` forman una galería navegable.
 - **Colores y fuentes:** variables en `assets/css/base.css` (`--green`, `--ink`, etc.).
 - **Menú y pie:** se repiten en cada página. Si se cambian, hay que cambiarlos en todos los `.html`.
+- **Caché de CSS y JS:** `_headers` hace que el navegador compruebe en cada visita si los CSS/JS han cambiado, así que los cambios se ven al momento. Los enlaces llevan una versión (`base.css?v=20261014`); si algún día se vuelve a cachear de forma larga, hay que subir ese número en todas las páginas al cambiar el CSS o el JS.
 
 ## Pendiente / notas
 

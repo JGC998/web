@@ -1,4 +1,4 @@
-# Cabeceras HTTP para Cloudflare Pages
+# Cabeceras HTTP para Cloudflare (Workers con contenido estático)
 
 /*
   X-Content-Type-Options: nosniff
@@ -6,11 +6,16 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
+# Las fotos casi nunca cambian: el navegador las guarda 30 días
 /assets/img/*
   Cache-Control: public, max-age=2592000
 
+# CSS y JS: el navegador los guarda, pero pregunta en cada visita si han
+# cambiado (si no, el servidor responde "304" sin volver a enviarlos).
+# Así un cambio de diseño se ve al momento y nunca se mezcla HTML nuevo
+# con estilos antiguos.
 /assets/css/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: no-cache
 
 /assets/js/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: no-cache
