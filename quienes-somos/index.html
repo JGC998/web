@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Quiénes somos | CRM Componentes</title>
   <meta name="description" content="CRM S.L. es una empresa familiar fundada en 1994 en La Rambla (Córdoba), especializada en componentes para elevación y transporte de materiales.">
-  <meta name="theme-color" content="#2e9233">
+  <meta name="theme-color" content="#ffffff">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_ES">
   <meta property="og:site_name" content="CRM Componentes">
@@ -15,7 +15,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Manrope:wght@700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="/assets/css/base.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
   <link rel="stylesheet" href="/assets/css/components.css">
@@ -24,16 +24,6 @@
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-  <div class="topbar">
-    <div class="container">
-      <span class="topbar__address"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg> P.I. Los Alfares, C/ La Jarra 41 · La Rambla (Córdoba)</span>
-      <div class="topbar__contact">
-        <a href="tel:+34957682819"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg> +34 957 682 819</a>
-        <a href="mailto:info@crmsl.es"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5z"/></svg> info@crmsl.es</a>
-      </div>
-    </div>
-  </div>
-
   <header class="site-header">
     <div class="container">
       <a class="brand" href="/" aria-label="CRM Componentes — Inicio">
@@ -41,15 +31,15 @@
       </a>
       <nav class="nav" id="menu" aria-label="Principal">
         <ul class="nav__list">
-          <li><a class="nav__link" href="/">Inicio</a></li>
-          <li><a class="nav__link" href="/quienes-somos/" aria-current="page">Quiénes somos</a></li>
-          <li><a class="nav__link" href="/productos/">Productos</a></li>
-          <li><a class="nav__link" href="/catalogos/">Catálogos</a></li>
-          <li><a class="nav__link" href="/noticias/">Noticias</a></li>
-          <li><a class="nav__link" href="/contacto/">Contacto</a></li>
+          <li><a class="nav__link" href="/">Inicio</a></li><li><a class="nav__link" href="/productos/">Productos</a></li><li><a class="nav__link" href="/catalogos/">Catálogos</a></li><li><a class="nav__link" href="/quienes-somos/" aria-current="page">Quiénes somos</a></li><li><a class="nav__link" href="/noticias/">Noticias</a></li><li><a class="nav__link" href="/contacto/">Contacto</a></li>
         </ul>
+        <div class="nav__extra">
+          Atención al cliente
+          <a href="tel:+34957682819">+34 957 682 819</a>
+          <a href="mailto:info@crmsl.es">info@crmsl.es</a>
+        </div>
       </nav>
-      <a class="header-call" href="tel:+34957682819"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg> +34 957 682 819</a>
+      <a class="header-call" href="tel:+34957682819"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg> Llamar</a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
         <span class="nav-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
         <span class="nav-toggle__label" aria-hidden="true"></span>
@@ -58,101 +48,105 @@
   </header>
 
   <main id="contenido">
-    <section class="page-hero" style="background-image:url('/assets/img/quienes-somos/hero.jpg')">
+    <section class="page-intro">
       <div class="container">
-        <ul class="breadcrumb"><li><a href="/">Inicio</a></li><li aria-current="page">Quiénes somos</li></ul>
-        <h1>Quiénes somos</h1>
-        <ul class="slogans"><li>Pasado · Tecnología</li><li>Presente · Innovación</li><li>Futuro · Sostenible</li></ul>
+        <span class="eyebrow">Quiénes somos</span>
+        <h1>Una empresa familiar desde 1994.</h1>
+        <p class="lead">Pasado, tecnología. Presente, innovación. Futuro, sostenible.</p>
+        
       </div>
+      <div class="container container--wide page-media"><img src="/assets/img/quienes-somos/nave.jpg" alt="Nave de CRM en el P.I. Los Alfares, La Rambla" width="528" height="504"></div>
     </section>
 
-    <section class="section section--dark">
-      <div class="container split">
-        <div class="split__media"><img src="/assets/img/quienes-somos/nave.jpg" alt="Nave de CRM en La Rambla" width="528" height="504" loading="lazy" decoding="async"></div>
+    <section class="section">
+      <div class="container" style="max-width:820px">
         <div>
-          <span class="eyebrow">Profesionales</span>
-          <h2>Experiencia al servicio de profesionales</h2>
-          <p>Somos una empresa dedicada a profesionales, con una gran experiencia en todos nuestros productos. Además, contamos con el apoyo de los fabricantes: primeras marcas europeas que no tenían presencia en España y otras primeras marcas españolas.</p>
-          <p>Hemos recogido en estos años las recomendaciones y la experiencia de nuestros clientes para hoy dar unos productos adecuados a las necesidades del mercado, preparándonos con nuevos productos y técnicas para el futuro.</p>
-          <p>Estamos actualizando constantemente nuestra gama de productos, para que encuentre en cada momento el que más se adapte a su necesidad.</p>
-          <p>Nuestra situación geográfica es muy favorable para la distribución de materiales: estamos a 20 minutos de Córdoba, a una hora de Sevilla, Málaga, Granada y Jaén, y a 2 horas de Cádiz, Huelva y Ciudad Real. Todo ello por vías rápidas de comunicación.</p>
-          <a class="btn" href="/contacto/">Contáctanos</a>
+          <h2>Profesionales.</h2>
+          <p class="lead">Somos una empresa dedicada a profesionales, con el apoyo de primeras marcas europeas y españolas.</p>
+          <p>Hemos recogido en estos años las recomendaciones y la experiencia de nuestros clientes para dar productos adecuados a las necesidades del mercado, y actualizamos constantemente nuestra gama para que encuentre en cada momento el que mejor se adapta a su necesidad.</p>
+          <p>Estamos a 20 minutos de Córdoba, a una hora de Sevilla, Málaga, Granada y Jaén, y a 2 horas de Cádiz, Huelva y Ciudad Real. Todo por vías rápidas de comunicación.</p>
         </div>
       </div>
     </section>
 
-    <section class="section section--soft">
-      <div class="container">
-        <div class="section-head">
-          <span class="eyebrow">Nuestra historia</span>
-          <h2>Una aventura familiar</h2>
-          <p class="lead">Iniciamos una aventura familiar con un cambio radical en nuestras vidas que nos hizo dejar muchas cosas.</p>
+    <section class="section section--tile">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>Nuestra historia.</h2>
+          <p class="lead">Una aventura familiar que empezó con un cambio radical en nuestras vidas.</p>
         </div>
-        <ol class="timeline">
+        <ol class="years">
           <li>
-            <span class="timeline__year">1994</span>
+            <span class="years__num">1994</span>
             <h3>Fundamos CRM S.L.</h3>
-            <p>Con la ilusión de hacer algo diferente y, a la vez, con la seguridad de tener la experiencia de muchos años en el sector. Los primeros años fueron duros, pero a medida que fuimos avanzando en el tiempo, y con mucho sacrificio, empezamos a ver la mejora y a hacer inversiones.</p>
+            <p>Con la ilusión de hacer algo diferente y la experiencia de muchos años en el sector. Los primeros años fueron duros, pero con mucho sacrificio empezamos a crecer e invertir.</p>
           </li>
           <li>
-            <span class="timeline__year">1999</span>
-            <h3>Nueva nave de 500 m² en el polígono</h3>
-            <p>A partir del año 2000 empezamos a crecer y a tener clientes en todo el país. Como consecuencia, en 2002 tuvimos que adquirir una nueva parcela en el polígono.</p>
+            <span class="years__num">1999</span>
+            <h3>Nueva nave de 500 m².</h3>
+            <p>Desde el año 2000 empezamos a tener clientes en todo el país, y en 2002 adquirimos una nueva parcela en el polígono.</p>
           </li>
           <li>
-            <span class="timeline__year">2005</span>
-            <h3>Ampliamos la nave con otros 500 m²</h3>
-            <p>Para poder almacenar nuevos productos y albergar nuevas máquinas con las que ser más competitivos. Hemos llegado hasta aquí gracias a la familia, clientes y proveedores. <strong>¡Gracias!</strong></p>
+            <span class="years__num">2005</span>
+            <h3>Otros 500 m² más.</h3>
+            <p>Ampliamos la nave para almacenar nuevos productos y albergar nuevas máquinas con las que ser más competitivos.</p>
           </li>
         </ol>
       </div>
     </section>
-    <section class="band">
+
+    <section class="section section--dark">
       <div class="container">
-        <div>
-          <h2>¿Necesitas asesoramiento o un presupuesto?</h2>
-          <p>Nuestro equipo te ayuda a elegir el producto adecuado para tu instalación.</p>
-        </div>
-        <div class="btn-row">
-          <a class="btn btn--ghost" href="tel:+34957682819"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg> +34 957 682 819</a>
-          <a class="btn btn--ghost" href="mailto:info@crmsl.es"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5z"/></svg> Escríbenos</a>
+        <p class="statement">Hemos llegado hasta aquí gracias a la familia, clientes y proveedores. <span>Gracias.</span></p>
+      </div>
+    </section>
+
+    <section class="section section--tile center">
+      <div class="container">
+        <h2>¿Hablamos?</h2>
+        <p class="lead" style="max-width:600px;margin:0 auto 28px">Te ayudamos a elegir el producto adecuado para tu instalación.</p>
+        <div class="actions">
+          <a class="btn" href="tel:+34957682819"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg> +34 957 682 819</a>
+          <a class="more" href="mailto:info@crmsl.es">Escríbenos</a>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container footer__grid">
-      <div>
-        <a class="footer__logo" href="/"><img src="/assets/img/brand/logo-crm.png" alt="CRM" width="500" height="173" loading="lazy"></a>
-        <p>Puedes visitarnos en nuestra oficina y sede principal en:</p>
-        <address style="font-style:normal">Polígono Industrial Los Alfares<br>Calle La Jarra 41<br>14540 La Rambla (Córdoba) España</address>
+    <div class="container">
+      <p class="footer__lead">¿Necesitas ayuda? Llámanos al <a href="tel:+34957682819"><strong>+34 957 682 819</strong></a> o escríbenos a <a href="mailto:info@crmsl.es"><strong>info@crmsl.es</strong></a>.</p>
+      <div class="footer__grid">
+        <div>
+          <h2>Productos</h2>
+          <ul class="footer__links">
+            <li><a href="/productos/elevacion/">Elevación</a></li><li><a href="/productos/bandas-transportadoras/">Bandas transportadoras</a></li><li><a href="/productos/faldetas/">Faldetas</a></li><li><a href="/productos/bandas-pvc/">Bandas PVC</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Empresa</h2>
+          <ul class="footer__links">
+            <li><a href="/quienes-somos/">Quiénes somos</a></li>
+            <li><a href="/catalogos/">Catálogos</a></li>
+            <li><a href="/noticias/">Noticias</a></li>
+            <li><a href="/contacto/">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Legal</h2>
+          <ul class="footer__links">
+            <li><a href="/legal/aviso-legal/">Aviso legal</a></li>
+            <li><a href="/legal/politica-de-privacidad/">Privacidad</a></li>
+            <li><a href="/legal/politica-de-cookies/">Cookies</a></li>
+            <li><a href="/legal/politica-de-redes-sociales/">Redes sociales</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Visítanos</h2>
+          <p style="margin:0">P.I. Los Alfares<br>Calle La Jarra 41<br>14540 La Rambla (Córdoba)</p>
+        </div>
       </div>
-      <div>
-        <h2>Productos</h2>
-        <ul class="footer__links">
-          <li><a href="/productos/elevacion/">Elevación</a></li><li><a href="/productos/bandas-transportadoras/">Bandas transportadoras</a></li><li><a href="/productos/faldetas/">Faldetas</a></li><li><a href="/productos/bandas-pvc/">Bandas PVC</a></li>
-          <li><a href="/catalogos/">Catálogos</a></li>
-        </ul>
-      </div>
-      <div>
-        <h2>Legal</h2>
-        <ul class="footer__links">
-          <li><a href="/legal/politica-de-privacidad/">Política de privacidad</a></li>
-          <li><a href="/legal/politica-de-cookies/">Política de cookies</a></li>
-          <li><a href="/legal/aviso-legal/">Aviso legal</a></li>
-          <li><a href="/legal/politica-de-redes-sociales/">Política de redes sociales</a></li>
-        </ul>
-      </div>
-      <div>
-        <h2>Contacto rápido</h2>
-        <p>Llama a nuestro teléfono de atención al cliente en horario comercial o escríbenos:</p>
-        <a class="footer__phone" href="tel:+34957682819">+34 957 682 819</a>
-        <a href="mailto:info@crmsl.es">info@crmsl.es</a>
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <div class="container">
+      <div class="footer__bottom">
         <span>© <span data-year>2026</span> Comercial de Recambios Montemayor, S.L.</span>
         <span>CIF B14392799</span>
       </div>
