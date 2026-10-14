@@ -117,6 +117,27 @@
     });
   });
 
+  /* ---------- Acordeones de producto: abrir la sección enlazada ----------
+     Si un enlace (#tacos, chips de la sub-navegación, URLs antiguas
+     redirigidas…) apunta a un <details> cerrado, se abre antes de saltar. */
+  var openFromHash = function (hash) {
+    if (!hash || hash.length < 2) return;
+    var target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    var details = target && target.closest("details");
+    if (details && !details.open) details.open = true;
+  };
+
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest('a[href*="#"]');
+    if (link && link.pathname === location.pathname) openFromHash(link.hash);
+  });
+  window.addEventListener("hashchange", function () { openFromHash(location.hash); });
+  if (location.hash) {
+    openFromHash(location.hash);
+    var landed = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (landed) landed.scrollIntoView();
+  }
+
   /* ---------- Sub-navegación: resalta la sección visible ---------- */
   var subnav = document.querySelector(".subnav");
   if (subnav && "IntersectionObserver" in window) {
