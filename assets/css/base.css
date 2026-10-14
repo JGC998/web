@@ -1,21 +1,23 @@
 /* =========================================================
    BASE — variables, reset y tipografía
-   Estilo sobrio inspirado en webs de producto tipo Apple:
-   mucho espacio, títulos grandes, un mensaje por bloque.
+   Diseño tipográfico y con iconos: títulos grandes, mucho
+   espacio y un único mensaje por bloque.
    ========================================================= */
 
 :root {
   /* Colores */
-  --text: #1d1d1f;           /* casi negro */
-  --muted: #6e6e73;          /* gris de texto secundario */
+  --text: #1d1d1f;
+  --muted: #6e6e73;
   --line: #d2d2d7;
   --bg: #ffffff;
-  --tile: #f5f5f7;           /* gris claro de las tarjetas */
+  --tile: #f5f5f7;
+  --tile-hover: #ececf0;
   --dark: #000000;
   --dark-tile: #1d1d1f;
-  --green: #1f7a2e;          /* verde CRM para enlaces y botones (contraste AA) */
+  --green: #1f7a2e;          /* verde CRM para textos, enlaces y botones */
   --green-hover: #17611f;
   --green-bright: #2e9233;   /* verde del logo */
+  --green-soft: #e9f5ea;     /* fondo de los iconos */
   --green-on-dark: #6fcf78;
 
   /* Tipografía: la del sistema (San Francisco en Apple) y si no, Inter */
@@ -24,7 +26,7 @@
 
   /* Medidas */
   --container: 1024px;
-  --container-wide: 1260px;
+  --container-wide: 1200px;
   --gutter: clamp(20px, 5vw, 44px);
   --radius: 18px;
   --radius-lg: 28px;
@@ -52,7 +54,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--nav-h) + 24px);
+  scroll-padding-top: calc(var(--nav-h) + 64px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -71,7 +73,7 @@ body {
   margin: 0;
   padding-bottom: var(--callbar-h);
   font-family: var(--font);
-  font-size: 1.125rem;           /* 18 px */
+  font-size: 1.125rem;            /* 18 px */
   line-height: 1.55;
   letter-spacing: -0.01em;
   color: var(--text);
@@ -80,10 +82,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
+img,
+svg {
   display: block;
+  max-width: 100%;
 }
 
 a {
@@ -103,19 +105,19 @@ h4 {
   margin: 0 0 0.4em;
   font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
+  line-height: 1.07;
+  letter-spacing: -0.028em;
   color: var(--text);
 }
 
 h1 {
-  font-size: clamp(2.6rem, 7vw, 5rem);
-  letter-spacing: -0.035em;
+  font-size: clamp(2.7rem, 7.5vw, 5.5rem);
+  letter-spacing: -0.04em;
 }
 
 h2 {
-  font-size: clamp(2rem, 4.6vw, 3.5rem);
-  letter-spacing: -0.03em;
+  font-size: clamp(2rem, 4.8vw, 3.5rem);
+  letter-spacing: -0.035em;
 }
 
 h3 {
@@ -126,7 +128,6 @@ h3 {
 h4 {
   font-size: 1.2rem;
   line-height: 1.25;
-  letter-spacing: -0.015em;
 }
 
 p,
@@ -140,14 +141,26 @@ table {
   width: 100%;
 }
 
+button {
+  font: inherit;
+}
+
 :focus-visible {
   outline: 3px solid var(--green-bright);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 ::selection {
-  background: #dcefdd;
+  background: #d6ecd8;
+}
+
+/* Texto con degradado verde para destacar palabras clave */
+.gradient {
+  background: linear-gradient(100deg, #1f7a2e 0%, #2e9233 45%, #5bbf63 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .visually-hidden {
