@@ -11,5 +11,8 @@
     "directory": ".",
     // Sirve 404.html cuando una página no existe
     "not_found_handling": "404-page"
-  }
+  },
+  // Necesario para las vistas previas de ramas (Cloudflare ejecuta "npx wrangler preview"
+  // en las ramas que no son main). Puede ir vacío.
+  "previews": {}
 }
