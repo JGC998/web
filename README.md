@@ -40,9 +40,7 @@ Para probar cambios grandes sin tocar la web publicada, crea una rama a partir d
 │   └── img/
 │       ├── brand/                # Logo
 │       ├── productos/<categoria>/ # Fotos de producto (se ven con el botón "Ver fotos")
-│       ├── noticias/             # Fotos de las noticias
-│       └── inicio/               # Solo la usan los prototipos de /nuevo-diseno/
-├── nuevo-diseno/ + css/          # Prototipos de diseño antiguos (pendiente de borrar)
+│       └── noticias/             # Fotos de las noticias
 ├── favicon.svg
 ├── _redirects                    # Redirecciones 301 de las URLs antiguas de WordPress
 ├── _headers                      # Cabeceras HTTP (seguridad y caché)
@@ -99,7 +97,6 @@ Archivos de configuración:
 
 ## Pendiente / notas
 
-- **Prototipos:** `/nuevo-diseno/`, la carpeta `css/` de la raíz, `assets/js/formats.js`, `assets/js/theme-switcher.js` y `assets/img/inicio/` son de pruebas de diseño anteriores. No los enlaza ninguna página y Google no los indexa, pero conviene borrarlos.
 - **Catálogos PDF:** la web antigua no tenía los PDF. Ahora cada catálogo se pide por email. Cuando estén los PDF, se ponen en `assets/docs/` y se cambia el enlace.
 - **Formulario de contacto:** no hay (necesitaba WordPress). El contacto es por teléfono y email.
 - **Mapa:** solo se carga al pulsar "Mostrar mapa", así Google no pone cookies sin permiso. La web no usa cookies propias.
