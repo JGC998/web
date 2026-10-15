@@ -39,8 +39,8 @@ Para probar cambios grandes sin tocar la web publicada, crea una rama a partir d
 │   │   └── main.js               # Menú móvil, visor de fotos, mapa y acordeones
 │   └── img/
 │       ├── brand/                # Logo
-│       ├── productos/<categoria>/ # Fotos de producto (se ven con el botón "Ver fotos")
-│       └── noticias/             # Fotos de las noticias
+│       └── productos/<categoria>/<familia>/   # Fotos del carrusel de cada familia
+├── fotos-antiguas/               # Fotos de la web anterior, pendientes de retocar (NO se publican)
 ├── favicon.svg
 ├── _redirects                    # Redirecciones 301 de las URLs antiguas de WordPress
 ├── _headers                      # Cabeceras HTTP (seguridad y caché)
@@ -84,15 +84,8 @@ Archivos de configuración:
   <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg>
   ```
   Para usar un icono que ya existe en otra página, copia su `<svg>…</svg>`. Dentro de un recuadro verde: `<span class="badge-icon">…</span>`.
-- **Fotos de una sección de producto:** van como enlaces ocultos y se abren con un botón:
-  ```html
-  <button class="btn btn--quiet" type="button" data-open-gallery="faldetas-goma">Ver fotos (16)</button>
-  <div hidden>
-    <a href="/assets/img/productos/faldetas/goma-01.jpg" data-gallery="faldetas-goma" data-alt="Goma — foto 1"></a>
-    …
-  </div>
-  ```
-  Para añadir una foto: guárdala en `assets/img/productos/<categoria>/`, añade otro `<a>` con el mismo `data-gallery` y actualiza el número del botón.
+- **Fotos de producto (carrusel):** cada familia muestra un carrusel con las fotos de su carpeta, por ejemplo `assets/img/productos/elevacion/cangilones/`. Las fotos se procesan antes (máx. 1600 px, JPG optimizado) y se nombran `01.jpg`, `02.jpg`… en el orden en que deben salir. Al añadirlas hay que regenerar la página de esa categoría para que el carrusel aparezca. Si una familia no tiene fotos, no se muestra carrusel.
+- **Fotos antiguas:** están en `fotos-antiguas/` (mismos nombres que tenían). No se usan ni se publican; sirven para retocarlas y volver a subirlas.
 - **Caché de CSS y JS:** `_headers` hace que el navegador compruebe en cada visita si han cambiado, así que los cambios se ven al momento. Los enlaces llevan una versión (`base.css?v=20261015`); si algún día se vuelve a cachear durante más tiempo, hay que subir ese número en todas las páginas al cambiar el CSS o el JS.
 
 ## Pendiente / notas

@@ -506,7 +506,7 @@
   gap: 4px;
 }
 
-.nav__chevron {
+.icon.nav__chevron {
   width: 11px;
   height: 11px;
   stroke-width: 2.4;
@@ -650,7 +650,7 @@
     justify-content: space-between;
   }
 
-  .nav__chevron {
+  .icon.nav__chevron {
     width: 20px;
     height: 20px;
     stroke-width: 2;

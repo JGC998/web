@@ -193,6 +193,95 @@
     });
   }
 
+  /* ---------- Carrusel de fotos de cada familia ----------
+     <div data-carousel>
+       <div class="carousel__track"> <a class="carousel__slide">…</a> … </div>
+       <button data-carousel-prev> <div class="carousel__dots"> <button data-carousel-next>
+     </div>
+     Pasa solo cada 4,5 s mientras está a la vista; se detiene al tocarlo,
+     al pasar el ratón por encima o si el sistema pide reducir animaciones. */
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll("[data-carousel]").forEach(function (carousel) {
+    var track = carousel.querySelector(".carousel__track");
+    var slides = Array.prototype.slice.call(track.children);
+    var dotsBox = carousel.querySelector(".carousel__dots");
+    if (slides.length < 2) return;
+
+    var current = 0;
+    var timer = null;
+    var visible = false;
+    var paused = false;
+    var stopped = false; // el usuario ha interactuado: ya no pasa solo
+
+    var dots = slides.map(function (_, i) {
+      var dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "carousel__dot";
+      dot.tabIndex = -1;
+      dot.addEventListener("click", function () { stop(); goTo(i); });
+      dotsBox.appendChild(dot);
+      return dot;
+    });
+    if (slides.length > 8) dotsBox.classList.add("carousel__dots--many");
+
+    var mark = function (i) {
+      current = i;
+      dots.forEach(function (d, k) { d.classList.toggle("is-active", k === i); });
+    };
+
+    var goTo = function (i) {
+      i = (i + slides.length) % slides.length;
+      var delta = slides[i].getBoundingClientRect().left - track.getBoundingClientRect().left;
+      track.scrollTo({ left: track.scrollLeft + delta, behavior: reduceMotion ? "auto" : "smooth" });
+      mark(i);
+    };
+
+    // Al deslizar con el dedo, actualizar el punto activo
+    var scrollTimer = null;
+    track.addEventListener("scroll", function () {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function () {
+        var width = slides[0].getBoundingClientRect().width || 1;
+        mark(Math.round(track.scrollLeft / (width + 12)));
+      }, 80);
+    }, { passive: true });
+
+    var tick = function () {
+      clearInterval(timer);
+      timer = null;
+      var open = !carousel.closest("details") || carousel.closest("details").open;
+      if (!reduceMotion && !stopped && !paused && visible && open) {
+        timer = setInterval(function () { goTo(current + 1); }, 4500);
+      }
+    };
+
+    var stop = function () { stopped = true; tick(); };
+
+    carousel.querySelector("[data-carousel-prev]").addEventListener("click", function () { stop(); goTo(current - 1); });
+    carousel.querySelector("[data-carousel-next]").addEventListener("click", function () { stop(); goTo(current + 1); });
+    track.addEventListener("pointerdown", stop);
+    carousel.addEventListener("mouseenter", function () { paused = true; tick(); });
+    carousel.addEventListener("mouseleave", function () { paused = false; tick(); });
+    carousel.addEventListener("focusin", function () { paused = true; tick(); });
+    carousel.addEventListener("focusout", function () { paused = false; tick(); });
+
+    var details = carousel.closest("details");
+    if (details) details.addEventListener("toggle", tick);
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        tick();
+      }, { threshold: 0.3 }).observe(carousel);
+    } else {
+      visible = true;
+    }
+
+    mark(0);
+    tick();
+  });
+
   /* ---------- Mapa: solo se carga al pulsar (sin cookies de Google hasta entonces) ---------- */
   document.querySelectorAll("[data-map-src]").forEach(function (map) {
     map.querySelector("button").addEventListener("click", function () {
