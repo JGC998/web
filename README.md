@@ -93,7 +93,7 @@ Archivos de configuración:
   </div>
   ```
   Para añadir una foto: guárdala en `assets/img/productos/<categoria>/`, añade otro `<a>` con el mismo `data-gallery` y actualiza el número del botón.
-- **Caché de CSS y JS:** `_headers` hace que el navegador compruebe en cada visita si han cambiado, así que los cambios se ven al momento. Los enlaces llevan una versión (`base.css?v=20261014`); si algún día se vuelve a cachear durante más tiempo, hay que subir ese número en todas las páginas al cambiar el CSS o el JS.
+- **Caché de CSS y JS:** `_headers` hace que el navegador compruebe en cada visita si han cambiado, así que los cambios se ven al momento. Los enlaces llevan una versión (`base.css?v=20261015`); si algún día se vuelve a cachear durante más tiempo, hay que subir ese número en todas las páginas al cambiar el CSS o el JS.
 
 ## Pendiente / notas
 

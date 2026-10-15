@@ -12,22 +12,110 @@
     el.textContent = new Date().getFullYear();
   });
 
-  /* ---------- Menú móvil ---------- */
+  var mobile = window.matchMedia("(max-width: 900px)");
+  var nav = document.getElementById("menu");
+
+  /* ---------- Menú de productos en escritorio (panel desplegable) ---------- */
+  var megaItem = document.querySelector(".nav__item--mega");
+  var megaLink = megaItem && megaItem.querySelector(".nav__link--mega");
+  var megaTimer = null;
+  var lastPointer = "mouse";
+
+  var openMega = function () {
+    if (!megaItem || mobile.matches) return;
+    clearTimeout(megaTimer);
+    megaItem.classList.add("is-open");
+    document.body.classList.add("mega-open");
+    megaLink.setAttribute("aria-expanded", "true");
+  };
+
+  var closeMega = function () {
+    if (!megaItem) return;
+    clearTimeout(megaTimer);
+    megaItem.classList.remove("is-open");
+    document.body.classList.remove("mega-open");
+    megaLink.setAttribute("aria-expanded", "false");
+  };
+
+  if (megaItem) {
+    document.addEventListener("pointerdown", function (e) { lastPointer = e.pointerType; }, true);
+    megaItem.addEventListener("mouseenter", openMega);
+    megaItem.addEventListener("mouseleave", function () {
+      megaTimer = setTimeout(closeMega, 180);
+    });
+    megaItem.addEventListener("focusin", openMega);
+    megaItem.addEventListener("focusout", function (e) {
+      if (!megaItem.contains(e.relatedTarget)) closeMega();
+    });
+    // En tablet (sin ratón) el primer toque abre el panel y el segundo navega
+    megaLink.addEventListener("click", function (e) {
+      if (!mobile.matches && lastPointer === "touch" && !megaItem.classList.contains("is-open")) {
+        e.preventDefault();
+        openMega();
+      }
+    });
+    document.querySelector(".nav-scrim").addEventListener("click", closeMega);
+  }
+
+  /* ---------- Menú móvil (con niveles: Menú › Productos › Categoría) ---------- */
   var toggle = document.querySelector(".nav-toggle");
+
+  var resetDrill = function () {
+    if (!nav) return;
+    nav.querySelectorAll(".mega.is-open, .mega__sub.is-open").forEach(function (panel) {
+      panel.classList.remove("is-open");
+    });
+  };
+
   var closeMenu = function () {
     document.body.classList.remove("nav-open");
     if (toggle) toggle.setAttribute("aria-expanded", "false");
+    resetDrill();
   };
 
   if (toggle) {
     toggle.addEventListener("click", function () {
       var open = document.body.classList.toggle("nav-open");
       toggle.setAttribute("aria-expanded", String(open));
+      if (!open) resetDrill();
     });
   }
 
+  if (nav) {
+    nav.addEventListener("click", function (e) {
+      if (!mobile.matches) return;
+      var back = e.target.closest("[data-drill-back]");
+      if (back) {
+        back.closest(".mega__sub, .mega").classList.remove("is-open");
+        return;
+      }
+      var drill = e.target.closest("[data-drill]");
+      if (drill) {
+        var panel = document.getElementById(drill.getAttribute("data-drill"));
+        if (!panel) return;
+        e.preventDefault();
+        nav.scrollTop = 0;
+        var parent = drill.closest(".mega");
+        if (parent) parent.scrollTop = 0;
+        panel.classList.add("is-open");
+      }
+    });
+  }
+
+  // Al pasar de móvil a escritorio (o al revés) se cierra todo
+  var onResize = function () {
+    closeMenu();
+    closeMega();
+  };
+  if (mobile.addEventListener) mobile.addEventListener("change", onResize);
+
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeMenu();
+    if (e.key !== "Escape") return;
+    if (megaItem && megaItem.classList.contains("is-open")) {
+      closeMega();
+      megaLink.focus();
+    }
+    closeMenu();
   });
 
   /* ---------- Visor de fotos ----------
@@ -135,6 +223,7 @@
     if (link && link.pathname === location.pathname) {
       openFromHash(link.hash);
       closeMenu();
+      closeMega();
     }
   });
   window.addEventListener("hashchange", function () { openFromHash(location.hash); });
