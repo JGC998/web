@@ -60,8 +60,7 @@
   stroke-width: 1.6;
 }
 
-.section--dark .badge-icon,
-.tile--dark .badge-icon {
+.section--dark .badge-icon {
   background: rgba(111, 207, 120, 0.12);
   color: var(--green-on-dark);
 }
@@ -138,8 +137,7 @@
   transform: translateY(-1px);
 }
 
-.section--dark .more,
-.tile--dark .more {
+.section--dark .more {
   color: var(--green-on-dark);
 }
 
@@ -172,47 +170,6 @@
 .hero .lead {
   max-width: 640px;
   margin: 0 auto 32px;
-}
-
-/* Fila de categorías con icono bajo el hero */
-.category-strip {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.category-strip a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding: 28px 12px 24px;
-  border-radius: var(--radius-lg);
-  color: var(--text);
-  font-size: 1.05rem;
-  font-weight: 600;
-  text-align: center;
-  transition: background 0.2s;
-}
-
-.category-strip a:hover {
-  background: var(--tile);
-  text-decoration: none;
-}
-
-@media (max-width: 760px) {
-  .category-strip {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .category-strip a {
-    padding: 20px 8px;
-    background: var(--tile);
-  }
 }
 
 /* ---------- Cifras clave ---------- */
@@ -262,65 +219,6 @@
 @media (max-width: 760px) {
   .facts {
     grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* ---------- Tarjetas grandes (tiles) ---------- */
-
-.tiles {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: clamp(44px, 6vw, 72px) clamp(24px, 4vw, 48px);
-  border-radius: var(--radius-lg);
-  background: var(--tile);
-  text-align: center;
-}
-
-.tile .badge-icon {
-  margin-bottom: 28px;
-}
-
-.tile h3 {
-  margin-bottom: 10px;
-  font-size: clamp(1.9rem, 3.6vw, 2.6rem);
-  letter-spacing: -0.035em;
-}
-
-.tile p {
-  max-width: 400px;
-  margin: 0 auto 20px;
-  font-size: 1.15rem;
-  color: var(--muted);
-}
-
-.tile .actions {
-  gap: 10px 24px;
-  margin-top: auto;
-}
-
-.tile--dark {
-  background: var(--dark-tile);
-}
-
-.tile--dark h3 {
-  color: #f5f5f7;
-}
-
-.tile--dark p {
-  color: #a1a1a6;
-}
-
-@media (max-width: 760px) {
-  .tiles {
-    grid-template-columns: 1fr;
-    gap: 12px;
   }
 }
 
@@ -1129,4 +1027,237 @@ a.contact-tile:hover {
   .carousel__dots--many {
     display: none;
   }
+}
+
+/* ---------- Tarjetas de categoría (portada y /productos/) ----------
+   Iguales y compactas: icono, nombre, frase y familias visibles. */
+
+.catcards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.catcard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 30px 26px 28px;
+  border-radius: var(--radius-lg);
+  background: var(--tile);
+}
+
+.catcard .badge-icon {
+  margin-bottom: 14px;
+}
+
+.catcard h3 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.catcard h3 a {
+  color: var(--text);
+}
+
+.catcard h3 a:hover {
+  color: var(--green);
+  text-decoration: none;
+}
+
+.catcard > p {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.catcard__list {
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.catcard__list a {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.98rem;
+  color: var(--text);
+}
+
+.catcard__list a::after {
+  content: "›";
+  color: var(--muted);
+}
+
+.catcard__list a:hover {
+  color: var(--green);
+  text-decoration: none;
+}
+
+.catcard__list .catcard__rest {
+  color: var(--muted);
+}
+
+.catcard .more {
+  margin-top: auto;
+}
+
+@media (max-width: 1000px) {
+  .catcards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .catcards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* ---------- Hero con foto de fondo (portada) ---------- */
+
+.hero--photo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: min(88vh, 780px);
+  padding-block: clamp(96px, 14vw, 160px);
+  color: #fff;
+  background: #1d2a1f var(--hero-img) center 65% / cover no-repeat;
+  isolation: isolate;
+}
+
+.hero--photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.32) 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.hero--photo > .container {
+  width: 100%;
+}
+
+.hero--photo h1 {
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.25);
+}
+
+.hero--photo .gradient {
+  background-image: linear-gradient(100deg, #a6efae 0%, #6fcf78 100%);
+}
+
+.hero--photo .eyebrow {
+  color: #a6efae;
+}
+
+.hero--photo .lead {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero--photo .more {
+  color: #fff;
+}
+
+/* ---------- Franja con vídeo de fondo ---------- */
+
+.video-band {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: min(76vh, 680px);
+  padding-block: clamp(80px, 12vw, 140px);
+  overflow: hidden;
+  background: #111;
+  color: #fff;
+  text-align: center;
+  isolation: isolate;
+}
+
+.video-band__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.video-band__content {
+  width: 100%;
+  max-width: 820px;
+}
+
+.video-band h2 {
+  color: #fff;
+}
+
+.video-band .eyebrow {
+  color: #a6efae;
+}
+
+.video-band .lead {
+  max-width: 620px;
+  margin: 0 auto 28px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.video-band .more {
+  color: #fff;
+}
+
+.btn--light {
+  border-color: #fff;
+  background: #fff;
+  color: var(--text);
+}
+
+.btn--light:hover {
+  border-color: #e8e8ed;
+  background: #e8e8ed;
+  color: var(--text);
+}
+
+/* ---------- Foto grande bajo la cabecera de página ---------- */
+
+.page-photo img {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 760px) {
+  .page-photo img {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.page-photo + .section {
+  padding-top: clamp(56px, 8vw, 96px);
+}
+
+/* Años de la historia sobre fondo blanco */
+.section:not(.section--tile) .years li {
+  background: var(--tile);
+}
+
+/* El carrusel de instalaciones va sobre fondo gris: diapositivas en blanco */
+.section--tile .carousel__slide,
+.section--tile .carousel__btn {
+  background: #fff;
 }

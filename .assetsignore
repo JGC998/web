@@ -12,3 +12,5 @@ node_modules
 fotos-antiguas
 # Fotos originales sin procesar que se vayan añadiendo
 fotos-nuevas
+# Fotos y vídeos originales del móvil
+web fotos

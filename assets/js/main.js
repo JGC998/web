@@ -282,6 +282,32 @@
     tick();
   });
 
+  /* ---------- Vídeos de fondo ----------
+     <video data-bg-video poster="foto.jpg"><source data-src="video.mp4"></video>
+     Solo se descargan si el usuario no pide reducir animaciones ni ahorrar
+     datos; si no, queda la imagen fija. Se pausan fuera de la pantalla. */
+  var saveData = navigator.connection && navigator.connection.saveData;
+  if (!reduceMotion && !saveData && "IntersectionObserver" in window) {
+    document.querySelectorAll("video[data-bg-video]").forEach(function (video) {
+      var loaded = false;
+      new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          if (!loaded) {
+            video.querySelectorAll("source[data-src]").forEach(function (source) {
+              source.src = source.getAttribute("data-src");
+            });
+            video.load();
+            loaded = true;
+          }
+          var playing = video.play();
+          if (playing && playing.catch) playing.catch(function () {});
+        } else if (loaded) {
+          video.pause();
+        }
+      }, { rootMargin: "200px 0px" }).observe(video);
+    });
+  }
+
   /* ---------- Mapa: solo se carga al pulsar (sin cookies de Google hasta entonces) ---------- */
   document.querySelectorAll("[data-map-src]").forEach(function (map) {
     map.querySelector("button").addEventListener("click", function () {
