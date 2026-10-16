@@ -1613,3 +1613,47 @@ a.contact-tile:hover {
     height: 64px;
   }
 }
+
+/* Información básica de protección de datos (primera capa, junto al formulario) */
+.quote__legal {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.quote__legal-title {
+  margin: 0 0 8px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.quote__legal dl {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 4px 12px;
+  margin: 0;
+}
+
+.quote__legal dt {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.quote__legal dd {
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .quote__legal dl {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .quote__legal dd {
+    margin-bottom: 8px;
+  }
+}

@@ -45,7 +45,7 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261016f"
+VERSION = "20261016g"
 # Estadísticas de visitas (Cloudflare Web Analytics: sin cookies). Vacío = desactivado.
 ANALITICA_TOKEN = "c9bd8190b2be4939ae6689fd3909c441"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
@@ -965,6 +965,17 @@ body += f"""
               <label>No rellenar <input name="web" tabindex="-1" autocomplete="off"></label>
             </div>
             <input type="hidden" name="t" value="">
+          </div>
+          <div class="quote__legal">
+            <p class="quote__legal-title">Información básica sobre protección de datos</p>
+            <dl>
+              <dt>Responsable</dt><dd>Comercial de Recambios Montemayor, S.L.</dd>
+              <dt>Finalidad</dt><dd>Atender tu solicitud y preparar el presupuesto.</dd>
+              <dt>Legitimación</dt><dd>Tu consentimiento y la aplicación de medidas precontractuales a petición tuya.</dd>
+              <dt>Destinatarios</dt><dd>No se ceden datos a terceros, salvo obligación legal. Cloudflare presta el alojamiento y el envío del formulario como encargado del tratamiento.</dd>
+              <dt>Derechos</dt><dd>Acceso, rectificación, supresión, oposición, limitación y portabilidad, escribiendo a <a href="mailto:{EMAIL}">{EMAIL}</a>.</dd>
+              <dt>Más información</dt><dd><a href="/legal/politica-de-privacidad/" target="_blank">Política de privacidad</a>.</dd>
+            </dl>
           </div>
           <div class="quote__send">
             <button class="btn" type="submit">Enviar solicitud</button>
