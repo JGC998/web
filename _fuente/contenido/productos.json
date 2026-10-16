@@ -1,0 +1,210 @@
+{
+  "categorias": [
+    {
+      "slug": "elevacion",
+      "nombre": "Elevación",
+      "icono": "elevator",
+      "intro": "Componentes para elevadores de cangilones.",
+      "corto": "Componentes para elevadores de cangilones.",
+      "familias": [
+        {
+          "slug": "bandas-elevadoras",
+          "nombre": "Bandas elevadoras",
+          "icono": "elevator"
+        },
+        {
+          "slug": "cangilones",
+          "nombre": "Cangilones",
+          "icono": "bucket"
+        },
+        {
+          "slug": "imanes",
+          "nombre": "Imanes",
+          "icono": "magnet"
+        },
+        {
+          "slug": "paneles-de-explosion",
+          "nombre": "Paneles de explosión",
+          "icono": "burst"
+        },
+        {
+          "slug": "sistemas-de-seguridad",
+          "nombre": "Sistemas de seguridad",
+          "icono": "shield"
+        },
+        {
+          "slug": "tornillos-y-grapas",
+          "nombre": "Tornillos y grapas",
+          "icono": "bolt"
+        },
+        {
+          "slug": "cadenas-transportadoras",
+          "nombre": "Cadenas transportadoras",
+          "icono": "chain"
+        }
+      ]
+    },
+    {
+      "slug": "bandas-transportadoras",
+      "nombre": "Bandas transportadoras",
+      "icono": "belt-incline",
+      "intro": "Disponemos de un amplio stock permanente para entrega inmediata.",
+      "corto": "Amplio stock permanente para entrega inmediata.",
+      "familias": [
+        {
+          "slug": "bandas-transportadoras",
+          "nombre": "Bandas transportadoras",
+          "icono": "belt-incline"
+        },
+        {
+          "slug": "estaciones",
+          "nombre": "Estaciones",
+          "icono": "idler"
+        },
+        {
+          "slug": "vulcanizados",
+          "nombre": "Vulcanizados",
+          "icono": "press"
+        },
+        {
+          "slug": "grapas",
+          "nombre": "Grapas",
+          "icono": "staple"
+        },
+        {
+          "slug": "limpiadores-de-bandas",
+          "nombre": "Limpiadores de bandas",
+          "icono": "scraper"
+        },
+        {
+          "slug": "rodillos",
+          "nombre": "Rodillos",
+          "icono": "roller"
+        },
+        {
+          "slug": "tambores",
+          "nombre": "Tambores",
+          "icono": "drum"
+        },
+        {
+          "slug": "materiales-para-vulcanizar",
+          "nombre": "Materiales para vulcanizar",
+          "icono": "can"
+        },
+        {
+          "slug": "piezas-de-goma",
+          "nombre": "Piezas de goma",
+          "icono": "parts"
+        },
+        {
+          "slug": "planchas-de-goma",
+          "nombre": "Planchas de goma",
+          "icono": "sheets"
+        },
+        {
+          "slug": "recubrimientos",
+          "nombre": "Recubrimientos",
+          "icono": "lagging"
+        }
+      ]
+    },
+    {
+      "slug": "faldetas",
+      "nombre": "Faldetas",
+      "icono": "skirt",
+      "intro": "Fabricación de faldetas de goma, fieltro y caramelo.",
+      "corto": "Fabricación en goma, fieltro y caramelo.",
+      "familias": [
+        {
+          "slug": "faldetas",
+          "nombre": "Faldetas",
+          "icono": "skirt"
+        },
+        {
+          "slug": "caramelo",
+          "nombre": "Caramelo",
+          "icono": "amber"
+        },
+        {
+          "slug": "fieltro",
+          "nombre": "Fieltro",
+          "icono": "felt"
+        },
+        {
+          "slug": "goma",
+          "nombre": "Goma",
+          "icono": "sheets"
+        },
+        {
+          "slug": "piezas-de-goma",
+          "nombre": "Piezas de goma",
+          "icono": "parts"
+        },
+        {
+          "slug": "tacos",
+          "nombre": "Tacos",
+          "icono": "block"
+        },
+        {
+          "slug": "estrellas",
+          "nombre": "Estrellas",
+          "icono": "star"
+        },
+        {
+          "slug": "borde-ondulado",
+          "nombre": "Borde ondulado",
+          "icono": "wave"
+        },
+        {
+          "slug": "red",
+          "nombre": "Red",
+          "icono": "net"
+        }
+      ]
+    },
+    {
+      "slug": "bandas-pvc",
+      "nombre": "Bandas PVC",
+      "icono": "cleated",
+      "intro": "Bandas alimentarias e industriales para todo tipo de sectores agrícolas e industriales.",
+      "corto": "Bandas alimentarias e industriales.",
+      "familias": [
+        {
+          "slug": "bandas-de-pvc",
+          "nombre": "Bandas de PVC",
+          "icono": "cleated"
+        },
+        {
+          "slug": "bandas-modulares",
+          "nombre": "Bandas modulares",
+          "icono": "modular"
+        },
+        {
+          "slug": "cadenas-de-charnelas",
+          "nombre": "Cadenas de charnelas",
+          "icono": "chain"
+        },
+        {
+          "slug": "cordones-y-correas",
+          "nombre": "Cordones y correas",
+          "icono": "cord"
+        },
+        {
+          "slug": "plasticos-tecnicos",
+          "nombre": "Plásticos técnicos",
+          "icono": "nut"
+        },
+        {
+          "slug": "recubrimientos",
+          "nombre": "Recubrimientos",
+          "icono": "lagging"
+        },
+        {
+          "slug": "grapas",
+          "nombre": "Grapas",
+          "icono": "staple"
+        }
+      ]
+    }
+  ]
+}

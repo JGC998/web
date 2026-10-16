@@ -17,3 +17,6 @@ node_modules/
 
 # Fotos y vídeos originales del móvil (se procesan antes de usarlos en la web)
 web fotos/
+
+# Python
+__pycache__/

@@ -14,3 +14,6 @@ fotos-antiguas
 fotos-nuevas
 # Fotos y vídeos originales del móvil
 web fotos
+
+# Motor de la web (scripts y contenido fuente): no se publica
+_fuente

@@ -1,0 +1,720 @@
+"""Genera todas las páginas de la web de CRM a partir de _fuente/.
+
+Uso (desde la carpeta raíz del proyecto):
+    py _fuente/construir.py
+
+Lee:
+  _fuente/contenido/productos.json        categorías y familias de producto
+  _fuente/contenido/textos_productos.py   textos técnicos y tablas
+  _fuente/contenido/legal.json            textos legales
+  _fuente/contenido/noticias-archivo.json noticias antiguas
+  assets/img/productos/<cat>/<familia>/   fotos de cada carrusel
+y escribe los index.html de cada página.
+"""
+import sys, os, json, html
+
+FUENTE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.dirname(FUENTE)
+sys.path.insert(0, FUENTE)
+sys.path.insert(0, os.path.join(FUENTE, "contenido"))
+
+from PIL import Image
+from iconos import ICONS, icon, badge
+from textos_productos import TEXT, EXTRA
+
+e = html.escape
+
+# ---------------------------------------------------------------- datos de la empresa
+SITE = "https://crmsl.es"
+PHONE = "+34 957 682 819"
+PHONE_TEL = "+34957682819"
+EMAIL = "info@crmsl.es"
+VERSION = "20261015c"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
+
+# ---------------------------------------------------------------- contenido
+_P = json.load(open(os.path.join(FUENTE, "contenido", "productos.json"), encoding="utf-8"))
+CATEGORIAS = _P["categorias"]
+PRODUCTS = [(c["slug"], c["nombre"], c["intro"]) for c in CATEGORIAS]   # orden del menú
+NAMES = {c["slug"]: c["nombre"] for c in CATEGORIAS}
+SHORT = {c["slug"]: c["corto"] for c in CATEGORIAS}
+CAT_ICON = {c["slug"]: c["icono"] for c in CATEGORIAS}
+SEC_ICON = {c["slug"]: {f["slug"]: f["icono"] for f in c["familias"]} for c in CATEGORIAS}
+C = {"products": {c["slug"]: [{"slug": f["slug"], "title": f["nombre"]} for f in c["familias"]] for c in CATEGORIAS}}
+LEGAL = json.load(open(os.path.join(FUENTE, "contenido", "legal.json"), encoding="utf-8"))
+ARCHIVO_NOTICIAS = json.load(open(os.path.join(FUENTE, "contenido", "noticias-archivo.json"), encoding="utf-8"))
+
+
+def img_size(rel):
+    with Image.open(os.path.join(REPO, rel)) as im:
+        return im.size
+
+
+def img(rel, alt, cls="", lazy=True):
+    w, h = img_size(rel)
+    a = f' class="{cls}"' if cls else ""
+    l = ' loading="lazy" decoding="async"' if lazy else ""
+    return f'<img src="/{rel}" alt="{e(alt)}" width="{w}" height="{h}"{a}{l}>'
+
+
+def mailto(subject):
+    return f"mailto:{EMAIL}?subject={e(subject)}"
+
+
+def sentence(t):
+    """'Materiales para Vulcanizar' -> 'Materiales para vulcanizar' (respeta siglas como PVC)."""
+    t = t[0] + t[1:].lower()
+    return t.replace("pvc", "PVC")
+
+
+# ---------------------------------------------------------------- plantilla
+
+def head(title, desc):
+    full = f"{title} | CRM Componentes" if title else "CRM Componentes — Comercial de Recambios Montemayor"
+    return f"""<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{e(full)}</title>
+  <meta name="description" content="{e(desc)}">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="CRM Componentes">
+  <meta property="og:title" content="{e(full)}">
+  <meta property="og:description" content="{e(desc)}">
+  <meta property="og:image" content="/assets/img/brand/logo-crm.png">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/assets/css/base.css?v={VERSION}">
+  <link rel="stylesheet" href="/assets/css/layout.css?v={VERSION}">
+  <link rel="stylesheet" href="/assets/css/components.css?v={VERSION}">
+  <script src="/assets/js/main.js?v={VERSION}" defer></script>
+</head>"""
+
+
+NAV = [
+    ("/", "Inicio", "inicio"),
+    ("/productos/", "Productos", "productos"),
+    ("/catalogos/", "Catálogos", "catalogos"),
+    ("/quienes-somos/", "Quiénes somos", "quienes-somos"),
+    ("/noticias/", "Noticias", "noticias"),
+    ("/contacto/", "Contacto", "contacto"),
+]
+
+
+CHEVRON = '<svg class="icon nav__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>'
+MEGA_ORDER = ["elevacion", "bandas-transportadoras", "faldetas", "bandas-pvc"]
+
+
+def mega_menu(active):
+    """Panel de Productos: en escritorio se despliega bajo la barra; en móvil son
+    niveles que se deslizan (Menú › Productos › Categoría)."""
+    cols = []
+    for s in MEGA_ORDER:
+        fams = "".join(
+            f'<li><a href="/productos/{s}/#{x["slug"]}">{sentence(x["title"])}</a></li>'
+            for x in C["products"][s]
+        )
+        cur = ' aria-current="page"' if active == f"productos/{s}" else ""
+        cols.append(f"""
+              <div class="mega__col">
+                <a class="mega__cat" href="/productos/{s}/" data-drill="sub-{s}"{cur}>{badge(CAT_ICON[s], "sm")}<span>{NAMES[s]}</span>{CHEVRON}</a>
+                <div class="mega__sub" id="sub-{s}">
+                  <button class="drill-back" type="button" data-drill-back>‹ Productos</button>
+                  <p class="drill-title">{NAMES[s]}</p>
+                  <a class="drill-all" href="/productos/{s}/">Ver todo {NAMES[s]}</a>
+                  <ul class="mega__list">{fams}</ul>
+                </div>
+              </div>""")
+    return f"""
+            <div class="mega" id="mega-productos">
+              <div class="mega__inner">
+                <button class="drill-back" type="button" data-drill-back>‹ Menú</button>
+                <p class="drill-title">Productos</p>
+                <div class="mega__grid">{"".join(cols)}
+                </div>
+                <div class="mega__foot">
+                  <a class="more" href="/productos/">Ver todos los productos</a>
+                  <a class="more" href="/catalogos/">Pedir un catálogo</a>
+                  <a class="more" href="tel:{PHONE_TEL}">Llamar al {PHONE}</a>
+                </div>
+              </div>
+            </div>"""
+
+
+def header(active):
+    items = []
+    for href, label, key in NAV:
+        if key == "productos":
+            cur = ' aria-current="page"' if active == "productos" else ""
+            cls = "nav__link nav__link--mega is-current" if active.startswith("productos") else "nav__link nav__link--mega"
+            items.append(
+                f'<li class="nav__item--mega"><a class="{cls}" href="{href}" data-drill="mega-productos" '
+                f'aria-haspopup="true" aria-expanded="false" aria-controls="mega-productos"{cur}>{label}{CHEVRON}</a>{mega_menu(active)}\n          </li>'
+            )
+        elif key == active:
+            items.append(f'<li><a class="nav__link" href="{href}" aria-current="page">{label}</a></li>')
+        else:
+            items.append(f'<li><a class="nav__link" href="{href}">{label}</a></li>')
+    return f"""<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/" aria-label="CRM Componentes — Inicio">
+        <img src="/assets/img/brand/logo-crm.png" alt="CRM" width="500" height="173">
+      </a>
+      <nav class="nav" id="menu" aria-label="Principal">
+        <ul class="nav__list">
+          {"".join(items)}
+        </ul>
+        <div class="nav__extra">
+          Atención al cliente
+          <a href="tel:{PHONE_TEL}">{PHONE}</a>
+          <a href="mailto:{EMAIL}">{EMAIL}</a>
+        </div>
+      </nav>
+      <a class="header-call" href="tel:{PHONE_TEL}">{icon("phone")} Llamar</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+        <span class="nav-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle__label" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+  <div class="nav-scrim" aria-hidden="true"></div>
+"""
+
+
+FOOTER = f"""
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer__lead">¿Necesitas ayuda? Llámanos al <a href="tel:{PHONE_TEL}"><strong>{PHONE}</strong></a> o escríbenos a <a href="mailto:{EMAIL}"><strong>{EMAIL}</strong></a>.</p>
+      <div class="footer__grid">
+        <div>
+          <h2>Productos</h2>
+          <ul class="footer__links">
+            {"".join(f'<li><a href="/productos/{s}/">{n}</a></li>' for s, n, _ in PRODUCTS)}
+          </ul>
+        </div>
+        <div>
+          <h2>Empresa</h2>
+          <ul class="footer__links">
+            <li><a href="/quienes-somos/">Quiénes somos</a></li>
+            <li><a href="/catalogos/">Catálogos</a></li>
+            <li><a href="/noticias/">Noticias</a></li>
+            <li><a href="/contacto/">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Legal</h2>
+          <ul class="footer__links">
+            <li><a href="/legal/aviso-legal/">Aviso legal</a></li>
+            <li><a href="/legal/politica-de-privacidad/">Privacidad</a></li>
+            <li><a href="/legal/politica-de-cookies/">Cookies</a></li>
+            <li><a href="/legal/politica-de-redes-sociales/">Redes sociales</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Visítanos</h2>
+          <p style="margin:0">P.I. Los Alfares<br>Calle La Jarra 41<br>14540 La Rambla (Córdoba)</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year>2026</span> Comercial de Recambios Montemayor, S.L.</span>
+        <span>CIF B14392799</span>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="callbar" aria-label="Contacto rápido">
+    <a href="tel:{PHONE_TEL}">{icon("phone")} Llamar</a>
+    <a href="mailto:{EMAIL}">{icon("mail")} Email</a>
+  </nav>
+</body>
+</html>
+"""
+
+
+def write(path, title, desc, active, body):
+    out = head(title, desc) + "\n" + header(active) + '\n  <main id="contenido">' + body + "\n  </main>\n" + FOOTER
+    file = os.path.join(REPO, path.strip("/"), "index.html") if path != "/404" else os.path.join(REPO, "404.html")
+    os.makedirs(os.path.dirname(file), exist_ok=True)
+    open(file, "w", encoding="utf-8", newline="\n").write(out)
+    print("ok", path)
+
+
+def intro(h1, lead="", eyebrow="", actions="", icon_name=None):
+    parts = []
+    if icon_name:
+        parts.append(badge(icon_name, "lg"))
+    if eyebrow:
+        parts.append(f'<span class="eyebrow">{eyebrow}</span>')
+    parts.append(f"<h1>{h1}</h1>")
+    if lead:
+        parts.append(f'<p class="lead">{lead}</p>')
+    if actions:
+        parts.append(f'<div class="actions">{actions}</div>')
+    inner = "\n        ".join(parts)
+    return f"""
+    <section class="page-intro">
+      <div class="container">
+        {inner}
+      </div>
+    </section>"""
+
+
+def cta():
+    return f"""
+    <section class="section section--tile center">
+      <div class="container">
+        {badge("handshake")}
+        <h2 style="margin-top:28px">¿Hablamos?</h2>
+        <p class="lead" style="max-width:600px;margin:0 auto 28px">Te ayudamos a elegir el producto adecuado para tu instalación.</p>
+        <div class="actions">
+          <a class="btn" href="tel:{PHONE_TEL}">{icon("phone")} {PHONE}</a>
+          <a class="more" href="mailto:{EMAIL}">Escríbenos</a>
+        </div>
+      </div>
+    </section>""".replace('<span class="badge-icon">', '<span class="badge-icon" style="margin:0 auto">', 1)
+
+
+def product_tiles():
+    """Tarjetas compactas e iguales de las 4 categorías, con sus familias visibles."""
+    order = ["elevacion", "bandas-transportadoras", "faldetas", "bandas-pvc"]
+    out = []
+    for s in order:
+        secs = C["products"][s]
+        shown, rest = secs[:5], len(secs) - 5
+        fams = "".join(f'<li><a href="/productos/{s}/#{x["slug"]}">{sentence(x["title"])}</a></li>' for x in shown)
+        if rest > 0:
+            fams += f'<li><a class="catcard__rest" href="/productos/{s}/#gama">y {rest} más</a></li>'
+        out.append(f"""
+          <article class="catcard">
+            {badge(CAT_ICON[s], "sm")}
+            <h3><a href="/productos/{s}/">{NAMES[s]}</a></h3>
+            <p>{SHORT[s]}</p>
+            <ul class="catcard__list">{fams}</ul>
+            <a class="more" href="/productos/{s}/">Ver todo</a>
+          </article>""")
+    return '<div class="catcards">' + "".join(out) + "\n        </div>"
+
+
+def video_band(video, eyebrow, title, text, actions):
+    """Franja con vídeo de fondo (sin sonido, en bucle). El JS solo lo carga si
+    el usuario no pide reducir animaciones ni ahorrar datos; si no, queda la foto fija."""
+    return f"""
+    <section class="video-band">
+      <video class="video-band__media" data-bg-video muted loop playsinline preload="none" poster="/assets/video/{video}.jpg" aria-hidden="true">
+        <source data-src="/assets/video/{video}.mp4" type="video/mp4">
+      </video>
+      <div class="container video-band__content">
+        <span class="eyebrow">{eyebrow}</span>
+        <h2>{title}</h2>
+        <p class="lead">{text}</p>
+        <div class="actions">{actions}</div>
+      </div>
+    </section>"""
+
+
+# ---------------------------------------------------------------- inicio
+
+jsonld = json.dumps({
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Comercial de Recambios Montemayor, S.L. (CRM)",
+    "url": SITE,
+    "logo": SITE + "/assets/img/brand/logo-crm.png",
+    "telephone": PHONE_TEL,
+    "email": EMAIL,
+    "foundingDate": "1994",
+    "address": {"@type": "PostalAddress", "streetAddress": "P.I. Los Alfares, Calle La Jarra 41", "postalCode": "14540",
+                "addressLocality": "La Rambla", "addressRegion": "Córdoba", "addressCountry": "ES"},
+}, ensure_ascii=False)
+
+strip = "".join(
+    f'<li><a href="/productos/{s}/">{badge(CAT_ICON[s])}<span>{NAMES[s]}</span></a></li>'
+    for s in ["elevacion", "bandas-transportadoras", "faldetas", "bandas-pvc"]
+)
+body = f"""
+    <section class="hero hero--photo" style="--hero-img:url('/assets/img/fondos/campo.jpg')">
+      <div class="container">
+        <span class="eyebrow">Desde 1994 · La Rambla, Córdoba</span>
+        <h1>Soluciones y <span class="gradient">máxima eficiencia.</span></h1>
+        <p class="lead">Componentes para elevación y transporte de materiales, con stock permanente y fabricación a medida.</p>
+        <div class="actions">
+          <a class="btn" href="/productos/">Ver productos</a>
+          <a class="more" href="tel:{PHONE_TEL}">Llamar al {PHONE}</a>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>Nuestros productos.</h2>
+          <p class="lead">Todo lo que tu instalación necesita, en un solo proveedor.</p>
+        </div>
+        {product_tiles()}
+      </div>
+    </section>
+{video_band("corte-fieltro", "Fabricación a medida", "Lo cortamos a tu medida.",
+            "Fieltro, goma y caramelo cortados y perforados en nuestras instalaciones de La Rambla.",
+            '<a class="btn btn--light" href="/productos/faldetas/">Ver faldetas</a><a class="more" href="/quienes-somos/#instalaciones">Nuestras instalaciones</a>')}
+
+    <section class="section section--tight section--tile">
+      <div class="container container--wide">
+        <ul class="facts">
+          <li>{icon("calendar")}<strong>Desde 1994</strong><span>Empresa familiar</span></li>
+          <li>{icon("box")}<strong>Stock permanente</strong><span>Entrega inmediata</span></li>
+          <li>{icon("ruler")}<strong>A medida</strong><span>Corte, perforado y piezas</span></li>
+          <li>{icon("award")}<strong>Primeras marcas</strong><span>Europeas y españolas</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container center">
+        <p class="statement">Calidad antes que cantidad. <span>Preferimos tener buenos clientes y darles un servicio personalizado. Por eso cada día son más los que confían en nosotros.</span></p>
+        <div class="actions" style="margin-top:32px"><a class="more" href="/quienes-somos/">Conócenos</a></div>
+      </div>
+    </section>
+{cta()}
+    <script type="application/ld+json">{jsonld}</script>"""
+write("/", None, "CRM — Comercial de Recambios Montemayor (La Rambla, Córdoba). Bandas transportadoras, bandas de PVC, faldetas y componentes para elevación. Stock permanente desde 1994.", "inicio", body)
+
+# ---------------------------------------------------------------- productos (índice)
+
+body = intro("Productos.", "Componentes para elevación, transporte por banda y fabricación a medida en goma, fieltro y PVC.")
+body += f"""
+    <section class="section section--flush-top">
+      <div class="container container--wide">
+        {product_tiles()}
+      </div>
+    </section>""" + cta()
+write("/productos/", "Productos", "Productos de CRM: elevación, bandas transportadoras, faldetas y bandas de PVC.", "productos", body)
+
+# ---------------------------------------------------------------- páginas de producto
+
+def section_photos(slug, s):
+    """Fotos de una familia: assets/img/productos/<categoria>/<familia>/*.jpg (orden alfabético)."""
+    folder = os.path.join(REPO, "assets", "img", "productos", slug, s["slug"])
+    if not os.path.isdir(folder):
+        return []
+    files = sorted(f for f in os.listdir(folder) if f.lower().endswith((".jpg", ".jpeg", ".png", ".webp")))
+    return [f"assets/img/productos/{slug}/{s['slug']}/{f}" for f in files]
+
+
+def carousel_html(name, pics, label):
+    """pics: lista de (ruta, texto alternativo). No genera nada si no hay fotos."""
+    if not pics:
+        return ""
+    slides = "".join(
+        f'<a class="carousel__slide" href="/{r}" data-gallery="{name}" data-alt="{e(alt)}" '
+        f'aria-label="Ampliar foto {i} de {len(pics)}">{img(r, alt)}</a>'
+        for i, (r, alt) in enumerate(pics, 1)
+    )
+    controls = ""
+    if len(pics) > 1:
+        controls = """
+              <div class="carousel__controls">
+                <button class="carousel__btn" type="button" data-carousel-prev aria-label="Foto anterior">‹</button>
+                <div class="carousel__dots" aria-hidden="true"></div>
+                <button class="carousel__btn" type="button" data-carousel-next aria-label="Foto siguiente">›</button>
+              </div>"""
+    return f"""
+            <div class="carousel" data-carousel aria-roledescription="carrusel" aria-label="{e(label)}">
+              <div class="carousel__track">{slides}</div>{controls}
+            </div>"""
+
+
+def carousel(slug, s):
+    pics = [(r, f"{s['title']} — foto {i}") for i, r in enumerate(section_photos(slug, s), 1)]
+    return carousel_html(f"{slug}-{s['slug']}", pics, f"Fotos de {s['title']}")
+
+
+def product_page(slug, name, intro_text):
+    secs = [dict(x, title=sentence(x["title"])) for x in C["products"][slug]]
+    body = f"""
+    <nav class="localnav" aria-label="{e(name)}">
+      <div class="container">
+        <a class="localnav__title" href="#contenido">{name}</a>
+        <a class="localnav__link" href="#gama">Gama</a>
+        <a class="btn" href="{mailto("Consulta: " + name)}">Consultar</a>
+      </div>
+    </nav>"""
+    body += intro(
+        f"{name}.",
+        intro_text,
+        eyebrow='<a href="/productos/">Productos</a>',
+        actions=f'<a class="btn" href="{mailto("Consulta: " + name)}">Consultar disponibilidad</a><a class="more" href="tel:{PHONE_TEL}">Llamar</a>',
+        icon_name=CAT_ICON[slug],
+    )
+    rng = "".join(f'<a href="#{s["slug"]}">{icon(SEC_ICON[slug][s["slug"]])}<span>{s["title"]}</span></a>' for s in secs)
+    body += f"""
+
+    <section class="section section--tight section--tile" id="gama">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>Explora la gama.</h2>
+          <p class="lead">Toca una familia para ver su información.</p>
+        </div>
+        <div class="range">{rng}</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container container--wide products-list">"""
+    for i, s in enumerate(secs, 1):
+        text = TEXT.get(slug, {}).get(s["slug"]) or "\n<p>Consúltanos medidas, calidades y disponibilidad.</p>"
+        extra = EXTRA.get((slug, s["slug"]), "")
+        open_attr = " open" if i == 1 else ""
+        body += f"""
+        <details class="product" id="{s["slug"]}"{open_attr}>
+          <summary class="product__summary">
+            <div class="product__head">
+              {icon(SEC_ICON[slug][s["slug"]])}
+              <h2>{s["title"]}</h2>
+              <span class="product__toggle" aria-hidden="true"></span>
+            </div>
+          </summary>
+          <div class="product__body">
+            <div class="product__text">{text}
+            </div>{carousel(slug, s)}{extra}
+            <div class="product__actions">
+              <a class="btn btn--outline" href="{mailto("Consulta: " + s["title"])}">Consultar disponibilidad</a>
+            </div>
+          </div>
+        </details>"""
+    body += """
+      </div>
+    </section>""" + cta()
+    names = ", ".join(s["title"].lower() for s in secs)
+    write(f"/productos/{slug}/", name, f"{name} en CRM (La Rambla, Córdoba): {names}.", f"productos/{slug}", body)
+
+
+for slug, name, intro_text in PRODUCTS:
+    product_page(slug, name, intro_text)
+
+# ---------------------------------------------------------------- quiénes somos
+
+body = intro("Una empresa familiar <span class=\"gradient\">desde 1994.</span>", "Pasado, tecnología. Presente, innovación. Futuro, sostenible.",
+             eyebrow="Quiénes somos")
+INSTALACIONES = [
+    ("assets/img/empresa/fachada.jpg", "Fachada de CRM en el P.I. Los Alfares"),
+    ("assets/img/empresa/cnc-1.jpg", "Máquina de corte por control numérico (CNC)"),
+    ("assets/img/empresa/corte-cnc-goma.jpg", "Corte de goma en la CNC"),
+    ("assets/img/empresa/cnc-2.jpg", "Cabezal de corte de la CNC"),
+    ("assets/img/empresa/alta-frecuencia-1.jpg", "Máquina de alta frecuencia para bandas de PVC"),
+    ("assets/img/empresa/alta-frecuencia-2.jpg", "Soldadura de perfiles en bandas de PVC"),
+    ("assets/img/empresa/nave-nueva-1.jpg", "Nueva nave en construcción"),
+    ("assets/img/empresa/nave-nueva-2.jpg", "Estructura de la nueva nave"),
+]
+body += f"""
+
+    <div class="container container--wide page-photo">{img("assets/img/empresa/fachada.jpg", "Nave de CRM en el P.I. Los Alfares, La Rambla", lazy=False)}</div>
+
+    <section class="section section--flush-top">
+      <div class="container">
+        <ul class="values">
+          <li>{badge("wrench", "sm")}<h3>Profesionales</h3><p>Somos una empresa dedicada a profesionales, con una gran experiencia en todos nuestros productos.</p></li>
+          <li>{badge("award", "sm")}<h3>Primeras marcas</h3><p>Contamos con el apoyo de fabricantes europeos que no tenían presencia en España y de primeras marcas españolas.</p></li>
+          <li>{badge("refresh", "sm")}<h3>Gama siempre al día</h3><p>Recogemos la experiencia de nuestros clientes y actualizamos constantemente nuestros productos.</p></li>
+          <li>{badge("truck", "sm")}<h3>Bien comunicados</h3><p>A 20 minutos de Córdoba, a una hora de Sevilla, Málaga, Granada y Jaén, y a 2 horas de Cádiz, Huelva y Ciudad Real.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--tile" id="instalaciones">
+      <div class="container">
+        <div class="headline">
+          <h2>Nuestras instalaciones.</h2>
+          <p class="lead">Maquinaria propia para cortar, perforar y fabricar a medida. Y una nueva nave en marcha.</p>
+        </div>
+        {carousel_html("instalaciones", INSTALACIONES, "Fotos de nuestras instalaciones")}
+      </div>
+    </section>
+{video_band("corte-cnc", "Corte por control numérico", "Precisión en cada pieza.",
+            "Cortamos goma y fieltro en nuestra máquina CNC, según plano o muestra.",
+            f'<a class="btn btn--light" href="{mailto("Consulta: fabricación a medida")}">Pedir presupuesto</a>')}
+
+    <section class="section">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>Nuestra historia.</h2>
+          <p class="lead">Una aventura familiar que empezó con un cambio radical en nuestras vidas.</p>
+        </div>
+        <ol class="years">
+          <li>
+            <span class="years__num gradient">1994</span>
+            <h3>Fundamos CRM S.L.</h3>
+            <p>Con la ilusión de hacer algo diferente y la experiencia de muchos años en el sector. Los primeros años fueron duros, pero con mucho sacrificio empezamos a crecer e invertir.</p>
+          </li>
+          <li>
+            <span class="years__num gradient">1999</span>
+            <h3>Nueva nave de 500 m².</h3>
+            <p>Desde el año 2000 empezamos a tener clientes en todo el país, y en 2002 adquirimos una nueva parcela en el polígono.</p>
+          </li>
+          <li>
+            <span class="years__num gradient">2005</span>
+            <h3>Otros 500 m² más.</h3>
+            <p>Ampliamos la nave para almacenar nuevos productos y albergar nuevas máquinas con las que ser más competitivos.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container">
+        <p class="statement">Hemos llegado hasta aquí gracias a la familia, clientes y proveedores. <span>Gracias.</span></p>
+      </div>
+    </section>
+{cta()}"""
+write("/quienes-somos/", "Quiénes somos", "CRM S.L. es una empresa familiar fundada en 1994 en La Rambla (Córdoba), especializada en componentes para elevación y transporte de materiales.", "quienes-somos", body)
+
+# ---------------------------------------------------------------- catálogos
+
+CATS = [
+    ("Acero, goma y plástico", "Componentes en acero, goma y plástico técnico.", "nut"),
+    ("Elevación", "Bandas elevadoras, cangilones y accesorios.", "elevator"),
+    ("Faldetas", "Goma, fieltro y caramelo para vibradores.", "skirt"),
+    ("Estaciones", "Soportes y estaciones para rodillos.", "idler"),
+    ("Vulcanizados", "Empalmes, reparaciones y materiales.", "press"),
+    ("CRM", "Catálogo general de la empresa.", "doc"),
+    ("Bandas PVC", "Bandas alimentarias e industriales.", "cleated"),
+]
+cards = "".join(f"""
+          <article class="card">
+            {badge(ic, "sm")}
+            <span class="card__meta">Catálogo</span>
+            <h3>{t}</h3>
+            <p>{d}</p>
+            <a class="more" href="{mailto("Solicitud de catálogo: " + t)}">Solicitar por email</a>
+          </article>""" for t, d, ic in CATS)
+body = intro("Catálogos.", "Pídenos el catálogo que necesites y te lo enviamos por email.")
+body += f"""
+    <section class="section section--flush-top">
+      <div class="container container--wide">
+        <div class="cards">{cards}
+        </div>
+      </div>
+    </section>""" + cta()
+write("/catalogos/", "Catálogos", "Catálogos de productos de CRM: elevación, faldetas, estaciones, vulcanizados, bandas de PVC y más.", "catalogos", body)
+
+# ---------------------------------------------------------------- noticias
+
+MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+TITLES = {}
+cards = []
+for n in ARCHIVO_NOTICIAS:
+    n = {"date": n["fecha"], "title": n["titulo"], "slug": n.get("slug", "")}
+    y, m, d = n["date"].split("-")
+    date = f"{int(d)} de {MESES[int(m) - 1]} de {y}"
+    t = TITLES.get(n["slug"], n["title"])
+    cards.append(f"""
+          <article class="card" id="{n["slug"]}">
+            {badge("calendar", "sm")}
+            <time class="card__meta" datetime="{n["date"]}">{date}</time>
+            <h3>{e(t)}</h3>
+          </article>""")
+body = intro("Noticias.", "Ferias, novedades y momentos destacados de CRM.")
+body += f"""
+    <section class="section section--flush-top">
+      <div class="container container--wide">
+        <div class="cards">{"".join(cards)}
+        </div>
+      </div>
+    </section>"""
+write("/noticias/", "Noticias", "Noticias de CRM: ferias (Expoliva, FIMA, Victam, Agropriego), novedades de producto y aniversarios.", "noticias", body)
+
+# ---------------------------------------------------------------- contacto
+
+MAP = "https://www.google.com/maps?q=Calle+La+Jarra+41,+14540+La+Rambla,+C%C3%B3rdoba&output=embed"
+DIR = "https://www.google.com/maps/dir/?api=1&destination=Calle+La+Jarra+41,+14540+La+Rambla,+C%C3%B3rdoba"
+body = intro("Contacto.", "Llámanos o escríbenos y uno de nuestros profesionales te responderá lo antes posible.",
+             eyebrow="Comercial de Recambios Montemayor S.L.")
+body += f"""
+    <section class="section section--flush-top">
+      <div class="container container--wide">
+        <div class="contact-tiles">
+          <a class="contact-tile" href="tel:{PHONE_TEL}">{badge("phone")}<h3>Llámanos</h3><strong>{PHONE}</strong><span>En horario comercial</span></a>
+          <a class="contact-tile" href="mailto:{EMAIL}">{badge("mail")}<h3>Escríbenos</h3><strong>{EMAIL}</strong><span>Te respondemos lo antes posible</span></a>
+          <a class="contact-tile" href="{DIR}" target="_blank" rel="noopener">{badge("pin")}<h3>Visítanos</h3><strong>C/ La Jarra 41</strong><span>P.I. Los Alfares · 14540 La Rambla (Córdoba)</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tile">
+      <div class="container">
+        <div class="headline">
+          {badge("clock").replace('<span class="badge-icon">', '<span class="badge-icon" style="margin:0 auto 28px">')}
+          <h2>Horario.</h2>
+          <p class="lead">De lunes a viernes.</p>
+        </div>
+        <div class="hours">
+          <div class="hours__card">
+            <h3>Invierno</h3>
+            <p>Lunes a viernes</p>
+            <span class="hours__time">8:30 – 13:30</span>
+            <span class="hours__time">16:00 – 19:00</span>
+          </div>
+          <div class="hours__card">
+            <h3>Verano</h3>
+            <p>Lunes a viernes</p>
+            <span class="hours__time">8:00 – 15:00</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container container--wide">
+        <div class="map" data-map-src="{MAP}" data-map-title="Ubicación de CRM en La Rambla">
+          <div class="map__placeholder">
+            {badge("pin")}
+            <strong>P.I. Los Alfares · C/ La Jarra 41 · La Rambla (Córdoba)</strong>
+            <button class="btn" type="button">Mostrar mapa</button>
+            <p>Al cargar el mapa se conectará con Google Maps, que puede usar sus propias cookies.</p>
+          </div>
+        </div>
+      </div>
+    </section>"""
+write("/contacto/", "Contacto", f"Contacta con CRM en La Rambla (Córdoba): teléfono {PHONE}, email {EMAIL}. Horario y ubicación.", "contacto", body)
+
+# ---------------------------------------------------------------- legales
+
+LEG = [
+    ("aviso-legal", "Aviso legal"),
+    ("politica-de-privacidad", "Política de privacidad"),
+    ("politica-de-cookies", "Política de cookies"),
+    ("politica-de-redes-sociales", "Política de redes sociales"),
+]
+for slug, title in LEG:
+    body = intro(f"{title}.", eyebrow="Legal") + f"""
+    <section class="section section--flush-top">
+      <div class="container">
+        <article class="prose">
+{LEGAL[slug]}
+        </article>
+      </div>
+    </section>"""
+    write(f"/legal/{slug}/", title, f"{title} de Comercial de Recambios Montemayor, S.L.", "legal", body)
+
+# ---------------------------------------------------------------- 404
+
+body = """
+    <section class="section error-page">
+      <div class="container">
+        <span class="error-page__code">404</span>
+        <h1 style="font-size:2.2rem">Esta página no existe.</h1>
+        <p class="lead">Puede que haya cambiado de dirección.</p>
+        <div class="actions">
+          <a class="btn" href="/">Ir al inicio</a>
+          <a class="more" href="/productos/">Ver productos</a>
+        </div>
+      </div>
+    </section>"""
+write("/404", "Página no encontrada", "La página solicitada no existe.", "", body)
