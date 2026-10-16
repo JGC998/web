@@ -22,11 +22,14 @@ from PIL import Image
 from iconos import ICONS, icon, badge
 from textos_productos import TEXT, EXTRA
 from noticias import leer_noticias, fecha_larga
+from compartir import generar as generar_imagen_compartir
 
 e = html.escape
 
 # ---------------------------------------------------------------- datos de la empresa
-SITE = "https://crmsl.es"
+# Dominio donde está publicada la web. Se usa en el sitemap, robots.txt y las imágenes
+# para compartir. Cuando se migre el dominio, cambiar a "https://crmsl.es" y regenerar.
+SITE = "https://crmgestiontaller.com"
 PHONE = "+34 957 682 819"
 PHONE_TEL = "+34957682819"
 EMAIL = "info@crmsl.es"
@@ -93,7 +96,10 @@ def head(title, desc, og_img=None):
   <meta property="og:site_name" content="CRM Componentes">
   <meta property="og:title" content="{e(full)}">
   <meta property="og:description" content="{e(desc)}">
-  <meta property="og:image" content="{SITE}/{og_img or "assets/img/brand/logo-crm.png"}">
+  <meta property="og:image" content="{SITE}/{og_img}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -251,10 +257,27 @@ FOOTER = f"""
 """
 
 
-def write(path, title, desc, active, body, og_img=None):
-    if path != "/404":
+FRASE_COMPARTIR = "Componentes para elevación y transporte · La Rambla (Córdoba)"
+
+
+def imagen_compartir(path, title, foto=None, frase=None):
+    """Genera assets/img/compartir/<página>.jpg y devuelve su ruta."""
+    nombre = path.strip("/").replace("/", "-") or "inicio"
+    rel = f"assets/img/compartir/{nombre}.jpg"
+    generar_imagen_compartir(os.path.join(REPO, rel), title or "CRM Componentes", frase or FRASE_COMPARTIR,
+                             foto=os.path.join(REPO, foto) if foto else None,
+                             logo=os.path.join(REPO, "assets", "img", "brand", "logo-crm.png"))
+    return rel
+
+
+def write(path, title, desc, active, body, og_img=None, og_titulo=None, og_frase=None):
+    """og_img: foto de fondo para la imagen al compartir (si no, fondo verde)."""
+    if path == "/404":
+        compartir = "assets/img/compartir/inicio.jpg"
+    else:
         PAGINAS.append(path)
-    out = head(title, desc, og_img) + "\n" + header(active) + '\n  <main id="contenido">' + body + "\n  </main>\n" + FOOTER
+        compartir = imagen_compartir(path, og_titulo or title, og_img, og_frase)
+    out = head(title, desc, compartir) + "\n" + header(active) + '\n  <main id="contenido">' + body + "\n  </main>\n" + FOOTER
     file = os.path.join(REPO, path.strip("/"), "index.html") if path != "/404" else os.path.join(REPO, "404.html")
     os.makedirs(os.path.dirname(file), exist_ok=True)
     open(file, "w", encoding="utf-8", newline="\n").write(out)
@@ -434,7 +457,9 @@ body = f"""
     </section>
 {cta()}
     <script type="application/ld+json">{jsonld}</script>"""
-write("/", None, "CRM — Comercial de Recambios Montemayor (La Rambla, Córdoba). Bandas transportadoras, bandas de PVC, faldetas y componentes para elevación. Stock permanente desde 1994.", "inicio", body)
+write("/", None, "CRM — Comercial de Recambios Montemayor (La Rambla, Córdoba). Bandas transportadoras, bandas de PVC, faldetas y componentes para elevación. Stock permanente desde 1994.", "inicio", body,
+      og_img="assets/img/fondos/campo.webp", og_titulo="Soluciones y máxima eficiencia.",
+      og_frase="CRM · Componentes para elevación y transporte desde 1994")
 
 # ---------------------------------------------------------------- productos (índice)
 
@@ -544,7 +569,9 @@ def product_page(slug, name, intro_text):
       </div>
     </section>""" + cta()
     names = ", ".join(s["title"].lower() for s in secs)
-    write(f"/productos/{slug}/", name, f"{name} en CRM (La Rambla, Córdoba): {names}.", f"productos/{slug}", body)
+    fotos_cat = [p for sec in secs for p in section_photos(slug, sec)]
+    write(f"/productos/{slug}/", name, f"{name} en CRM (La Rambla, Córdoba): {names}.", f"productos/{slug}", body,
+          og_img=fotos_cat[0] if fotos_cat else None, og_frase=SHORT[slug])
 
 
 for slug, name, intro_text in PRODUCTS:
@@ -624,7 +651,7 @@ body += f"""
       </div>
     </section>
 {cta()}"""
-write("/quienes-somos/", "Quiénes somos", "CRM S.L. es una empresa familiar fundada en 1994 en La Rambla (Córdoba), especializada en componentes para elevación y transporte de materiales.", "quienes-somos", body)
+write("/quienes-somos/", "Quiénes somos", "CRM S.L. es una empresa familiar fundada en 1994 en La Rambla (Córdoba), especializada en componentes para elevación y transporte de materiales.", "quienes-somos", body, og_img="assets/img/empresa/fachada.webp", og_titulo="Una empresa familiar desde 1994")
 
 # ---------------------------------------------------------------- catálogos
 
@@ -672,7 +699,7 @@ for n in NOTICIAS:
       </div>
     </section>""" + cta()
     write(f'/noticias/{n["slug"]}/', n["titulo"], n["resumen"] or n["titulo"], "noticias", body,
-          og_img=n["fotos"][0] if n["fotos"] else None)
+          og_img=n["fotos"][0] if n["fotos"] else None, og_frase=n["resumen"] or None)
 
 archivo = "".join(
     f'<li><time datetime="{a["fecha"]}">{fecha_larga(a["fecha"])}</time><span>{e(a["titulo"])}</span></li>'
@@ -748,7 +775,8 @@ body += f"""
         </div>
       </div>
     </section>"""
-write("/contacto/", "Contacto", f"Contacta con CRM en La Rambla (Córdoba): teléfono {PHONE}, email {EMAIL}. Horario y ubicación.", "contacto", body)
+write("/contacto/", "Contacto", f"Contacta con CRM en La Rambla (Córdoba): teléfono {PHONE}, email {EMAIL}. Horario y ubicación.", "contacto", body,
+      og_img="assets/img/empresa/fachada.webp", og_frase=f"Teléfono {PHONE} · WhatsApp {WHATSAPP_VER}")
 
 # ---------------------------------------------------------------- legales
 
@@ -790,4 +818,5 @@ sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sit
 sitemap += "".join(f"  <url><loc>{SITE}{p}</loc></url>\n" for p in PAGINAS)
 sitemap += "</urlset>\n"
 open(os.path.join(REPO, "sitemap.xml"), "w", encoding="utf-8", newline="\n").write(sitemap)
+open(os.path.join(REPO, "robots.txt"), "w", encoding="utf-8", newline="\n").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
 print(f"sitemap.xml: {len(PAGINAS)} páginas")

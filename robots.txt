@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://crmsl.es/sitemap.xml
+Sitemap: https://crmgestiontaller.com/sitemap.xml

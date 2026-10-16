@@ -99,4 +99,5 @@ Archivos de configuración:
 - **Formulario de contacto:** no hay (necesitaba WordPress). El contacto es por teléfono y email.
 - **Mapa:** solo se carga al pulsar "Mostrar mapa", así Google no pone cookies sin permiso. La web no usa cookies propias.
 - **Textos legales:** son los de la web antigua. Conviene revisarlos (ya no hay formulario y la política de cookies habla de cookies que ya no se usan).
-- `sitemap.xml` y `robots.txt` apuntan a `https://crmsl.es`. Si el dominio final es otro, hay que cambiarlo.
+- **Dominio:** `SITE` al principio de `_fuente/construir.py` (ahora `https://crmgestiontaller.com`). Se usa en `sitemap.xml`, `robots.txt` y las imágenes para compartir. Al migrar a `crmsl.es`, cambiarlo y regenerar.
+- **Imágenes para compartir:** se generan solas en `assets/img/compartir/` (1200×630) con la foto, el logo y el título de cada página.
