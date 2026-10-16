@@ -37,7 +37,7 @@ WHATSAPP_VER = "656 84 40 67"
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261016b"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
+VERSION = "20261016c"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
 # ---------------------------------------------------------------- contenido
 _P = json.load(open(os.path.join(FUENTE, "contenido", "productos.json"), encoding="utf-8"))
@@ -356,7 +356,7 @@ def video_band(video, eyebrow, title, text, actions):
     el usuario no pide reducir animaciones ni ahorrar datos; si no, queda la foto fija."""
     return f"""
     <section class="video-band">
-      <video class="video-band__media" data-bg-video muted loop playsinline preload="none" poster="/assets/video/{video}.jpg" aria-hidden="true">
+      <video class="video-band__media" data-bg-video muted loop playsinline preload="none" poster="/assets/video/{video}.webp" aria-hidden="true">
         <source data-src="/assets/video/{video}.mp4" type="video/mp4">
       </video>
       <div class="container video-band__content">
@@ -388,7 +388,7 @@ strip = "".join(
     for s in ["elevacion", "bandas-transportadoras", "faldetas", "bandas-pvc"]
 )
 body = f"""
-    <section class="hero hero--photo" style="--hero-img:url('/assets/img/fondos/campo.jpg')">
+    <section class="hero hero--photo" style="--hero-img:url('/assets/img/fondos/campo.webp')">
       <div class="container">
         <span class="eyebrow">Desde 1994 · La Rambla, Córdoba</span>
         <h1>Soluciones y <span class="gradient">máxima eficiencia.</span></h1>
@@ -450,7 +450,7 @@ write("/productos/", "Productos", "Productos de CRM: elevación, bandas transpor
 # ---------------------------------------------------------------- páginas de producto
 
 def section_photos(slug, s):
-    """Fotos de una familia: assets/img/productos/<categoria>/<familia>/*.jpg (orden alfabético)."""
+    """Fotos de una familia: assets/img/productos/<categoria>/<familia>/*.webp (orden alfabético)."""
     folder = os.path.join(REPO, "assets", "img", "productos", slug, s["slug"])
     if not os.path.isdir(folder):
         return []
@@ -555,18 +555,18 @@ for slug, name, intro_text in PRODUCTS:
 body = intro("Una empresa familiar <span class=\"gradient\">desde 1994.</span>", "Pasado, tecnología. Presente, innovación. Futuro, sostenible.",
              eyebrow="Quiénes somos")
 INSTALACIONES = [
-    ("assets/img/empresa/fachada.jpg", "Fachada de CRM en el P.I. Los Alfares"),
-    ("assets/img/empresa/cnc-1.jpg", "Máquina de corte por control numérico (CNC)"),
-    ("assets/img/empresa/corte-cnc-goma.jpg", "Corte de goma en la CNC"),
-    ("assets/img/empresa/cnc-2.jpg", "Cabezal de corte de la CNC"),
-    ("assets/img/empresa/alta-frecuencia-1.jpg", "Máquina de alta frecuencia para bandas de PVC"),
-    ("assets/img/empresa/alta-frecuencia-2.jpg", "Soldadura de perfiles en bandas de PVC"),
-    ("assets/img/empresa/nave-nueva-1.jpg", "Nueva nave en construcción"),
-    ("assets/img/empresa/nave-nueva-2.jpg", "Estructura de la nueva nave"),
+    ("assets/img/empresa/fachada.webp", "Fachada de CRM en el P.I. Los Alfares"),
+    ("assets/img/empresa/cnc-1.webp", "Máquina de corte por control numérico (CNC)"),
+    ("assets/img/empresa/corte-cnc-goma.webp", "Corte de goma en la CNC"),
+    ("assets/img/empresa/cnc-2.webp", "Cabezal de corte de la CNC"),
+    ("assets/img/empresa/alta-frecuencia-1.webp", "Máquina de alta frecuencia para bandas de PVC"),
+    ("assets/img/empresa/alta-frecuencia-2.webp", "Soldadura de perfiles en bandas de PVC"),
+    ("assets/img/empresa/nave-nueva-1.webp", "Nueva nave en construcción"),
+    ("assets/img/empresa/nave-nueva-2.webp", "Estructura de la nueva nave"),
 ]
 body += f"""
 
-    <div class="container container--wide page-photo">{img("assets/img/empresa/fachada.jpg", "Nave de CRM en el P.I. Los Alfares, La Rambla", lazy=False)}</div>
+    <div class="container container--wide page-photo">{img("assets/img/empresa/fachada.webp", "Nave de CRM en el P.I. Los Alfares, La Rambla", lazy=False)}</div>
 
     <section class="section section--flush-top">
       <div class="container">

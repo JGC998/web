@@ -9,9 +9,10 @@ Uso (desde la raíz del proyecto):  py _fuente/herramientas/procesar_fotos.py
 La selección de fotos de cada familia se define abajo (PRODUCTOS, EMPRESA, FONDOS, VIDEOS).
 """
 import os, sys, subprocess, shutil
-from PIL import Image, ImageOps
 
-Image.MAX_IMAGE_PIXELS = None  # fotos de 200 MP del móvil
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from imagenes import procesar  # WebP sin metadatos
+
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "web fotos")
@@ -60,14 +61,8 @@ VIDEOS = {
 }
 
 
-def foto(origen, destino, lado_max=1400, calidad=76):
-    im = Image.open(os.path.join(SRC, origen))
-    im.draft("RGB", (lado_max * 2, lado_max * 2))  # decodificación rápida de JPG enormes
-    im = ImageOps.exif_transpose(im).convert("RGB")
-    im.thumbnail((lado_max, lado_max), Image.LANCZOS)
-    os.makedirs(os.path.dirname(destino), exist_ok=True)
-    im.save(destino, "JPEG", quality=calidad, optimize=True, progressive=True)  # sin EXIF
-    return os.path.getsize(destino)
+def foto(origen, destino, lado_max=1400, calidad=78):
+    return procesar(os.path.join(SRC, origen), destino, lado_max, calidad)
 
 
 total = 0
@@ -76,17 +71,17 @@ for (cat, fam), fotos in PRODUCTOS.items():
     carpeta = os.path.join(REPO, "assets", "img", "productos", cat, fam)
     shutil.rmtree(carpeta, ignore_errors=True)
     for i, f in enumerate(fotos, 1):
-        total += foto(f, os.path.join(carpeta, f"{i:02d}.jpg"))
+        total += foto(f, os.path.join(carpeta, f"{i:02d}.webp"))
         n += 1
     print(f"productos/{cat}/{fam}: {len(fotos)} fotos")
 
 for nombre, f in EMPRESA.items():
-    total += foto(f, os.path.join(REPO, "assets", "img", "empresa", f"{nombre}.jpg"))
+    total += foto(f, os.path.join(REPO, "assets", "img", "empresa", f"{nombre}.webp"))
     n += 1
 print(f"empresa: {len(EMPRESA)} fotos")
 
 for nombre, f in FONDOS.items():
-    total += foto(f, os.path.join(REPO, "assets", "img", "fondos", f"{nombre}.jpg"), lado_max=2400, calidad=78)
+    total += foto(f, os.path.join(REPO, "assets", "img", "fondos", f"{nombre}.webp"), lado_max=2400, calidad=80)
     n += 1
 print(f"fondos: {len(FONDOS)} fotos")
 
@@ -97,13 +92,17 @@ for nombre, (f, ini, dur) in VIDEOS.items():
     # Los vídeos grabados en vertical se recortan a panorámico (16:9) por el centro
     vertical = "cnc" in nombre
     salida = os.path.join(vdir, f"{nombre}.mp4")
-    subprocess.run([
+    if not os.path.exists(salida) or "--videos" in sys.argv:
+        subprocess.run([
         "ffmpeg", "-v", "error", "-y", "-ss", str(ini), "-t", str(dur), "-i", entrada,
         "-an", "-vf", ("crop=iw:iw*9/16," if vertical else "") + "scale=-2:720,fps=30", "-c:v", "libx264", "-preset", "slow", "-crf", "28",
         "-profile:v", "high", "-pix_fmt", "yuv420p", "-movflags", "+faststart", salida,
     ], check=True)
-    poster = os.path.join(vdir, f"{nombre}.jpg")
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "1", "-i", salida, "-frames:v", "1", "-q:v", "4", poster], check=True)
+    fotograma = os.path.join(vdir, f"{nombre}-fotograma.png")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "1", "-i", salida, "-frames:v", "1", fotograma], check=True)
+    poster = os.path.join(vdir, f"{nombre}.webp")
+    procesar(fotograma, poster, lado_max=1280, calidad=75)
+    os.remove(fotograma)
     total += os.path.getsize(salida) + os.path.getsize(poster)
     print(f"vídeo {nombre}: {os.path.getsize(salida) / 1e6:.1f} MB")
 

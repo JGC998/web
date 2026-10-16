@@ -39,7 +39,7 @@ Para probar cambios grandes sin tocar la web publicada, crea una rama a partir d
 │   │   └── main.js               # Menú móvil, visor de fotos, mapa y acordeones
 │   └── img/
 │       ├── brand/                # Logo
-│       ├── productos/<categoria>/<familia>/   # Fotos del carrusel de cada familia (01.jpg, 02.jpg…)
+│       ├── productos/<categoria>/<familia>/   # Fotos del carrusel de cada familia (01.webp, 02.webp…)
 │       ├── empresa/              # Nave, maquinaria (Quiénes somos)
 │       └── fondos/               # Foto de fondo de la portada
 │   └── video/                    # Vídeos de fondo (MP4 720p sin sonido) + imagen fija (.jpg)
@@ -88,8 +88,8 @@ Archivos de configuración:
   <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg>
   ```
   Para usar un icono que ya existe en otra página, copia su `<svg>…</svg>`. Dentro de un recuadro verde: `<span class="badge-icon">…</span>`.
-- **Fotos de producto (carrusel):** cada familia muestra un carrusel con las fotos de su carpeta, por ejemplo `assets/img/productos/elevacion/cangilones/`. Las fotos se procesan antes (máx. 1600 px, JPG optimizado) y se nombran `01.jpg`, `02.jpg`… en el orden en que deben salir. Al añadirlas hay que regenerar la página de esa categoría para que el carrusel aparezca. Si una familia no tiene fotos, no se muestra carrusel.
-- **Fotos y vídeos nuevos:** los originales del móvil se dejan en `web fotos/` (está en `.gitignore`: no se suben a GitHub ni se publican). Antes de usarlos se procesan: fotos a 1400 px sin metadatos (se elimina la ubicación GPS) y vídeos a MP4 720p sin sonido. Los vídeos de fondo solo se descargan si el visitante no tiene activado el ahorro de datos ni la reducción de animaciones.
+- **Fotos de producto (carrusel):** cada familia muestra un carrusel con las fotos de su carpeta, por ejemplo `assets/img/productos/elevacion/cangilones/`. Las fotos se procesan antes (máx. 1400 px, WebP) y se nombran `01.webp`, `02.webp`… en el orden en que deben salir. Al añadirlas hay que regenerar la página de esa categoría para que el carrusel aparezca. Si una familia no tiene fotos, no se muestra carrusel.
+- **Fotos y vídeos nuevos:** los originales del móvil se dejan en `web fotos/` (está en `.gitignore`: no se suben a GitHub ni se publican). Antes de usarlos se procesan: fotos a 1400 px en WebP y sin metadatos (se elimina la ubicación GPS) y vídeos a MP4 720p sin sonido. Los vídeos de fondo solo se descargan si el visitante no tiene activado el ahorro de datos ni la reducción de animaciones.
 - **Fotos antiguas:** están en `fotos-antiguas/` (mismos nombres que tenían). No se usan ni se publican; sirven para retocarlas y volver a subirlas.
 - **Caché de CSS y JS:** `_headers` hace que el navegador compruebe en cada visita si han cambiado, así que los cambios se ven al momento. Los enlaces llevan una versión (`base.css?v=20261015`); si algún día se vuelve a cachear durante más tiempo, hay que subir ese número en todas las páginas al cambiar el CSS o el JS.
 
