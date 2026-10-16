@@ -2,7 +2,7 @@
 
 Propuesta redactada en octubre de 2026 para adaptarlos al funcionamiento actual
 de la web (formulario de presupuesto con fotos, WhatsApp, sin cookies de análisis).
-PENDIENTE DE REVISIÓN por la empresa y su asesoría antes de publicarlos.
+Revisados y aprobados por la asesoría de la empresa (octubre de 2026).
 
 construir.py usa estos textos en lugar de los de legal.json para las páginas
 que aparecen aquí.

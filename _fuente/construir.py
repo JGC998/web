@@ -68,7 +68,7 @@ CAT_ICON = {c["slug"]: c["icono"] for c in CATEGORIAS}
 SEC_ICON = {c["slug"]: {f["slug"]: f["icono"] for f in c["familias"]} for c in CATEGORIAS}
 C = {"products": {c["slug"]: [{"slug": f["slug"], "title": f["nombre"]} for f in c["familias"]] for c in CATEGORIAS}}
 LEGAL = json.load(open(os.path.join(FUENTE, "contenido", "legal.json"), encoding="utf-8"))
-from legal_textos import TEXTOS as _LEGAL_NUEVOS   # textos legales actualizados (pendientes de revisión)
+from legal_textos import TEXTOS as _LEGAL_NUEVOS   # textos legales actualizados y aprobados (octubre 2026)
 LEGAL.update(_LEGAL_NUEVOS)
 ARCHIVO_NOTICIAS = json.load(open(os.path.join(FUENTE, "contenido", "noticias-archivo.json"), encoding="utf-8"))
 NOTICIAS = leer_noticias(FUENTE, REPO)   # carpetas de _fuente/contenido/noticias/
