@@ -37,10 +37,15 @@ WHATSAPP = "34656844067"          # móvil con prefijo de país, sin + ni espaci
 WHATSAPP_VER = "656 84 40 67"
 
 
+def presupuesto(producto=""):
+    """Enlace al formulario de presupuesto con el producto ya seleccionado."""
+    return "/presupuesto/" + (f"?producto={urllib.parse.quote(producto)}" if producto else "")
+
+
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261016c"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
+VERSION = "20261016d"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
 # ---------------------------------------------------------------- contenido
 _P = json.load(open(os.path.join(FUENTE, "contenido", "productos.json"), encoding="utf-8"))
@@ -275,7 +280,8 @@ def write(path, title, desc, active, body, og_img=None, og_titulo=None, og_frase
     if path == "/404":
         compartir = "assets/img/compartir/inicio.jpg"
     else:
-        PAGINAS.append(path)
+        if path != "/presupuesto/gracias/":   # la página de gracias no va al sitemap
+            PAGINAS.append(path)
         compartir = imagen_compartir(path, og_titulo or title, og_img, og_frase)
     out = head(title, desc, compartir) + "\n" + header(active) + '\n  <main id="contenido">' + body + "\n  </main>\n" + FOOTER
     file = os.path.join(REPO, path.strip("/"), "index.html") if path != "/404" else os.path.join(REPO, "404.html")
@@ -314,7 +320,7 @@ def cta():
         <div class="actions">
           <a class="btn" href="tel:{PHONE_TEL}">{icon("phone")} {PHONE}</a>
           <a class="btn btn--wa" href="{wa()}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
-          <a class="more" href="mailto:{EMAIL}">Escríbenos</a>
+          <a class="more" href="/presupuesto/">Pedir presupuesto</a>
         </div>
       </div>
     </section>""".replace('<span class="badge-icon">', '<span class="badge-icon" style="margin:0 auto">', 1)
@@ -518,14 +524,14 @@ def product_page(slug, name, intro_text):
       <div class="container">
         <a class="localnav__title" href="#contenido">{name}</a>
         <a class="localnav__link" href="#gama">Gama</a>
-        <a class="btn" href="{mailto("Consulta: " + name)}">Consultar</a>
+        <a class="btn" href="{presupuesto(name)}">Presupuesto</a>
       </div>
     </nav>"""
     body += intro(
         f"{name}.",
         intro_text,
         eyebrow='<a href="/productos/">Productos</a>',
-        actions=f'<a class="btn" href="{mailto("Consulta: " + name)}">Consultar disponibilidad</a><a class="more" href="tel:{PHONE_TEL}">Llamar</a>',
+        actions=f'<a class="btn" href="{presupuesto(name)}">Pedir presupuesto</a><a class="more" href="{wa("Hola, quería información sobre " + name.lower() + ".")}" target="_blank" rel="noopener">WhatsApp</a><a class="more" href="tel:{PHONE_TEL}">Llamar</a>',
         icon_name=CAT_ICON[slug],
     )
     rng = "".join(f'<a href="#{s["slug"]}">{icon(SEC_ICON[slug][s["slug"]])}<span>{s["title"]}</span></a>' for s in secs)
@@ -561,7 +567,7 @@ def product_page(slug, name, intro_text):
             </div>{carousel(slug, s)}{extra}
             <div class="product__actions">
               <a class="btn btn--wa" href="{wa("Hola, quería información sobre " + s["title"].lower() + " (" + name + ").")}" target="_blank" rel="noopener">{icon("whatsapp")} Preguntar por WhatsApp</a>
-              <a class="btn btn--outline" href="{mailto("Consulta: " + s["title"])}">Consultar por email</a>
+              <a class="btn btn--outline" href="{presupuesto(name + " · " + s["title"])}">Pedir presupuesto</a>
             </div>
           </div>
         </details>"""
@@ -777,6 +783,76 @@ body += f"""
     </section>"""
 write("/contacto/", "Contacto", f"Contacta con CRM en La Rambla (Córdoba): teléfono {PHONE}, email {EMAIL}. Horario y ubicación.", "contacto", body,
       og_img="assets/img/empresa/fachada.webp", og_frase=f"Teléfono {PHONE} · WhatsApp {WHATSAPP_VER}")
+
+def opciones_producto():
+    grupos = []
+    for c in CATEGORIAS:
+        ops = "".join(f'<option>{e(c["nombre"])} · {e(f["nombre"])}</option>' for f in c["familias"])
+        grupos.append(f'<optgroup label="{e(c["nombre"])}"><option>{e(c["nombre"])}</option>{ops}</optgroup>')
+    return '<option value="">Elige un producto (opcional)</option>' + "".join(grupos) + "<option>Otro / no lo sé</option>"
+
+
+body = intro("Pide tu presupuesto.", "Cuéntanos qué necesitas y te contestamos lo antes posible. Si tienes una foto de la pieza, adjúntala: nos ayuda mucho.",
+             eyebrow="Presupuesto sin compromiso")
+body += f"""
+    <section class="section section--flush-top">
+      <div class="container container--narrow">
+        <form class="quote" action="/api/presupuesto" method="post" enctype="multipart/form-data" data-quote novalidate>
+          <div class="quote__grid">
+            <label class="field">
+              <span>Nombre <b aria-hidden="true">*</b></span>
+              <input name="nombre" autocomplete="name" required>
+            </label>
+            <label class="field">
+              <span>Empresa <small>(opcional)</small></span>
+              <input name="empresa" autocomplete="organization">
+            </label>
+            <label class="field">
+              <span>Teléfono <b aria-hidden="true">*</b></span>
+              <input name="telefono" type="tel" inputmode="tel" autocomplete="tel" required>
+            </label>
+            <label class="field">
+              <span>Email <small>(opcional)</small></span>
+              <input name="email" type="email" autocomplete="email">
+            </label>
+            <label class="field">
+              <span>Producto</span>
+              <select name="producto" data-quote-producto>{opciones_producto()}</select>
+            </label>
+            <label class="field">
+              <span>Cantidad <small>(opcional)</small></span>
+              <input name="cantidad" placeholder="Ej.: 20 unidades, 50 metros…">
+            </label>
+            <label class="field field--wide">
+              <span>Medidas o descripción</span>
+              <textarea name="mensaje" rows="5" placeholder="Ancho, largo, espesor, calidad… o cuéntanos qué necesitas."></textarea>
+            </label>
+            <label class="field field--wide field--file">
+              <span>{icon("camera")} Fotos de la pieza <small>(opcional, hasta 4)</small></span>
+              <input name="fotos" type="file" accept="image/*" multiple data-quote-fotos>
+            </label>
+            <label class="field--check field--wide">
+              <input type="checkbox" name="privacidad" value="si" required>
+              <span>He leído y acepto la <a href="/legal/politica-de-privacidad/" target="_blank">política de privacidad</a>. <b aria-hidden="true">*</b></span>
+            </label>
+            <div class="field--trap" aria-hidden="true">
+              <label>No rellenar <input name="web" tabindex="-1" autocomplete="off"></label>
+            </div>
+            <input type="hidden" name="t" value="">
+          </div>
+          <div class="quote__send">
+            <button class="btn" type="submit">Enviar solicitud</button>
+            <p class="quote__status" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+        <p class="quote__alt">¿Prefieres hablar? Llámanos al <a href="tel:{PHONE_TEL}">{PHONE}</a> o escríbenos por <a href="{wa()}" target="_blank" rel="noopener">WhatsApp</a>.</p>
+      </div>
+    </section>"""
+write("/presupuesto/", "Pide tu presupuesto", "Pide presupuesto a CRM: bandas transportadoras, bandas de PVC, faldetas y componentes para elevación. Puedes adjuntar fotos.", "", body,
+      og_titulo="Pide tu presupuesto", og_frase="Cuéntanos qué necesitas y adjunta una foto de la pieza")
+
+body = intro("¡Gracias!", "Hemos recibido tu solicitud. Te contestaremos lo antes posible.", actions=f'<a class="btn" href="/productos/">Ver productos</a><a class="more" href="/">Ir al inicio</a>')
+write("/presupuesto/gracias/", "Solicitud recibida", "Hemos recibido tu solicitud de presupuesto.", "", body)
 
 # ---------------------------------------------------------------- legales
 

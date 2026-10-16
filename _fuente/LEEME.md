@@ -20,6 +20,9 @@ Hace falta Python 3 con Pillow (`py -m pip install pillow`). Para procesar víde
 | `contenido/textos_productos.py` | Texto técnico (HTML) y tablas de cada familia. |
 | `contenido/legal.json` | Textos legales. |
 | `contenido/noticias-archivo.json` | Noticias antiguas de la web anterior (solo fecha y título). |
+| `worker/index.js` | Programa de Cloudflare que recibe el formulario de presupuesto y lo envía por email. |
+| `noticias.py`, `imagenes.py`, `compartir.py` | Noticias por carpetas, conversión de fotos a WebP e imágenes para compartir. |
+| `publicar.bat` | Doble clic: regenera la web, comprueba enlaces y la sube. |
 | `herramientas/procesar_fotos.py` | Convierte las fotos y vídeos de `web fotos/` al formato web. |
 | `herramientas/comprobar.py` | Busca enlaces rotos e imágenes que no usa ninguna página. |
 

@@ -308,6 +308,86 @@
     });
   }
 
+  /* ---------- Formulario de presupuesto ----------
+     - Marca el producto que llega en la URL (?producto=Faldetas · Goma)
+     - Reduce las fotos en el propio móvil (máx. 1600 px) antes de enviarlas
+     - Envía sin recargar y muestra el resultado; sin JS, el formulario
+       funciona igual con un envío normal */
+  var quote = document.querySelector("[data-quote]");
+  if (quote) {
+    var status = quote.querySelector(".quote__status");
+    var boton = quote.querySelector("button[type=submit]");
+    quote.querySelector("[name=t]").value = Date.now();
+
+    var pedido = new URLSearchParams(location.search).get("producto");
+    var select = quote.querySelector("[data-quote-producto]");
+    if (pedido && select) {
+      Array.prototype.forEach.call(select.options, function (op) {
+        if (op.text === pedido) select.value = op.value || op.text;
+      });
+    }
+    if (new URLSearchParams(location.search).get("error")) {
+      status.textContent = "No se ha podido enviar. Revisa los datos o llámanos.";
+      status.className = "quote__status is-error";
+    }
+
+    var reducir = function (archivo) {
+      if (!window.createImageBitmap || !/^image\//.test(archivo.type)) return Promise.resolve(archivo);
+      return createImageBitmap(archivo).then(function (bmp) {
+        var escala = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.round(bmp.width * escala);
+        canvas.height = Math.round(bmp.height * escala);
+        canvas.getContext("2d").drawImage(bmp, 0, 0, canvas.width, canvas.height);
+        return new Promise(function (ok) {
+          canvas.toBlob(function (blob) { ok(blob || archivo); }, "image/jpeg", 0.82);
+        });
+      }).catch(function () { return archivo; });
+    };
+
+    var aviso = function (texto, error) {
+      status.textContent = texto;
+      status.className = "quote__status" + (error ? " is-error" : " is-ok");
+    };
+
+    quote.addEventListener("submit", function (e) {
+      if (!window.fetch || !window.FormData) return; // envío normal
+      e.preventDefault();
+      var nombre = quote.querySelector("[name=nombre]");
+      var tel = quote.querySelector("[name=telefono]");
+      var priv = quote.querySelector("[name=privacidad]");
+      if (!nombre.value.trim()) { aviso("Escribe tu nombre.", true); nombre.focus(); return; }
+      if (!tel.value.trim()) { aviso("Escribe un teléfono para poder contestarte.", true); tel.focus(); return; }
+      if (!priv.checked) { aviso("Marca la casilla de la política de privacidad.", true); priv.focus(); return; }
+
+      var datos = new FormData(quote);
+      var fotos = Array.prototype.slice.call(quote.querySelector("[data-quote-fotos]").files || [], 0, 4);
+      datos.delete("fotos");
+      boton.disabled = true;
+      aviso(fotos.length ? "Preparando las fotos…" : "Enviando…");
+
+      Promise.all(fotos.map(reducir))
+        .then(function (reducidas) {
+          reducidas.forEach(function (blob, i) { datos.append("fotos", blob, "foto-" + (i + 1) + ".jpg"); });
+          aviso("Enviando…");
+          return fetch(quote.action, { method: "POST", body: datos, headers: { Accept: "application/json" } });
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res.ok) {
+            location.href = "/presupuesto/gracias/";
+          } else {
+            aviso(res.mensaje || "No se ha podido enviar.", true);
+            boton.disabled = false;
+          }
+        })
+        .catch(function () {
+          aviso("No se ha podido enviar. Revisa tu conexión o llámanos al 957 682 819.", true);
+          boton.disabled = false;
+        });
+    });
+  }
+
   /* ---------- Mapa: solo se carga al pulsar (sin cookies de Google hasta entonces) ---------- */
   document.querySelectorAll("[data-map-src]").forEach(function (map) {
     map.querySelector("button").addEventListener("click", function () {
