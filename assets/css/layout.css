@@ -388,8 +388,8 @@
     inset: auto 0 0 0;
     z-index: 250;
     display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 8px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
     height: var(--callbar-h);
     padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
     background: rgba(255, 255, 255, 0.92);
@@ -402,9 +402,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     border-radius: 980px;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 600;
     text-decoration: none;
   }
@@ -417,6 +417,15 @@
   .callbar a:last-child {
     background: var(--tile);
     color: var(--text);
+  }
+
+  .callbar .callbar__wa {
+    background: var(--tile);
+    color: var(--text);
+  }
+
+  .callbar .callbar__wa .icon {
+    color: #1da851;
   }
 
   .callbar svg {

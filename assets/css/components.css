@@ -735,7 +735,7 @@ details[open] > summary .product__toggle {
 
 .contact-tiles {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
 
@@ -778,6 +778,12 @@ a.contact-tile:hover {
 .contact-tile span {
   font-size: 1rem;
   color: var(--muted);
+}
+
+@media (max-width: 1100px) {
+  .contact-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 860px) {
@@ -1260,4 +1266,23 @@ a.contact-tile:hover {
 .section--tile .carousel__slide,
 .section--tile .carousel__btn {
   background: #fff;
+}
+
+/* ---------- Botón de WhatsApp ---------- */
+
+.btn--wa {
+  border-color: #157f3d;
+  background: #157f3d;
+  color: #fff;
+}
+
+.btn--wa:hover {
+  border-color: #106632;
+  background: #106632;
+  color: #fff;
+}
+
+.contact-tile .badge-icon .icon[data-wa],
+.btn--wa .icon {
+  stroke-width: 1.8;
 }

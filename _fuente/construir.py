@@ -11,7 +11,7 @@ Lee:
   assets/img/productos/<cat>/<familia>/   fotos de cada carrusel
 y escribe los index.html de cada página.
 """
-import sys, os, json, html
+import sys, os, json, html, urllib.parse
 
 FUENTE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(FUENTE)
@@ -29,7 +29,14 @@ SITE = "https://crmsl.es"
 PHONE = "+34 957 682 819"
 PHONE_TEL = "+34957682819"
 EMAIL = "info@crmsl.es"
-VERSION = "20261015c"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
+WHATSAPP = "34656844067"          # móvil con prefijo de país, sin + ni espacios
+WHATSAPP_VER = "656 84 40 67"
+
+
+def wa(texto="Hola, quería hacer una consulta."):
+    """Enlace a WhatsApp con el mensaje ya escrito."""
+    return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
+VERSION = "20261016"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
 # ---------------------------------------------------------------- contenido
 _P = json.load(open(os.path.join(FUENTE, "contenido", "productos.json"), encoding="utf-8"))
@@ -140,6 +147,7 @@ def mega_menu(active):
                   <a class="more" href="/productos/">Ver todos los productos</a>
                   <a class="more" href="/catalogos/">Pedir un catálogo</a>
                   <a class="more" href="tel:{PHONE_TEL}">Llamar al {PHONE}</a>
+                  <a class="more" href="{wa("Hola, quería información sobre vuestros productos.")}" target="_blank" rel="noopener">WhatsApp</a>
                 </div>
               </div>
             </div>"""
@@ -174,6 +182,7 @@ def header(active):
         <div class="nav__extra">
           Atención al cliente
           <a href="tel:{PHONE_TEL}">{PHONE}</a>
+          <a href="{wa()}" target="_blank" rel="noopener">WhatsApp {WHATSAPP_VER}</a>
           <a href="mailto:{EMAIL}">{EMAIL}</a>
         </div>
       </nav>
@@ -191,7 +200,7 @@ def header(active):
 FOOTER = f"""
   <footer class="site-footer">
     <div class="container">
-      <p class="footer__lead">¿Necesitas ayuda? Llámanos al <a href="tel:{PHONE_TEL}"><strong>{PHONE}</strong></a> o escríbenos a <a href="mailto:{EMAIL}"><strong>{EMAIL}</strong></a>.</p>
+      <p class="footer__lead">¿Necesitas ayuda? Llámanos al <a href="tel:{PHONE_TEL}"><strong>{PHONE}</strong></a>, escríbenos por <a href="{wa()}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a> o a <a href="mailto:{EMAIL}"><strong>{EMAIL}</strong></a>.</p>
       <div class="footer__grid">
         <div>
           <h2>Productos</h2>
@@ -231,6 +240,7 @@ FOOTER = f"""
 
   <nav class="callbar" aria-label="Contacto rápido">
     <a href="tel:{PHONE_TEL}">{icon("phone")} Llamar</a>
+    <a class="callbar__wa" href="{wa()}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
     <a href="mailto:{EMAIL}">{icon("mail")} Email</a>
   </nav>
 </body>
@@ -275,6 +285,7 @@ def cta():
         <p class="lead" style="max-width:600px;margin:0 auto 28px">Te ayudamos a elegir el producto adecuado para tu instalación.</p>
         <div class="actions">
           <a class="btn" href="tel:{PHONE_TEL}">{icon("phone")} {PHONE}</a>
+          <a class="btn btn--wa" href="{wa()}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
           <a class="more" href="mailto:{EMAIL}">Escríbenos</a>
         </div>
       </div>
@@ -485,7 +496,8 @@ def product_page(slug, name, intro_text):
             <div class="product__text">{text}
             </div>{carousel(slug, s)}{extra}
             <div class="product__actions">
-              <a class="btn btn--outline" href="{mailto("Consulta: " + s["title"])}">Consultar disponibilidad</a>
+              <a class="btn btn--wa" href="{wa("Hola, quería información sobre " + s["title"].lower() + " (" + name + ").")}" target="_blank" rel="noopener">{icon("whatsapp")} Preguntar por WhatsApp</a>
+              <a class="btn btn--outline" href="{mailto("Consulta: " + s["title"])}">Consultar por email</a>
             </div>
           </div>
         </details>"""
@@ -634,13 +646,14 @@ write("/noticias/", "Noticias", "Noticias de CRM: ferias (Expoliva, FIMA, Victam
 
 MAP = "https://www.google.com/maps?q=Calle+La+Jarra+41,+14540+La+Rambla,+C%C3%B3rdoba&output=embed"
 DIR = "https://www.google.com/maps/dir/?api=1&destination=Calle+La+Jarra+41,+14540+La+Rambla,+C%C3%B3rdoba"
-body = intro("Contacto.", "Llámanos o escríbenos y uno de nuestros profesionales te responderá lo antes posible.",
+body = intro("Contacto.", "Llámanos, mándanos un WhatsApp o escríbenos y uno de nuestros profesionales te responderá lo antes posible.",
              eyebrow="Comercial de Recambios Montemayor S.L.")
 body += f"""
     <section class="section section--flush-top">
       <div class="container container--wide">
         <div class="contact-tiles">
           <a class="contact-tile" href="tel:{PHONE_TEL}">{badge("phone")}<h3>Llámanos</h3><strong>{PHONE}</strong><span>En horario comercial</span></a>
+          <a class="contact-tile" href="{wa()}" target="_blank" rel="noopener">{badge("whatsapp")}<h3>WhatsApp</h3><strong>{WHATSAPP_VER}</strong><span>Mándanos un mensaje o una foto</span></a>
           <a class="contact-tile" href="mailto:{EMAIL}">{badge("mail")}<h3>Escríbenos</h3><strong>{EMAIL}</strong><span>Te respondemos lo antes posible</span></a>
           <a class="contact-tile" href="{DIR}" target="_blank" rel="noopener">{badge("pin")}<h3>Visítanos</h3><strong>C/ La Jarra 41</strong><span>P.I. Los Alfares · 14540 La Rambla (Córdoba)</span></a>
         </div>
