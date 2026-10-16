@@ -45,11 +45,14 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261016e"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
+VERSION = "20261016f"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
 # ---------------------------------------------------------------- contenido
 _P = json.load(open(os.path.join(FUENTE, "contenido", "productos.json"), encoding="utf-8"))
 CATEGORIAS = _P["categorias"]
+# Familias con "oculta": true en productos.json no se publican (se conservan sus datos y fotos)
+for _c in CATEGORIAS:
+    _c["familias"] = [f for f in _c["familias"] if not f.get("oculta")]
 PRODUCTS = [(c["slug"], c["nombre"], c["intro"]) for c in CATEGORIAS]   # orden del menú
 NAMES = {c["slug"]: c["nombre"] for c in CATEGORIAS}
 SHORT = {c["slug"]: c["corto"] for c in CATEGORIAS}
@@ -118,9 +121,7 @@ def head(title, desc, og_img=None, lang="es", path="/"):
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">{idiomas}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/base.css?v={VERSION}">
   <link rel="stylesheet" href="/assets/css/layout.css?v={VERSION}">
   <link rel="stylesheet" href="/assets/css/components.css?v={VERSION}">

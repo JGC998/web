@@ -1,3 +1,13 @@
+/* Tipografía Inter (licencia SIL Open Font License), servida desde la propia web:
+   así no se envía la IP de los visitantes a Google. Un solo archivo variable (400-700). */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/assets/fonts/inter-latin.woff2") format("woff2");
+}
+
 /* =========================================================
    BASE — variables, reset y tipografía
    Diseño tipográfico y con iconos: títulos grandes, mucho

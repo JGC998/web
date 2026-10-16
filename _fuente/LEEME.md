@@ -34,6 +34,8 @@ Hace falta Python 3 con Pillow (`py -m pip install pillow`). Para procesar víde
 3. Opcional: fotos en `assets/img/productos/<categoria>/nueva-familia/01.webp, 02.webp…`
 4. `py _fuente/construir.py` → aparece en la página, en el menú y en las tarjetas.
 
+**Ocultar una familia sin borrarla:** en `contenido/productos.json`, añadir `"oculta": true` a su línea, por ejemplo `{"slug": "cordones-y-correas", "nombre": "Cordones y correas", "icono": "cord", "oculta": true}`. Desaparece de la web, del menú y de las tarjetas; para recuperarla, se quita esa marca.
+
 **Cambiar el teléfono, el email o el menú:** al principio de `construir.py`.
 
 **Después de cualquier cambio:** `py _fuente/herramientas/comprobar.py` para revisar que no haya enlaces rotos.
