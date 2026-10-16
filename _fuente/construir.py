@@ -45,7 +45,9 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261016f"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
+VERSION = "20261016f"
+# Estadísticas de visitas (Cloudflare Web Analytics: sin cookies). Vacío = desactivado.
+ANALITICA_TOKEN = "c9bd8190b2be4939ae6689fd3909c441"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
 # ---------------------------------------------------------------- contenido
 _P = json.load(open(os.path.join(FUENTE, "contenido", "productos.json"), encoding="utf-8"))
@@ -95,6 +97,16 @@ def sentence(t):
 
 # ---------------------------------------------------------------- plantilla
 
+def analitica():
+    if not ANALITICA_TOKEN:
+        return ""
+    return (
+        "\n  <!-- Cloudflare Web Analytics (sin cookies) -->"
+        '\n  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" '
+        f"data-cf-beacon='{{\"token\": \"{ANALITICA_TOKEN}\"}}'></script>"
+    )
+
+
 def head(title, desc, og_img=None, lang="es", path="/"):
     full = f"{title} | CRM Componentes" if title else "CRM Componentes — Comercial de Recambios Montemayor"
     idiomas = ""
@@ -125,7 +137,7 @@ def head(title, desc, og_img=None, lang="es", path="/"):
   <link rel="stylesheet" href="/assets/css/base.css?v={VERSION}">
   <link rel="stylesheet" href="/assets/css/layout.css?v={VERSION}">
   <link rel="stylesheet" href="/assets/css/components.css?v={VERSION}">
-  <script src="/assets/js/main.js?v={VERSION}" defer></script>
+  <script src="/assets/js/main.js?v={VERSION}" defer></script>{analitica()}
 </head>"""
 
 
