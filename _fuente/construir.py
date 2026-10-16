@@ -45,7 +45,7 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261016d"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
+VERSION = "20261016e"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
 # ---------------------------------------------------------------- contenido
 _P = json.load(open(os.path.join(FUENTE, "contenido", "productos.json"), encoding="utf-8"))
@@ -53,6 +53,12 @@ CATEGORIAS = _P["categorias"]
 PRODUCTS = [(c["slug"], c["nombre"], c["intro"]) for c in CATEGORIAS]   # orden del menú
 NAMES = {c["slug"]: c["nombre"] for c in CATEGORIAS}
 SHORT = {c["slug"]: c["corto"] for c in CATEGORIAS}
+NAMES_EN = {c["slug"]: c["nombre_en"] for c in CATEGORIAS}
+SHORT_EN = {c["slug"]: c["corto_en"] for c in CATEGORIAS}
+
+# Páginas que existen en los dos idiomas (para el enlace English/Español y hreflang)
+ALTERNATIVAS = {"/": "/en/", "/productos/": "/en/products/", "/quienes-somos/": "/en/about/", "/contacto/": "/en/contact/"}
+ALTERNATIVAS.update({v: k for k, v in list(ALTERNATIVAS.items())})
 CAT_ICON = {c["slug"]: c["icono"] for c in CATEGORIAS}
 SEC_ICON = {c["slug"]: {f["slug"]: f["icono"] for f in c["familias"]} for c in CATEGORIAS}
 C = {"products": {c["slug"]: [{"slug": f["slug"], "title": f["nombre"]} for f in c["familias"]] for c in CATEGORIAS}}
@@ -86,10 +92,16 @@ def sentence(t):
 
 # ---------------------------------------------------------------- plantilla
 
-def head(title, desc, og_img=None):
+def head(title, desc, og_img=None, lang="es", path="/"):
     full = f"{title} | CRM Componentes" if title else "CRM Componentes — Comercial de Recambios Montemayor"
+    idiomas = ""
+    if path in ALTERNATIVAS:
+        es, en = (path, ALTERNATIVAS[path]) if lang == "es" else (ALTERNATIVAS[path], path)
+        idiomas = (f'\n  <link rel="alternate" hreflang="es" href="{SITE}{es}">'
+                   f'\n  <link rel="alternate" hreflang="en" href="{SITE}{en}">'
+                   f'\n  <link rel="alternate" hreflang="x-default" href="{SITE}{es}">')
     return f"""<!doctype html>
-<html lang="es">
+<html lang="{lang}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -97,7 +109,7 @@ def head(title, desc, og_img=None):
   <meta name="description" content="{e(desc)}">
   <meta name="theme-color" content="#ffffff">
   <meta property="og:type" content="website">
-  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale" content="{"es_ES" if lang == "es" else "en_GB"}">
   <meta property="og:site_name" content="CRM Componentes">
   <meta property="og:title" content="{e(full)}">
   <meta property="og:description" content="{e(desc)}">
@@ -105,7 +117,7 @@ def head(title, desc, og_img=None):
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">{idiomas}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -167,7 +179,55 @@ def mega_menu(active):
             </div>"""
 
 
-def header(active):
+def enlace_idioma(path, lang):
+    if lang == "es":
+        return f'<li><a class="nav__link nav__lang" href="{ALTERNATIVAS.get(path, "/en/")}" hreflang="en" lang="en">English</a></li>'
+    return f'<li><a class="nav__link nav__lang" href="{ALTERNATIVAS.get(path, "/")}" hreflang="es" lang="es">Español</a></li>'
+
+
+NAV_EN = [
+    ("/en/", "Home", "en-inicio"),
+    ("/en/products/", "Products", "en-productos"),
+    ("/en/about/", "About us", "en-empresa"),
+    ("/en/contact/", "Contact", "en-contacto"),
+]
+
+
+def header_en(active, path):
+    items = "".join(
+        f'<li><a class="nav__link" href="{h}"{" aria-current=\"page\"" if k == active else ""}>{l}</a></li>'
+        for h, l, k in NAV_EN
+    ) + enlace_idioma(path, "en")
+    return f"""<body>
+  <a class="skip-link" href="#contenido">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/en/" aria-label="CRM Componentes — Home">
+        <img src="/assets/img/brand/logo-crm.png" alt="CRM" width="500" height="173">
+      </a>
+      <nav class="nav" id="menu" aria-label="Main">
+        <ul class="nav__list">
+          {items}
+        </ul>
+        <div class="nav__extra">
+          Customer service
+          <a href="tel:{PHONE_TEL}">{PHONE}</a>
+          <a href="{wa("Hello, I would like some information.")}" target="_blank" rel="noopener">WhatsApp +34 {WHATSAPP_VER}</a>
+          <a href="mailto:{EMAIL}">{EMAIL}</a>
+        </div>
+      </nav>
+      <a class="header-call" href="tel:{PHONE_TEL}">{icon("phone")} Call</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+        <span class="nav-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle__label" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+"""
+
+
+def header(active, path="/"):
     items = []
     for href, label, key in NAV:
         if key == "productos":
@@ -181,6 +241,7 @@ def header(active):
             items.append(f'<li><a class="nav__link" href="{href}" aria-current="page">{label}</a></li>')
         else:
             items.append(f'<li><a class="nav__link" href="{href}">{label}</a></li>')
+    items.append(enlace_idioma(path, "es"))
     return f"""<body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
@@ -262,6 +323,54 @@ FOOTER = f"""
 """
 
 
+FOOTER_EN = f"""
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer__lead">Need help? Call us on <a href="tel:{PHONE_TEL}"><strong>{PHONE}</strong></a>, message us on <a href="{wa("Hello, I would like some information.")}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a> or email <a href="mailto:{EMAIL}"><strong>{EMAIL}</strong></a>.</p>
+      <div class="footer__grid">
+        <div>
+          <h2>Products</h2>
+          <ul class="footer__links">
+            {"".join(f'<li><a href="/en/products/#{s}">{NAMES_EN[s]}</a></li>' for s, _, _ in PRODUCTS)}
+          </ul>
+        </div>
+        <div>
+          <h2>Company</h2>
+          <ul class="footer__links">
+            <li><a href="/en/about/">About us</a></li>
+            <li><a href="/en/contact/">Contact</a></li>
+            <li><a href="/" hreflang="es" lang="es">Español</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Legal</h2>
+          <ul class="footer__links">
+            <li><a href="/legal/aviso-legal/" hreflang="es">Legal notice (Spanish)</a></li>
+            <li><a href="/legal/politica-de-privacidad/" hreflang="es">Privacy policy (Spanish)</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Visit us</h2>
+          <p style="margin:0">P.I. Los Alfares<br>Calle La Jarra 41<br>14540 La Rambla (Córdoba), Spain</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year>2026</span> Comercial de Recambios Montemayor, S.L.</span>
+        <span>VAT ES-B14392799</span>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="callbar" aria-label="Quick contact">
+    <a href="tel:{PHONE_TEL}">{icon("phone")} Call</a>
+    <a class="callbar__wa" href="{wa("Hello, I would like some information.")}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
+    <a href="mailto:{EMAIL}">{icon("mail")} Email</a>
+  </nav>
+</body>
+</html>
+"""
+
+
 FRASE_COMPARTIR = "Componentes para elevación y transporte · La Rambla (Córdoba)"
 
 
@@ -275,7 +384,7 @@ def imagen_compartir(path, title, foto=None, frase=None):
     return rel
 
 
-def write(path, title, desc, active, body, og_img=None, og_titulo=None, og_frase=None):
+def write(path, title, desc, active, body, og_img=None, og_titulo=None, og_frase=None, lang="es"):
     """og_img: foto de fondo para la imagen al compartir (si no, fondo verde)."""
     if path == "/404":
         compartir = "assets/img/compartir/inicio.jpg"
@@ -283,7 +392,9 @@ def write(path, title, desc, active, body, og_img=None, og_titulo=None, og_frase
         if path != "/presupuesto/gracias/":   # la página de gracias no va al sitemap
             PAGINAS.append(path)
         compartir = imagen_compartir(path, og_titulo or title, og_img, og_frase)
-    out = head(title, desc, compartir) + "\n" + header(active) + '\n  <main id="contenido">' + body + "\n  </main>\n" + FOOTER
+    cabecera = header(active, path) if lang == "es" else header_en(active, path)
+    pie = FOOTER if lang == "es" else FOOTER_EN
+    out = head(title, desc, compartir, lang, path) + "\n" + cabecera + '\n  <main id="contenido">' + body + "\n  </main>\n" + pie
     file = os.path.join(REPO, path.strip("/"), "index.html") if path != "/404" else os.path.join(REPO, "404.html")
     os.makedirs(os.path.dirname(file), exist_ok=True)
     open(file, "w", encoding="utf-8", newline="\n").write(out)
@@ -872,6 +983,203 @@ for slug, title in LEG:
       </div>
     </section>"""
     write(f"/legal/{slug}/", title, f"{title} de Comercial de Recambios Montemayor, S.L.", "legal", body)
+
+# ---------------------------------------------------------------- versión en inglés
+WA_EN = wa("Hello, I would like some information about your products.")
+
+
+def cta_en():
+    return f"""
+    <section class="section section--tile center">
+      <div class="container">
+        <span class="badge-icon" style="margin:0 auto">{icon("handshake")}</span>
+        <h2 style="margin-top:28px">Let's talk.</h2>
+        <p class="lead" style="max-width:600px;margin:0 auto 28px">We help you choose the right product for your installation. We reply in English.</p>
+        <div class="actions">
+          <a class="btn" href="mailto:{EMAIL}?subject=Enquiry%20from%20the%20website">{icon("mail")} {EMAIL}</a>
+          <a class="btn btn--wa" href="{WA_EN}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
+          <a class="more" href="tel:{PHONE_TEL}">Call {PHONE}</a>
+        </div>
+      </div>
+    </section>"""
+
+
+def tarjetas_en():
+    out = []
+    for c in CATEGORIAS:
+        fams = c["familias"]
+        lista = "".join(f'<li><a href="/en/products/#{c["slug"]}">{e(f["nombre_en"])}</a></li>' for f in fams[:5])
+        if len(fams) > 5:
+            lista += f'<li><a class="catcard__rest" href="/en/products/#{c["slug"]}">and {len(fams) - 5} more</a></li>'
+        out.append(f"""
+          <article class="catcard">
+            {badge(c["icono"], "sm")}
+            <h3><a href="/en/products/#{c["slug"]}">{c["nombre_en"]}</a></h3>
+            <p>{c["corto_en"]}</p>
+            <ul class="catcard__list">{lista}</ul>
+            <a class="more" href="/en/products/#{c["slug"]}">See range</a>
+          </article>""")
+    return '<div class="catcards">' + "".join(out) + "\n        </div>"
+
+
+# Portada
+body = f"""
+    <section class="hero hero--photo" style="--hero-img:url('/assets/img/fondos/campo.webp')">
+      <div class="container">
+        <span class="eyebrow">Since 1994 · La Rambla, Córdoba (Spain)</span>
+        <h1>Solutions and <span class="gradient">maximum efficiency.</span></h1>
+        <p class="lead">Components for bucket elevators and bulk material handling: conveyor belts, PVC belts and rubber skirts. Permanent stock and custom manufacturing.</p>
+        <div class="actions">
+          <a class="btn" href="/en/products/">View products</a>
+          <a class="more" href="/en/contact/">Contact us</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>Our products.</h2>
+          <p class="lead">Everything your installation needs, from a single supplier.</p>
+        </div>
+        {tarjetas_en()}
+      </div>
+    </section>
+{video_band("corte-fieltro", "Custom manufacturing", "Cut to your size.",
+            "Felt, rubber and amber polyurethane cut and punched at our facility in La Rambla, Spain.",
+            '<a class="btn btn--light" href="/en/products/#faldetas">Rubber skirts</a><a class="more" href="/en/about/">Our facilities</a>')}
+
+    <section class="section section--tight section--tile">
+      <div class="container container--wide">
+        <ul class="facts">
+          <li>{icon("calendar")}<strong>Since 1994</strong><span>Family business</span></li>
+          <li>{icon("box")}<strong>Permanent stock</strong><span>Immediate delivery</span></li>
+          <li>{icon("ruler")}<strong>Custom-made</strong><span>Cutting, punching and parts</span></li>
+          <li>{icon("award")}<strong>Leading brands</strong><span>European and Spanish</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container center">
+        <p class="statement">Quality over quantity. <span>We would rather have good customers and give them a personalised service.</span></p>
+        <div class="actions" style="margin-top:32px"><a class="more" href="/en/about/">About us</a></div>
+      </div>
+    </section>
+{cta_en()}"""
+write("/en/", "Conveyor belts, bucket elevator parts and rubber skirts", "CRM (La Rambla, Spain): conveyor belts, PVC belts, rubber skirts and components for bucket elevators. Permanent stock and custom manufacturing since 1994.",
+      "en-inicio", body, og_img="assets/img/fondos/campo.webp", og_titulo="Solutions and maximum efficiency.",
+      og_frase="CRM · Components for elevators and conveyors since 1994", lang="en")
+
+# Productos
+secciones = []
+for c in CATEGORIAS:
+    fams = "".join(f'<li>{icon(f["icono"])}<span>{e(f["nombre_en"])}</span></li>' for f in c["familias"])
+    secciones.append(f"""
+        <article class="en-cat" id="{c["slug"]}">
+          <div class="en-cat__head">
+            {badge(c["icono"])}
+            <div>
+              <h2>{c["nombre_en"]}</h2>
+              <p class="lead">{c["corto_en"]}</p>
+            </div>
+          </div>
+          <ul class="en-cat__list">{fams}</ul>
+          <div class="actions actions--start">
+            <a class="btn" href="mailto:{EMAIL}?subject={urllib.parse.quote("Quote request: " + c["nombre_en"])}">Request a quote</a>
+            <a class="more" href="/productos/{c["slug"]}/" hreflang="es">Technical details and photos (in Spanish)</a>
+          </div>
+        </article>""")
+body = intro("Products.", "Components for bucket elevators, belt conveyors and custom parts in rubber, felt and PVC.")
+body += f"""
+    <section class="section section--flush-top">
+      <div class="container">{"".join(secciones)}
+      </div>
+    </section>""" + cta_en()
+write("/en/products/", "Products", "CRM products: bucket elevator components, conveyor belts, rubber skirts and PVC belts.", "en-productos", body,
+      og_frase="Bucket elevators · Conveyor belts · Rubber skirts · PVC belts", lang="en")
+
+# Empresa
+INSTALACIONES_EN = [
+    ("assets/img/empresa/fachada.webp", "CRM premises at P.I. Los Alfares"),
+    ("assets/img/empresa/cnc-1.webp", "CNC cutting machine"),
+    ("assets/img/empresa/corte-cnc-goma.webp", "Cutting rubber on the CNC"),
+    ("assets/img/empresa/cnc-2.webp", "CNC cutting head"),
+    ("assets/img/empresa/alta-frecuencia-1.webp", "High-frequency machine for PVC belts"),
+    ("assets/img/empresa/alta-frecuencia-2.webp", "Welding profiles on PVC belts"),
+    ("assets/img/empresa/nave-nueva-1.webp", "New building under construction"),
+    ("assets/img/empresa/nave-nueva-2.webp", "Structure of the new building"),
+]
+body = intro("A family business <span class=\"gradient\">since 1994.</span>", "Past, technology. Present, innovation. Future, sustainability.", eyebrow="About us")
+body += f"""
+
+    <div class="container container--wide page-photo">{img("assets/img/empresa/fachada.webp", "CRM premises in La Rambla", lazy=False)}</div>
+
+    <section class="section section--flush-top">
+      <div class="container">
+        <ul class="values">
+          <li>{badge("wrench", "sm")}<h3>Professionals</h3><p>We are a company for professionals, with long experience in every product we sell.</p></li>
+          <li>{badge("award", "sm")}<h3>Leading brands</h3><p>We are backed by European manufacturers that were not present in Spain and by leading Spanish brands.</p></li>
+          <li>{badge("refresh", "sm")}<h3>An up-to-date range</h3><p>We listen to our customers' experience and keep updating our products.</p></li>
+          <li>{badge("truck", "sm")}<h3>Well connected</h3><p>20 minutes from Córdoba and one hour from Seville, Málaga, Granada and Jaén, on fast roads.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--tile">
+      <div class="container">
+        <div class="headline">
+          <h2>Our facilities.</h2>
+          <p class="lead">Our own machinery to cut, punch and manufacture to measure. And a new building on the way.</p>
+        </div>
+        {carousel_html("facilities", INSTALACIONES_EN, "Photos of our facilities")}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>Our story.</h2>
+        </div>
+        <ol class="years">
+          <li><span class="years__num gradient">1994</span><h3>CRM S.L. is founded.</h3><p>With the will to do something different and many years of experience in the sector.</p></li>
+          <li><span class="years__num gradient">1999</span><h3>A new 500 m² building.</h3><p>From 2000 we started to have customers all over Spain, and in 2002 we bought a new plot.</p></li>
+          <li><span class="years__num gradient">2005</span><h3>Another 500 m².</h3><p>We extended the building to store new products and house new machinery.</p></li>
+        </ol>
+      </div>
+    </section>
+{cta_en()}"""
+write("/en/about/", "About us", "CRM S.L. is a family business founded in 1994 in La Rambla (Córdoba, Spain), specialised in components for bucket elevators and conveyors.", "en-empresa", body,
+      og_img="assets/img/empresa/fachada.webp", og_titulo="A family business since 1994", lang="en")
+
+# Contacto
+body = intro("Contact.", "Call us, send us a WhatsApp message or an email. We reply in English.", eyebrow="Comercial de Recambios Montemayor S.L.")
+body += f"""
+    <section class="section section--flush-top">
+      <div class="container container--wide">
+        <div class="contact-tiles">
+          <a class="contact-tile" href="mailto:{EMAIL}">{badge("mail")}<h3>Email</h3><strong>{EMAIL}</strong><span>We reply as soon as possible</span></a>
+          <a class="contact-tile" href="tel:{PHONE_TEL}">{badge("phone")}<h3>Phone</h3><strong>{PHONE}</strong><span>Office hours (CET)</span></a>
+          <a class="contact-tile" href="{WA_EN}" target="_blank" rel="noopener">{badge("whatsapp")}<h3>WhatsApp</h3><strong>+34 {WHATSAPP_VER}</strong><span>Messages and photos</span></a>
+          <a class="contact-tile" href="{DIR}" target="_blank" rel="noopener">{badge("pin")}<h3>Visit us</h3><strong>C/ La Jarra 41</strong><span>P.I. Los Alfares · 14540 La Rambla (Córdoba), Spain</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tile">
+      <div class="container">
+        <div class="headline">
+          <h2>Opening hours.</h2>
+          <p class="lead">Monday to Friday, Central European Time.</p>
+        </div>
+        <div class="hours">
+          <div class="hours__card"><h3>Winter</h3><p>Monday to Friday</p><span class="hours__time">8:30 – 13:30</span><span class="hours__time">16:00 – 19:00</span></div>
+          <div class="hours__card"><h3>Summer</h3><p>Monday to Friday</p><span class="hours__time">8:00 – 15:00</span></div>
+        </div>
+      </div>
+    </section>"""
+write("/en/contact/", "Contact", f"Contact CRM in La Rambla (Córdoba, Spain): phone {PHONE}, email {EMAIL}.", "en-contacto", body,
+      og_img="assets/img/empresa/fachada.webp", og_frase=f"Phone {PHONE} · {EMAIL}", lang="en")
 
 # ---------------------------------------------------------------- 404
 

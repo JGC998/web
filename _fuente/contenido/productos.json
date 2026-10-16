@@ -10,39 +10,48 @@
         {
           "slug": "bandas-elevadoras",
           "nombre": "Bandas elevadoras",
-          "icono": "elevator"
+          "icono": "elevator",
+          "nombre_en": "Elevator belts"
         },
         {
           "slug": "cangilones",
           "nombre": "Cangilones",
-          "icono": "bucket"
+          "icono": "bucket",
+          "nombre_en": "Elevator buckets"
         },
         {
           "slug": "imanes",
           "nombre": "Imanes",
-          "icono": "magnet"
+          "icono": "magnet",
+          "nombre_en": "Magnets"
         },
         {
           "slug": "paneles-de-explosion",
           "nombre": "Paneles de explosión",
-          "icono": "burst"
+          "icono": "burst",
+          "nombre_en": "Explosion vent panels"
         },
         {
           "slug": "sistemas-de-seguridad",
           "nombre": "Sistemas de seguridad",
-          "icono": "shield"
+          "icono": "shield",
+          "nombre_en": "Safety monitoring systems"
         },
         {
           "slug": "tornillos-y-grapas",
           "nombre": "Tornillos y grapas",
-          "icono": "bolt"
+          "icono": "bolt",
+          "nombre_en": "Bucket bolts and belt fasteners"
         },
         {
           "slug": "cadenas-transportadoras",
           "nombre": "Cadenas transportadoras",
-          "icono": "chain"
+          "icono": "chain",
+          "nombre_en": "Conveyor chains"
         }
-      ]
+      ],
+      "nombre_en": "Bucket elevators",
+      "corto_en": "Components for bucket elevators."
     },
     {
       "slug": "bandas-transportadoras",
@@ -54,59 +63,72 @@
         {
           "slug": "bandas-transportadoras",
           "nombre": "Bandas transportadoras",
-          "icono": "belt-incline"
+          "icono": "belt-incline",
+          "nombre_en": "Conveyor belts"
         },
         {
           "slug": "estaciones",
           "nombre": "Estaciones",
-          "icono": "idler"
+          "icono": "idler",
+          "nombre_en": "Idler stations"
         },
         {
           "slug": "vulcanizados",
           "nombre": "Vulcanizados",
-          "icono": "press"
+          "icono": "press",
+          "nombre_en": "Belt vulcanising"
         },
         {
           "slug": "grapas",
           "nombre": "Grapas",
-          "icono": "staple"
+          "icono": "staple",
+          "nombre_en": "Belt fasteners"
         },
         {
           "slug": "limpiadores-de-bandas",
           "nombre": "Limpiadores de bandas",
-          "icono": "scraper"
+          "icono": "scraper",
+          "nombre_en": "Belt cleaners"
         },
         {
           "slug": "rodillos",
           "nombre": "Rodillos",
-          "icono": "roller"
+          "icono": "roller",
+          "nombre_en": "Rollers"
         },
         {
           "slug": "tambores",
           "nombre": "Tambores",
-          "icono": "drum"
+          "icono": "drum",
+          "nombre_en": "Pulleys"
         },
         {
           "slug": "materiales-para-vulcanizar",
           "nombre": "Materiales para vulcanizar",
-          "icono": "can"
+          "icono": "can",
+          "nombre_en": "Vulcanising materials"
         },
         {
           "slug": "piezas-de-goma",
           "nombre": "Piezas de goma",
-          "icono": "parts"
+          "icono": "parts",
+          "nombre_en": "Rubber parts"
         },
         {
           "slug": "planchas-de-goma",
           "nombre": "Planchas de goma",
-          "icono": "sheets"
+          "icono": "sheets",
+          "nombre_en": "Rubber sheets"
         },
         {
           "slug": "recubrimientos",
           "nombre": "Recubrimientos",
-          "icono": "lagging"
+          "icono": "lagging",
+          "nombre_en": "Pulley lagging"
         }
-      ]
+      ],
+      "nombre_en": "Conveyor belts",
+      "corto_en": "Large permanent stock for immediate delivery."
     },
     {
       "slug": "faldetas",
@@ -118,49 +140,60 @@
         {
           "slug": "faldetas",
           "nombre": "Faldetas",
-          "icono": "skirt"
+          "icono": "skirt",
+          "nombre_en": "Skirts for vibrating feeders"
         },
         {
           "slug": "caramelo",
           "nombre": "Caramelo",
-          "icono": "amber"
+          "icono": "amber",
+          "nombre_en": "Amber"
         },
         {
           "slug": "fieltro",
           "nombre": "Fieltro",
-          "icono": "felt"
+          "icono": "felt",
+          "nombre_en": "Felt"
         },
         {
           "slug": "goma",
           "nombre": "Goma",
-          "icono": "sheets"
+          "icono": "sheets",
+          "nombre_en": "Rubber"
         },
         {
           "slug": "piezas-de-goma",
           "nombre": "Piezas de goma",
-          "icono": "parts"
+          "icono": "parts",
+          "nombre_en": "Rubber parts"
         },
         {
           "slug": "tacos",
           "nombre": "Tacos",
-          "icono": "block"
+          "icono": "block",
+          "nombre_en": "Rubber blocks"
         },
         {
           "slug": "estrellas",
           "nombre": "Estrellas",
-          "icono": "star"
+          "icono": "star",
+          "nombre_en": "Star-shaped parts"
         },
         {
           "slug": "borde-ondulado",
           "nombre": "Borde ondulado",
-          "icono": "wave"
+          "icono": "wave",
+          "nombre_en": "Wave-edge parts"
         },
         {
           "slug": "red",
           "nombre": "Red",
-          "icono": "net"
+          "icono": "net",
+          "nombre_en": "Netting"
         }
-      ]
+      ],
+      "nombre_en": "Rubber skirts",
+      "corto_en": "Made in rubber, felt and amber polyurethane."
     },
     {
       "slug": "bandas-pvc",
@@ -172,39 +205,48 @@
         {
           "slug": "bandas-de-pvc",
           "nombre": "Bandas de PVC",
-          "icono": "cleated"
+          "icono": "cleated",
+          "nombre_en": "PVC belts"
         },
         {
           "slug": "bandas-modulares",
           "nombre": "Bandas modulares",
-          "icono": "modular"
+          "icono": "modular",
+          "nombre_en": "Modular belts"
         },
         {
           "slug": "cadenas-de-charnelas",
           "nombre": "Cadenas de charnelas",
-          "icono": "chain"
+          "icono": "chain",
+          "nombre_en": "Slat-top chains"
         },
         {
           "slug": "cordones-y-correas",
           "nombre": "Cordones y correas",
-          "icono": "cord"
+          "icono": "cord",
+          "nombre_en": "Round belts and cords"
         },
         {
           "slug": "plasticos-tecnicos",
           "nombre": "Plásticos técnicos",
-          "icono": "nut"
+          "icono": "nut",
+          "nombre_en": "Engineering plastics"
         },
         {
           "slug": "recubrimientos",
           "nombre": "Recubrimientos",
-          "icono": "lagging"
+          "icono": "lagging",
+          "nombre_en": "Coatings"
         },
         {
           "slug": "grapas",
           "nombre": "Grapas",
-          "icono": "staple"
+          "icono": "staple",
+          "nombre_en": "Belt fasteners"
         }
-      ]
+      ],
+      "nombre_en": "PVC belts",
+      "corto_en": "Food-grade and industrial belts."
     }
   ]
 }

@@ -770,3 +770,24 @@
     display: none;
   }
 }
+
+/* ---------- Enlace de idioma y textos del menú en inglés ---------- */
+
+.nav__lang {
+  color: var(--green) !important;
+}
+
+@media (min-width: 901px) {
+  .nav__lang {
+    margin-left: 6px;
+    border-left: 1px solid var(--line);
+  }
+}
+
+html[lang="en"] .nav-toggle__label::before {
+  content: "Menu";
+}
+
+html[lang="en"] .nav-open .nav-toggle__label::before {
+  content: "Close";
+}

@@ -78,6 +78,26 @@ Archivos de configuración:
 - `.assetsignore`: archivos que **no** se publican (`.git`, este README, la configuración…). Si añades al repo algo que no deba verse en la web, apúntalo aquí.
 - `_redirects` y `_headers`: redirecciones y cabeceras; funcionan igual en Workers.
 
+## Funciones principales
+
+- **Motor:** las páginas se generan con `py _fuente/construir.py` (ver `_fuente/LEEME.md`). No editar los `index.html` a mano.
+- **Publicar con un clic:** doble clic en `_fuente/publicar.bat` (regenera, comprueba enlaces y sube a GitHub).
+- **Noticias:** una carpeta por noticia en `_fuente/contenido/noticias/` (ver el `LEEME.txt` de esa carpeta).
+- **WhatsApp:** número en `WHATSAPP` al principio de `_fuente/construir.py`.
+- **Formulario de presupuesto:** `/presupuesto/`, lo recibe `_fuente/worker/index.js` y lo envía por email con Cloudflare Email Routing (ver "Activar el formulario").
+- **Inglés:** `/en/`, `/en/products/`, `/en/about/` y `/en/contact/`. Nombres en inglés de categorías y familias en `productos.json` (`nombre_en`).
+- **Imágenes para compartir:** se generan solas en `assets/img/compartir/`.
+
+## Activar el formulario (una sola vez, en Cloudflare)
+
+1. En el dominio `crmgestiontaller.com`: **Correo electrónico → Email Routing → Activar** (añade los registros DNS necesarios).
+2. En **Direcciones de destino**, añadir `info@crmsl.es` y confirmar el email de verificación que llega a esa cuenta.
+3. Añadir a `wrangler.jsonc`:
+   ```jsonc
+   "send_email": [{ "name": "CORREO", "destination_address": "info@crmsl.es" }]
+   ```
+   y publicar. Hasta entonces, el formulario muestra un aviso para llamar o escribir por WhatsApp.
+
 ## Cómo editar
 
 - **Textos:** directamente en el `index.html` de cada página.
