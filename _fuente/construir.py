@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.join(FUENTE, "contenido"))
 from PIL import Image
 from iconos import ICONS, icon, badge
 from textos_productos import TEXT, EXTRA
+from noticias import leer_noticias, fecha_larga
 
 e = html.escape
 
@@ -36,7 +37,7 @@ WHATSAPP_VER = "656 84 40 67"
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261016"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
+VERSION = "20261016b"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
 # ---------------------------------------------------------------- contenido
 _P = json.load(open(os.path.join(FUENTE, "contenido", "productos.json"), encoding="utf-8"))
@@ -49,6 +50,8 @@ SEC_ICON = {c["slug"]: {f["slug"]: f["icono"] for f in c["familias"]} for c in C
 C = {"products": {c["slug"]: [{"slug": f["slug"], "title": f["nombre"]} for f in c["familias"]] for c in CATEGORIAS}}
 LEGAL = json.load(open(os.path.join(FUENTE, "contenido", "legal.json"), encoding="utf-8"))
 ARCHIVO_NOTICIAS = json.load(open(os.path.join(FUENTE, "contenido", "noticias-archivo.json"), encoding="utf-8"))
+NOTICIAS = leer_noticias(FUENTE, REPO)   # carpetas de _fuente/contenido/noticias/
+PAGINAS = []                             # rutas generadas, para el sitemap
 
 
 def img_size(rel):
@@ -75,7 +78,7 @@ def sentence(t):
 
 # ---------------------------------------------------------------- plantilla
 
-def head(title, desc):
+def head(title, desc, og_img=None):
     full = f"{title} | CRM Componentes" if title else "CRM Componentes — Comercial de Recambios Montemayor"
     return f"""<!doctype html>
 <html lang="es">
@@ -90,7 +93,7 @@ def head(title, desc):
   <meta property="og:site_name" content="CRM Componentes">
   <meta property="og:title" content="{e(full)}">
   <meta property="og:description" content="{e(desc)}">
-  <meta property="og:image" content="/assets/img/brand/logo-crm.png">
+  <meta property="og:image" content="{SITE}/{og_img or "assets/img/brand/logo-crm.png"}">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -248,8 +251,10 @@ FOOTER = f"""
 """
 
 
-def write(path, title, desc, active, body):
-    out = head(title, desc) + "\n" + header(active) + '\n  <main id="contenido">' + body + "\n  </main>\n" + FOOTER
+def write(path, title, desc, active, body, og_img=None):
+    if path != "/404":
+        PAGINAS.append(path)
+    out = head(title, desc, og_img) + "\n" + header(active) + '\n  <main id="contenido">' + body + "\n  </main>\n" + FOOTER
     file = os.path.join(REPO, path.strip("/"), "index.html") if path != "/404" else os.path.join(REPO, "404.html")
     os.makedirs(os.path.dirname(file), exist_ok=True)
     open(file, "w", encoding="utf-8", newline="\n").write(out)
@@ -311,6 +316,39 @@ def product_tiles():
             <a class="more" href="/productos/{s}/">Ver todo</a>
           </article>""")
     return '<div class="catcards">' + "".join(out) + "\n        </div>"
+
+
+def news_cards(noticias):
+    """Tarjetas de noticia con foto de portada, fecha, título y resumen."""
+    out = []
+    for n in noticias:
+        foto = (f'<a class="newscard__media" href="/noticias/{n["slug"]}/" tabindex="-1" aria-hidden="true">'
+                f'{img(n["fotos"][0], n["titulo"])}</a>') if n["fotos"] else ""
+        out.append(f"""
+          <article class="newscard">{foto}
+            <div class="newscard__body">
+              <time class="card__meta" datetime="{n["fecha"]}">{n["fecha_larga"]}</time>
+              <h3><a href="/noticias/{n["slug"]}/">{e(n["titulo"])}</a></h3>
+              <p>{e(n["resumen"])}</p>
+              <a class="more" href="/noticias/{n["slug"]}/">Leer noticia</a>
+            </div>
+          </article>""")
+    return '<div class="newscards">' + "".join(out) + "\n        </div>"
+
+
+def ultimas_noticias():
+    if not NOTICIAS:
+        return ""
+    return f"""
+    <section class="section">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>Últimas noticias.</h2>
+          <p class="lead"><a class="more" href="/noticias/">Ver todas</a></p>
+        </div>
+        {news_cards(NOTICIAS[:3])}
+      </div>
+    </section>"""
 
 
 def video_band(video, eyebrow, title, text, actions):
@@ -387,6 +425,7 @@ body = f"""
       </div>
     </section>
 
+{ultimas_noticias()}
     <section class="section section--dark">
       <div class="container center">
         <p class="statement">Calidad antes que cantidad. <span>Preferimos tener buenos clientes y darles un servicio personalizado. Por eso cada día son más los que confían en nosotros.</span></p>
@@ -618,29 +657,43 @@ write("/catalogos/", "Catálogos", "Catálogos de productos de CRM: elevación, 
 
 # ---------------------------------------------------------------- noticias
 
-MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
-TITLES = {}
-cards = []
-for n in ARCHIVO_NOTICIAS:
-    n = {"date": n["fecha"], "title": n["titulo"], "slug": n.get("slug", "")}
-    y, m, d = n["date"].split("-")
-    date = f"{int(d)} de {MESES[int(m) - 1]} de {y}"
-    t = TITLES.get(n["slug"], n["title"])
-    cards.append(f"""
-          <article class="card" id="{n["slug"]}">
-            {badge("calendar", "sm")}
-            <time class="card__meta" datetime="{n["date"]}">{date}</time>
-            <h3>{e(t)}</h3>
-          </article>""")
+for n in NOTICIAS:
+    volver = '<a class="more more--back" href="/noticias/">Todas las noticias</a>'
+    body = intro(e(n["titulo"]), e(n["resumen"]), eyebrow=f'<time datetime="{n["fecha"]}">{n["fecha_larga"]}</time>')
+    fotos = [(r, f'{n["titulo"]} — foto {i}') for i, r in enumerate(n["fotos"], 1)]
+    body += f"""
+    <section class="section section--flush-top">
+      <div class="container container--narrow">
+        {carousel_html("noticia-" + n["slug"], fotos, "Fotos de la noticia")}
+        <article class="prose news-body">
+{n["html"]}
+        </article>
+        <p>{volver}</p>
+      </div>
+    </section>""" + cta()
+    write(f'/noticias/{n["slug"]}/', n["titulo"], n["resumen"] or n["titulo"], "noticias", body,
+          og_img=n["fotos"][0] if n["fotos"] else None)
+
+archivo = "".join(
+    f'<li><time datetime="{a["fecha"]}">{fecha_larga(a["fecha"])}</time><span>{e(a["titulo"])}</span></li>'
+    for a in ARCHIVO_NOTICIAS
+)
 body = intro("Noticias.", "Ferias, novedades y momentos destacados de CRM.")
-body += f"""
+if NOTICIAS:
+    body += f"""
     <section class="section section--flush-top">
       <div class="container container--wide">
-        <div class="cards">{"".join(cards)}
-        </div>
+        {news_cards(NOTICIAS)}
       </div>
     </section>"""
-write("/noticias/", "Noticias", "Noticias de CRM: ferias (Expoliva, FIMA, Victam, Agropriego), novedades de producto y aniversarios.", "noticias", body)
+body += f"""
+    <section class="section{" section--tile" if NOTICIAS else " section--flush-top"}">
+      <div class="container container--narrow">
+        <h2 class="archive__title">Archivo</h2>
+        <ul class="archive">{archivo}</ul>
+      </div>
+    </section>"""
+write("/noticias/", "Noticias", "Noticias de CRM: ferias, novedades de producto, instalaciones y aniversarios.", "noticias", body)
 
 # ---------------------------------------------------------------- contacto
 
@@ -731,3 +784,10 @@ body = """
       </div>
     </section>"""
 write("/404", "Página no encontrada", "La página solicitada no existe.", "", body)
+
+# ---------------------------------------------------------------- sitemap
+sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+sitemap += "".join(f"  <url><loc>{SITE}{p}</loc></url>\n" for p in PAGINAS)
+sitemap += "</urlset>\n"
+open(os.path.join(REPO, "sitemap.xml"), "w", encoding="utf-8", newline="\n").write(sitemap)
+print(f"sitemap.xml: {len(PAGINAS)} páginas")

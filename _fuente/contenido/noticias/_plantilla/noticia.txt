@@ -1,0 +1,12 @@
+titulo: Título de la noticia
+fecha: 2026-10-20
+resumen: Una frase que resuma la noticia (sale en la tarjeta y bajo el título).
+borrador: no
+
+Aquí va el texto de la noticia. Cada párrafo, separado por una línea en blanco.
+
+Se pueden poner **negritas** rodeando las palabras con dos asteriscos.
+
+Y listas, empezando cada línea con un guion:
+- Primer punto
+- Segundo punto

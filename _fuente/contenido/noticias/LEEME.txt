@@ -1,0 +1,21 @@
+CÓMO PUBLICAR UNA NOTICIA
+=========================
+
+1. Copia la carpeta "_plantilla" y renómbrala con la fecha y un nombre corto,
+   por ejemplo:  2026-11-05 feria fima
+
+2. Dentro, edita "noticia.txt":
+     titulo:    el título
+     fecha:     AAAA-MM-DD
+     resumen:   una frase
+     borrador:  no   (pon "si" para prepararla sin publicarla todavía)
+   Deja una línea en blanco y escribe el texto debajo.
+
+3. Mete en la carpeta las fotos tal cual salen del móvil (.jpg o .png).
+   Salen en orden alfabético. Si una se llama "portada.jpg", va la primera
+   y es la que aparece en la tarjeta.
+
+4. Haz doble clic en  _fuente\publicar.bat
+   (convierte las fotos, crea la página y la sube a la web en 1-2 minutos)
+
+Las carpetas que empiezan por "_" (como _plantilla) no se publican.

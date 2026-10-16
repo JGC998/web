@@ -20,3 +20,9 @@ web fotos/
 
 # Python
 __pycache__/
+
+# Originales de las fotos de noticias (se suben ya convertidas a assets/img/noticias/)
+_fuente/contenido/noticias/**/*.jpg
+_fuente/contenido/noticias/**/*.jpeg
+_fuente/contenido/noticias/**/*.JPG
+_fuente/contenido/noticias/**/*.png
