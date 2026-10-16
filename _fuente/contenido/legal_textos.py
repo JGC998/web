@@ -76,13 +76,16 @@ PRIVACIDAD = f"""
 <h3>Contacto por teléfono, WhatsApp o email</h3>
 <p>Los datos que nos facilites al comunicarte con nosotros: nombre, número de teléfono, dirección de email y el contenido de tus mensajes.</p>
 <h3>Datos técnicos</h3>
-<p>Al visitar la web, nuestro proveedor de alojamiento registra de forma automática datos técnicos como la dirección IP o el tipo de navegador, que se usan únicamente para el funcionamiento y la seguridad del sitio. La web no utiliza herramientas de analítica ni de publicidad.</p>
+<p>Al visitar la web, nuestro proveedor de alojamiento registra de forma automática datos técnicos como la dirección IP o el tipo de navegador, que se usan únicamente para el funcionamiento y la seguridad del sitio.</p>
+<h3>Estadísticas de visitas</h3>
+<p>Usamos Cloudflare Web Analytics para conocer de forma agregada cuántas visitas recibe la web, qué páginas se consultan, desde qué país y tipo de dispositivo, y cuánto tardan en cargar. Esta herramienta <strong>no usa cookies</strong>, no guarda la dirección IP completa ni sigue a los visitantes entre sitios web, y no permite identificarte. No utilizamos herramientas de publicidad.</p>
 
 <h2>3. Para qué los usamos y con qué base legal</h2>
 <ul>
 <li><strong>Atender tu consulta o preparar el presupuesto que solicitas.</strong> Base legal: tu solicitud y la aplicación de medidas precontractuales (art. 6.1.b RGPD) y el consentimiento que das al enviar el formulario (art. 6.1.a RGPD).</li>
 <li><strong>Gestionar la relación comercial</strong> si llegas a ser cliente (pedidos, entregas, facturación). Base legal: ejecución del contrato (art. 6.1.b) y cumplimiento de obligaciones legales (art. 6.1.c).</li>
 <li><strong>Mantener la seguridad del sitio web</strong> y evitar envíos automáticos o fraudulentos. Base legal: interés legítimo de CRM (art. 6.1.f).</li>
+<li><strong>Obtener estadísticas agregadas y anónimas de uso</strong> para mejorar la web. Base legal: interés legítimo de CRM (art. 6.1.f).</li>
 </ul>
 <p>No enviamos publicidad sin tu consentimiento expreso y no tomamos decisiones automatizadas ni elaboramos perfiles con tus datos.</p>
 
@@ -96,7 +99,7 @@ PRIVACIDAD = f"""
 <h2>5. Quién puede acceder a tus datos</h2>
 <p>No cedemos tus datos a terceros, salvo obligación legal. Para prestar el servicio contamos con proveedores que pueden acceder a ellos únicamente para ese fin y con las garantías exigidas por el RGPD:</p>
 <ul>
-<li><strong>Cloudflare, Inc.</strong>: alojamiento del sitio web y envío del formulario por correo electrónico. Cloudflare está adherida al Marco de Privacidad de Datos UE-EE. UU., que garantiza un nivel de protección adecuado para las transferencias a Estados Unidos.</li>
+<li><strong>Cloudflare, Inc.</strong>: alojamiento del sitio web, envío del formulario por correo electrónico y estadísticas de visitas sin cookies. Cloudflare está adherida al Marco de Privacidad de Datos UE-EE. UU., que garantiza un nivel de protección adecuado para las transferencias a Estados Unidos.</li>
 <li><strong>Proveedor de correo electrónico de CRM</strong>: recepción y gestión de los emails.</li>
 <li><strong>WhatsApp (Meta)</strong>: solo si eliges contactarnos por WhatsApp. En ese caso se aplica también la política de privacidad de WhatsApp.</li>
 <li><strong>Google</strong>: solo si pulsas «Mostrar mapa» en la página de contacto, se carga el mapa de Google Maps y se aplica la política de privacidad de Google.</li>
@@ -129,7 +132,7 @@ COOKIES = f"""
 <li><strong>Cookies técnicas de seguridad.</strong> Nuestro proveedor de alojamiento, Cloudflare, puede instalar en algunos casos cookies estrictamente necesarias para proteger el sitio web frente a ataques y tráfico automatizado (por ejemplo, <code>__cf_bm</code>, que dura como máximo 30 minutos). Al ser necesarias para la seguridad, están exentas de consentimiento según el artículo 22.2 de la LSSI-CE.</li>
 <li><strong>Mapa de Google Maps.</strong> En la página de contacto, el mapa <strong>solo se carga si pulsas «Mostrar mapa»</strong>. En ese momento Google puede instalar sus propias cookies, de acuerdo con su <a href="https://policies.google.com/technologies/cookies?hl=es" target="_blank" rel="noopener">política de cookies</a>. Si no pulsas el botón, no se carga nada de Google.</li>
 </ul>
-<p>La tipografía, las imágenes y los vídeos de la web se sirven desde nuestro propio sitio, sin conexiones a servicios de terceros.</p>
+<p>Para las estadísticas de visitas usamos Cloudflare Web Analytics, que <strong>no utiliza cookies</strong> ni otros sistemas para identificar o seguir a los visitantes. La tipografía, las imágenes y los vídeos de la web se sirven desde nuestro propio sitio.</p>
 
 <h2>3. Cómo gestionar o eliminar las cookies</h2>
 <p>Puedes permitir, bloquear o eliminar las cookies desde la configuración de tu navegador:</p>
@@ -141,7 +144,7 @@ COOKIES = f"""
 </ul>
 
 <h2>4. Cambios en esta política</h2>
-<p>Si en el futuro incorporamos herramientas que utilicen cookies no técnicas (por ejemplo, de estadísticas), actualizaremos esta política y te pediremos el consentimiento antes de instalarlas.</p>
+<p>Si en el futuro incorporamos herramientas que utilicen cookies no técnicas (por ejemplo, de publicidad), actualizaremos esta política y te pediremos el consentimiento antes de instalarlas.</p>
 
 <h2>5. Más información</h2>
 <p>Para cualquier duda puedes escribirnos a <a href="mailto:info@crmsl.es">info@crmsl.es</a>. Consulta también nuestra <a href="/legal/politica-de-privacidad/">Política de privacidad</a>.</p>
