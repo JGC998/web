@@ -20,6 +20,8 @@ used = set()
 for f in files + css:
     t = open(f, encoding="utf-8").read()
     refs = re.findall(r'(?:href|src|content)="(/[^"#?]*)', t) + re.findall(r"url\('?(/[^')]+)'?\)", t)
+    # og:image y similares llevan el dominio delante: https://dominio/assets/...
+    refs += re.findall(r'content="https?://[^/"]+(/assets/[^"#?]*)', t)
     for u in refs:
         p = u.lstrip("/")
         if p == "" or p.endswith("/"):
