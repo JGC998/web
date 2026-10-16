@@ -57,7 +57,8 @@ FONDOS = {
 VIDEOS = {
     # nombre: (archivo, segundo de inicio, duración)
     "corte-fieltro": ("VID_20201011_195533.mp4", 0, 20),
-    "corte-cnc": ("maquina cnc/VID_20250324_115712.mp4", 0, 14),
+    # Vídeo vertical: se recorta una franja panorámica a la altura de los cabezales (y=380 px)
+    "corte-cnc": ("maquina cnc/VID_20250324_115641.mp4", 0, 18),
 }
 
 
@@ -90,12 +91,12 @@ os.makedirs(vdir, exist_ok=True)
 for nombre, (f, ini, dur) in VIDEOS.items():
     entrada = os.path.join(SRC, f)
     # Los vídeos grabados en vertical se recortan a panorámico (16:9) por el centro
-    vertical = "cnc" in nombre
+    vertical = "cnc" in nombre   # recorte panorámico (16:9) a la altura de la herramienta
     salida = os.path.join(vdir, f"{nombre}.mp4")
     if not os.path.exists(salida) or "--videos" in sys.argv:
         subprocess.run([
         "ffmpeg", "-v", "error", "-y", "-ss", str(ini), "-t", str(dur), "-i", entrada,
-        "-an", "-vf", ("crop=iw:iw*9/16," if vertical else "") + "scale=-2:720,fps=30", "-c:v", "libx264", "-preset", "slow", "-crf", "28",
+        "-an", "-vf", ("crop=iw:iw*9/16:0:380," if vertical else "") + "scale=-2:720,fps=30", "-c:v", "libx264", "-preset", "slow", "-crf", "28",
         "-profile:v", "high", "-pix_fmt", "yuv420p", "-movflags", "+faststart", salida,
     ], check=True)
     fotograma = os.path.join(vdir, f"{nombre}-fotograma.png")
