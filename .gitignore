@@ -26,3 +26,6 @@ _fuente/contenido/noticias/**/*.jpg
 _fuente/contenido/noticias/**/*.jpeg
 _fuente/contenido/noticias/**/*.JPG
 _fuente/contenido/noticias/**/*.png
+
+# Material de referencia (escaneos, propuestas antiguas, copias): no se sube a git
+WEB NUEVA 2026/
