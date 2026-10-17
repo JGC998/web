@@ -1133,8 +1133,42 @@ a.contact-tile:hover {
   transition: color 0.35s var(--ease), opacity 0.35s var(--ease);
 }
 
-.catcard__photo {
-  display: none;
+/* Con ratón la foto aparece al pasar por encima; en pantallas táctiles se ve siempre */
+@media (hover: none) {
+  .catcard__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .catcard__head:has(.catcard__photo) {
+    min-height: 190px;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+    padding-bottom: 18px;
+  }
+
+  .catcard__head:has(.catcard__photo)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.1));
+  }
+
+  .catcard__head:has(.catcard__photo) .badge-icon {
+    display: none;
+  }
+
+  .catcard__head:has(.catcard__photo) h3 a,
+  .catcard__head:has(.catcard__photo) p {
+    color: #fff;
+  }
+
+  .catcard__head:has(.catcard__photo) p {
+    margin-bottom: 0;
+  }
 }
 
 @media (hover: hover) {
@@ -1321,6 +1355,7 @@ a.contact-tile:hover {
 
 .page-photo img {
   width: 100%;
+  height: auto;
   aspect-ratio: 16 / 7;
   object-fit: cover;
   border-radius: var(--radius-lg);
@@ -1741,8 +1776,23 @@ a.contact-tile:hover {
 
 .sectors {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 16px;
+}
+
+.sector__nofoto {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, var(--green-bright), var(--green-hover));
+}
+
+.sector__nofoto .icon {
+  width: 38%;
+  height: auto;
+  color: rgba(255, 255, 255, 0.9);
+  stroke-width: 1.2;
 }
 
 .sector {
@@ -1799,9 +1849,21 @@ a.contact-tile:hover {
   transform: scale(1.04);
 }
 
+@media (max-width: 1100px) {
+  .sectors {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 900px) {
   .sectors {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* El quinto sector ocupa toda la fila */
+  .sector:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 9;
   }
 }
 
@@ -1863,5 +1925,163 @@ a.contact-tile:hover {
 @media (max-width: 800px) {
   .identity {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Campaña de temporada (portada) ---------- */
+
+.season {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--green-soft);
+}
+
+.season[hidden] {
+  display: none;
+}
+
+.season__text {
+  padding: clamp(28px, 5vw, 56px);
+  align-self: center;
+}
+
+.season__text .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.season__text .eyebrow .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.season__text h2 {
+  margin: 10px 0 12px;
+}
+
+.season__text p {
+  margin: 0 0 24px;
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.season__media {
+  min-height: 280px;
+}
+
+.season__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.season__nofoto {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  background: linear-gradient(160deg, var(--green-bright), var(--green-hover));
+}
+
+.season__nofoto .icon {
+  width: 120px;
+  height: 120px;
+  color: rgba(255, 255, 255, 0.9);
+  stroke-width: 1.1;
+}
+
+@media (max-width: 800px) {
+  .season {
+    grid-template-columns: 1fr;
+  }
+
+  .season__media {
+    order: -1;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* ---------- Productos de un sector ---------- */
+
+.prodcards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.prodcard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.prodcard:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.prodcard__media {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  background: var(--green-soft);
+}
+
+.prodcard__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.prodcard__icon .icon {
+  width: 56px;
+  height: 56px;
+  color: var(--green);
+}
+
+.prodcard__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 18px 18px;
+}
+
+.prodcard__text strong {
+  font-size: 1.05rem;
+}
+
+.prodcard__text span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+@media (max-width: 560px) {
+  .prodcards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .prodcard__text {
+    padding: 10px 12px 14px;
+  }
+
+  .prodcard__text strong {
+    font-size: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prodcard {
+    transition: none;
   }
 }

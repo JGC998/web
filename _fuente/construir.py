@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.join(FUENTE, "contenido"))
 from PIL import Image
 from iconos import ICONS, icon, badge
 from textos_productos import TEXT, EXTRA
+from sectores import SECTORES
 from noticias import leer_noticias, fecha_larga
 from compartir import generar as generar_imagen_compartir
 
@@ -45,7 +46,7 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261017b"
+VERSION = "20261017d"
 # Estadísticas de visitas (Cloudflare Web Analytics: sin cookies). Vacío = desactivado.
 ANALITICA_TOKEN = "c9bd8190b2be4939ae6689fd3909c441"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
@@ -80,11 +81,32 @@ def img_size(rel):
         return im.size
 
 
-def img(rel, alt, cls="", lazy=True):
+ANCHOS = (480, 800, 1100)   # copias reducidas para pantallas pequeñas (assets/img/tamanos/)
+
+
+def copias(rel, w):
+    """Crea (si faltan o están anticuadas) las copias reducidas de una foto y devuelve el srcset."""
+    origen = os.path.join(REPO, rel)
+    partes = []
+    for ancho in (a for a in ANCHOS if a < w * 0.9):
+        copia = "assets/img/tamanos/" + rel[len("assets/img/"):].replace(".webp", f"-{ancho}.webp")
+        ruta = os.path.join(REPO, copia)
+        if not os.path.exists(ruta) or os.path.getmtime(ruta) < os.path.getmtime(origen):
+            os.makedirs(os.path.dirname(ruta), exist_ok=True)
+            with Image.open(origen) as im:
+                im.resize((ancho, round(im.height * ancho / im.width)), Image.LANCZOS).save(ruta, "WEBP", quality=78, method=6)
+        partes.append(f"/{copia} {ancho}w")
+    return ", ".join(partes + [f"/{rel} {w}w"]) if partes else ""
+
+
+def img(rel, alt, cls="", lazy=True, sizes="(max-width: 1240px) 100vw, 1200px"):
+    """sizes: ancho con el que se pinta la foto, para que el móvil descargue la copia pequeña."""
     w, h = img_size(rel)
     a = f' class="{cls}"' if cls else ""
     l = ' loading="lazy" decoding="async"' if lazy else ""
-    return f'<img src="/{rel}" alt="{e(alt)}" width="{w}" height="{h}"{a}{l}>'
+    srcset = copias(rel, w) if rel.endswith(".webp") and rel.startswith("assets/img/") else ""
+    s = f' srcset="{srcset}" sizes="{sizes}"' if srcset else ""
+    return f'<img src="/{rel}"{s} alt="{e(alt)}" width="{w}" height="{h}"{a}{l}>'
 
 
 def mailto(subject):
@@ -146,6 +168,7 @@ def head(title, desc, og_img=None, lang="es", path="/"):
 NAV = [
     ("/", "Inicio", "inicio"),
     ("/productos/", "Productos", "productos"),
+    ("/sectores/", "Sectores", "sectores"),
     ("/catalogos/", "Catálogos", "catalogos"),
     ("/quienes-somos/", "Quiénes somos", "quienes-somos"),
     ("/noticias/", "Noticias", "noticias"),
@@ -299,6 +322,12 @@ FOOTER = f"""
           </ul>
         </div>
         <div>
+          <h2>Sectores</h2>
+          <ul class="footer__links">
+            {"".join(f'<li><a href="/sectores/{x["slug"]}/">{x["nombre"]}</a></li>' for x in SECTORES)}
+          </ul>
+        </div>
+        <div>
           <h2>Empresa</h2>
           <ul class="footer__links">
             <li><a href="/quienes-somos/">Quiénes somos</a></li>
@@ -436,6 +465,16 @@ def intro(h1, lead="", eyebrow="", actions="", icon_name=None):
     </section>"""
 
 
+def migas(*pasos):
+    """Datos estructurados de la ruta de la página (Google la muestra en los resultados):
+    migas(("Productos", "/productos/"), ("Elevación", "/productos/elevacion/"))."""
+    datos = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": i, "name": nombre, "item": SITE + ruta}
+        for i, (nombre, ruta) in enumerate((("Inicio", "/"),) + pasos, 1)]}
+    return f"""
+    <script type="application/ld+json">{json.dumps(datos, ensure_ascii=False)}</script>"""
+
+
 def cta():
     return f"""
     <section class="section section--tile center">
@@ -462,7 +501,7 @@ CAT_FOTO = {  # foto representativa que aparece al pasar el ratón por la tarjet
 
 def catcard_head(s, titulo, texto, href):
     """Cabecera de la tarjeta: icono, nombre y frase, con la foto de la categoría detrás."""
-    foto = img(CAT_FOTO[s], "", "catcard__photo") if s in CAT_FOTO else ""
+    foto = img(CAT_FOTO[s], "", "catcard__photo", sizes="(max-width: 560px) 100vw, (max-width: 1000px) 50vw, 300px") if s in CAT_FOTO else ""
     return f"""<div class="catcard__head">{foto}
               {badge(CAT_ICON[s], "sm")}
               <h3><a href="{href}">{titulo}</a></h3>
@@ -494,7 +533,7 @@ def news_cards(noticias):
     out = []
     for n in noticias:
         foto = (f'<a class="newscard__media" href="/noticias/{n["slug"]}/" tabindex="-1" aria-hidden="true">'
-                f'{img(n["fotos"][0], n["titulo"])}</a>') if n["fotos"] else ""
+                f'{img(n["fotos"][0], n["titulo"], sizes="(max-width: 700px) 100vw, 400px")}</a>') if n["fotos"] else ""
         out.append(f"""
           <article class="newscard">{foto}
             <div class="newscard__body">
@@ -539,24 +578,27 @@ def video_band(video, eyebrow, title, text, actions):
     </section>"""
 
 
-SECTORES = [  # (foto, sector ES, sector EN, categoría)
-    ("assets/img/sectores/olivar.webp", "Olivar", "Olive groves", "faldetas"),
-    ("assets/img/sectores/girasol.webp", "Cereal y silos", "Grain and silos", "elevacion"),
-    ("assets/img/sectores/ajos.webp", "Frutas y hortalizas", "Fruit and vegetables", "bandas-pvc"),
-    ("assets/img/productos/bandas-transportadoras/bandas-transportadoras/01.webp",
-     "Industria, canteras y reciclaje", "Industry, quarries and recycling", "bandas-transportadoras"),
-]
+SECTOR = {x["slug"]: x for x in SECTORES}
+
+
+def sector_media(x, sizes):
+    """Foto del sector o, si aún no hay foto, su icono sobre fondo verde."""
+    if x.get("foto"):
+        return img(x["foto"], "", sizes=sizes)
+    return f'<span class="sector__nofoto">{icon(x["icono"])}</span>'
 
 
 def sectores(lang="es"):
-    """Franja de sectores con foto: cada uno lleva a su categoría de producto."""
+    """Franja de sectores con foto: cada uno lleva a su página de sector."""
     tarjetas = []
-    for foto, es, en, cat in SECTORES:
-        nombre, producto = (es, NAMES[cat]) if lang == "es" else (en, NAMES_EN[cat])
-        href = f"/productos/{cat}/" if lang == "es" else f"/en/products/#{cat}"
+    for x in SECTORES:
+        if lang == "es":
+            nombre, href, sub = x["nombre"], f"/sectores/{x['slug']}/", "Ver productos"
+        else:
+            nombre, href, sub = x["nombre_en"], "/en/products/", "See products"
         tarjetas.append(f"""
-          <a class="sector" href="{href}">{img(foto, "")}
-            <span class="sector__text"><strong>{nombre}</strong><span>{producto}</span></span>
+          <a class="sector" href="{href}">{sector_media(x, "(max-width: 900px) 50vw, 240px")}
+            <span class="sector__text"><strong>{nombre}</strong><span>{sub}</span></span>
           </a>""")
     titulo, lead = (("Para tu sector.", "Del campo a la industria: soluciones para cada tipo de instalación.") if lang == "es"
                     else ("For your sector.", "From the field to industry: solutions for every kind of installation."))
@@ -569,6 +611,48 @@ def sectores(lang="es"):
         </div>
         <div class="sectors">{"".join(tarjetas)}
         </div>
+      </div>
+    </section>"""
+
+
+def campana_vigente(hoy=None):
+    """Campaña que toca en una fecha: la última que ha empezado (el ciclo da la vuelta al año)."""
+    import datetime
+    hoy = (hoy or datetime.date.today()).strftime("%m-%d")
+    campanas = sorted((x["campana"]["desde"], x["slug"]) for x in SECTORES if x.get("campana"))
+    empezadas = [c for c in campanas if c[0] <= hoy]
+    return (empezadas or campanas)[-1][1]
+
+
+def campanas():
+    """Avisos de temporada de la portada. Se generan todos; el navegador deja visible el que toca
+    según la fecha (main.js), así la portada cambia sola aunque no se vuelva a publicar."""
+    vigente = campana_vigente()
+    out = []
+    for x in SECTORES:
+        c = x.get("campana")
+        if not c:
+            continue
+        foto = x.get("foto_grande") or x.get("foto")
+        media = (img(foto, "", lazy=False, sizes="(max-width: 800px) 100vw, 560px") if foto
+                 else f'<span class="season__nofoto">{icon(x["icono"])}</span>')
+        oculta = "" if x["slug"] == vigente else " hidden"
+        out.append(f"""
+      <div class="season" data-campana="{c["desde"]}"{oculta}>
+        <div class="season__text">
+          <span class="eyebrow">{icon(x["icono"])} {c["nombre"]}</span>
+          <h2>{c["titulo"]}</h2>
+          <p>{c["texto"]}</p>
+          <div class="actions actions--start">
+            <a class="btn btn--wa" href="{wa(c["whatsapp"])}" target="_blank" rel="noopener">{icon("whatsapp")} Pedir por WhatsApp</a>
+            <a class="more" href="/sectores/{x["slug"]}/">Productos para {x["nombre"].lower()}</a>
+          </div>
+        </div>
+        <div class="season__media">{media}</div>
+      </div>""")
+    return f"""
+    <section class="section section--tight" aria-label="Campaña de temporada">
+      <div class="container container--wide">{"".join(out)}
       </div>
     </section>"""
 
@@ -604,6 +688,7 @@ body = f"""
         </div>
       </div>
     </section>
+{campanas()}
 
 
     <section class="section">
@@ -750,7 +835,7 @@ def product_page(slug, name, intro_text):
         </details>"""
     body += """
       </div>
-    </section>""" + cta()
+    </section>""" + cta() + migas(("Productos", "/productos/"), (name, f"/productos/{slug}/"))
     names = ", ".join(s["title"].lower() for s in secs)
     fotos_cat = [p for sec in secs for p in section_photos(slug, sec)]
     write(f"/productos/{slug}/", name, f"{name} en CRM (La Rambla, Córdoba): {names}.", f"productos/{slug}", body,
@@ -759,6 +844,68 @@ def product_page(slug, name, intro_text):
 
 for slug, name, intro_text in PRODUCTS:
     product_page(slug, name, intro_text)
+
+# ---------------------------------------------------------------- sectores
+
+FAMILIA = {(c["slug"], f["slug"]): f for c in CATEGORIAS for f in c["familias"]}   # solo las visibles
+
+
+def tarjetas_producto(pares):
+    """Tarjetas de las familias de producto de un sector, con su primera foto o su icono."""
+    out = []
+    for cat, fam in pares:
+        f = FAMILIA.get((cat, fam))
+        if not f:          # familia oculta o inexistente
+            continue
+        fotos = section_photos(cat, {"slug": fam})
+        media = (img(fotos[0], "", sizes="(max-width: 560px) 50vw, 280px") if fotos
+                 else f'<span class="prodcard__icon">{icon(f["icono"])}</span>')
+        out.append(f"""
+          <a class="prodcard" href="/productos/{cat}/#{fam}">
+            <span class="prodcard__media">{media}</span>
+            <span class="prodcard__text"><strong>{e(sentence(f["nombre"]))}</strong><span>{e(NAMES[cat])}</span></span>
+          </a>""")
+    return '<div class="prodcards">' + "".join(out) + "\n        </div>"
+
+
+for x in SECTORES:
+    ruta = f"/sectores/{x['slug']}/"
+    nombre_min = x["nombre"].lower()
+    body = intro(
+        x["titulo"] + ".",
+        x["intro"],
+        eyebrow='<a href="/sectores/">Sectores</a> · ' + x["nombre"],
+        actions=(f'<a class="btn btn--wa" href="{wa("Hola, quería información de productos para " + nombre_min + ".")}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>'
+                 f'<a class="more" href="{presupuesto(x["nombre"])}">Pedir presupuesto</a><a class="more" href="tel:{PHONE_TEL}">Llamar</a>'),
+        icon_name=x["icono"],
+    )
+    foto = x.get("foto_grande") or x.get("foto")
+    if foto:
+        body += f"""
+    <div class="container container--wide page-photo">{img(foto, x["nombre"], lazy=False)}</div>"""
+    body += f"""
+    <section class="section">
+      <div class="container prose">{x["texto"]}
+      </div>
+    </section>
+
+    <section class="section section--tile">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>Productos para {nombre_min}.</h2>
+          <p class="lead">Toca un producto para ver medidas, calidades y fotos.</p>
+        </div>
+        {tarjetas_producto(x["productos"])}
+      </div>
+    </section>""" + cta() + migas(("Sectores", "/sectores/"), (x["nombre"], ruta))
+    write(ruta, x["titulo"], x["descripcion"], "sectores", body, og_img=foto, og_titulo=x["titulo"],
+          og_frase=f"CRM · {x['nombre']}")
+
+body = intro("Sectores.", "Del olivar a la cantera: elige tu sector y te enseñamos los productos que necesitas.")
+body += sectores().replace('section--flush-top">', 'section--flush-top" id="lista">', 1).replace(
+    '<div class="headline">\n          <h2>Para tu sector.</h2>\n          <p class="lead">Del campo a la industria: soluciones para cada tipo de instalación.</p>\n        </div>\n        ', "")
+body += cta() + migas(("Sectores", "/sectores/"),)
+write("/sectores/", "Sectores", "Productos de CRM por sector: olivar, almendro, ajo, cereal y silos, e industria, canteras y reciclaje.", "sectores", body)
 
 # ---------------------------------------------------------------- quiénes somos
 
@@ -798,7 +945,7 @@ body += f"""
           <p>En CRM creemos que es mejor tener buenos clientes y darles un servicio personalizado que tener muchos clientes y no atenderlos lo suficientemente bien. Por eso nos eligen: prefieren un servicio de calidad y no de cantidad.</p>
           <p>Si de algo estamos orgullosos es de que cada día somos más los que establecemos este vínculo. Gracias a todos los que confiáis en nosotros, desde la familia que formamos todos.</p>
         </div>
-        <div class="identity__photo">{img("assets/img/empresa/planchas-1.webp", "Palés de planchas de goma y fieltro preparados en nuestra nave")}</div>
+        <div class="identity__photo">{img("assets/img/empresa/planchas-1.webp", "Palés de planchas de goma y fieltro preparados en nuestra nave", sizes="(max-width: 800px) 100vw, 600px")}</div>
       </div>
     </section>
 

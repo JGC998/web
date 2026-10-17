@@ -78,6 +78,7 @@ EMPRESA = {
 }
 SECTORES = {  # franja "Sectores" de la portada
     "olivar": ref("PORTADA", "FOTOS BANER", "OLIVAR.jpg"),
+    "olivar-campo": pick("fotos de fondo", [3])[0],   # olivo con camino: página del olivar y campaña
     "girasol": ref("PORTADA", "FOTOS BANER", "4755e41b-30be-4391-8f06-ffb60381a17a.jpg"),
     "ajos": ref("PORTADA", "FOTOS BANER", "AJOS.jpg"),
 }
@@ -115,7 +116,7 @@ for nombre, f in EMPRESA.items():
 print(f"empresa: {len(EMPRESA)} fotos")
 
 for nombre, f in SECTORES.items():
-    total += foto(f, os.path.join(REPO, "assets", "img", "sectores", f"{nombre}.webp"), lado_max=1200)
+    total += foto(f, os.path.join(REPO, "assets", "img", "sectores", f"{nombre}.webp"), lado_max=1600)
     n += 1
 print(f"sectores: {len(SECTORES)} fotos")
 

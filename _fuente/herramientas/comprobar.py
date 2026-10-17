@@ -22,6 +22,9 @@ for f in files + css:
     refs = re.findall(r'(?:href|src|content)="(/[^"#?]*)', t) + re.findall(r"url\('?(/[^')]+)'?\)", t)
     # og:image y similares llevan el dominio delante: https://dominio/assets/...
     refs += re.findall(r'content="https?://[^/"]+(/assets/[^"#?]*)', t)
+    # copias reducidas de las fotos: srcset="/a-480.webp 480w, /a.webp 1400w"
+    for srcset in re.findall(r'srcset="([^"]+)"', t):
+        refs += [c.split()[0] for c in srcset.split(",")]
     for u in refs:
         p = u.lstrip("/")
         if p == "" or p.endswith("/"):

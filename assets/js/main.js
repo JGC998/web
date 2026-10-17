@@ -427,3 +427,20 @@
     if (landed) landed.scrollIntoView();
   }
 })();
+
+/* Campaña de temporada de la portada: se muestra la última que ha empezado según la fecha
+   (data-campana="mes-día"). La página llega ya con la campaña del día en que se publicó;
+   esto la corrige si desde entonces ha empezado otra. ?campana=03-15 permite probar una fecha. */
+(function () {
+  var avisos = document.querySelectorAll("[data-campana]");
+  if (!avisos.length) return;
+  var prueba = /[?&]campana=(\d\d-\d\d)/.exec(location.search);
+  var d = new Date();
+  var hoy = prueba ? prueba[1] : ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  var lista = Array.prototype.slice.call(avisos).sort(function (a, b) {
+    return a.dataset.campana < b.dataset.campana ? -1 : 1;
+  });
+  var empezadas = lista.filter(function (a) { return a.dataset.campana <= hoy; });
+  var vigente = (empezadas.length ? empezadas : lista)[(empezadas.length ? empezadas : lista).length - 1];
+  lista.forEach(function (a) { a.hidden = a !== vigente; });
+})();
