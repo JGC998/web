@@ -45,7 +45,7 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261016g"
+VERSION = "20261017a"
 # Estadísticas de visitas (Cloudflare Web Analytics: sin cookies). Vacío = desactivado.
 ANALITICA_TOKEN = "c9bd8190b2be4939ae6689fd3909c441"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
@@ -523,6 +523,40 @@ def video_band(video, eyebrow, title, text, actions):
     </section>"""
 
 
+SECTORES = [  # (foto, sector ES, sector EN, categoría)
+    ("assets/img/sectores/olivar.webp", "Olivar", "Olive groves", "faldetas"),
+    ("assets/img/sectores/girasol.webp", "Cereal y silos", "Grain and silos", "elevacion"),
+    ("assets/img/sectores/ajos.webp", "Frutas y hortalizas", "Fruit and vegetables", "bandas-pvc"),
+    ("assets/img/productos/bandas-transportadoras/bandas-transportadoras/01.webp",
+     "Industria, canteras y reciclaje", "Industry, quarries and recycling", "bandas-transportadoras"),
+]
+
+
+def sectores(lang="es"):
+    """Franja de sectores con foto: cada uno lleva a su categoría de producto."""
+    tarjetas = []
+    for foto, es, en, cat in SECTORES:
+        nombre, producto = (es, NAMES[cat]) if lang == "es" else (en, NAMES_EN[cat])
+        href = f"/productos/{cat}/" if lang == "es" else f"/en/products/#{cat}"
+        tarjetas.append(f"""
+          <a class="sector" href="{href}">{img(foto, "")}
+            <span class="sector__text"><strong>{nombre}</strong><span>{producto}</span></span>
+          </a>""")
+    titulo, lead = (("Para tu sector.", "Del campo a la industria: soluciones para cada tipo de instalación.") if lang == "es"
+                    else ("For your sector.", "From the field to industry: solutions for every kind of installation."))
+    return f"""
+    <section class="section section--flush-top">
+      <div class="container container--wide">
+        <div class="headline">
+          <h2>{titulo}</h2>
+          <p class="lead">{lead}</p>
+        </div>
+        <div class="sectors">{"".join(tarjetas)}
+        </div>
+      </div>
+    </section>"""
+
+
 # ---------------------------------------------------------------- inicio
 
 jsonld = json.dumps({
@@ -565,9 +599,10 @@ body = f"""
         {product_tiles()}
       </div>
     </section>
+{sectores()}
 {video_band("corte-fieltro", "Fabricación a medida", "Lo cortamos a tu medida.",
             "Fieltro, goma y caramelo cortados y perforados en nuestras instalaciones de La Rambla.",
-            '<a class="btn btn--light" href="/productos/faldetas/">Ver faldetas</a><a class="more" href="/quienes-somos/#instalaciones">Nuestras instalaciones</a>')}
+            '<a class="btn btn--light" href="/productos/faldetas/">Componentes para vibradores</a><a class="more" href="/quienes-somos/#instalaciones">Nuestras instalaciones</a>')}
 
     <section class="section section--tight section--tile">
       <div class="container container--wide">
@@ -720,6 +755,7 @@ INSTALACIONES = [
     ("assets/img/empresa/cnc-2.webp", "Cabezal de corte de la CNC"),
     ("assets/img/empresa/alta-frecuencia-1.webp", "Máquina de alta frecuencia para bandas de PVC"),
     ("assets/img/empresa/alta-frecuencia-2.webp", "Soldadura de perfiles en bandas de PVC"),
+    ("assets/img/empresa/planchas-2.webp", "Planchas de goma y fieltro en stock"),
     ("assets/img/empresa/nave-nueva-1.webp", "Nueva nave en construcción"),
     ("assets/img/empresa/nave-nueva-2.webp", "Estructura de la nueva nave"),
 ]
@@ -735,6 +771,18 @@ body += f"""
           <li>{badge("refresh", "sm")}<h3>Gama siempre al día</h3><p>Recogemos la experiencia de nuestros clientes y actualizamos constantemente nuestros productos.</p></li>
           <li>{badge("truck", "sm")}<h3>Bien comunicados</h3><p>A 20 minutos de Córdoba, a una hora de Sevilla, Málaga, Granada y Jaén, y a 2 horas de Cádiz, Huelva y Ciudad Real.</p></li>
         </ul>
+      </div>
+    </section>
+
+    <section class="section section--flush-top">
+      <div class="container container--wide identity">
+        <div class="identity__text">
+          <span class="eyebrow">Garantía de satisfacción</span>
+          <h2>Nuestra seña de identidad.</h2>
+          <p>En CRM creemos que es mejor tener buenos clientes y darles un servicio personalizado que tener muchos clientes y no atenderlos lo suficientemente bien. Por eso nos eligen: prefieren un servicio de calidad y no de cantidad.</p>
+          <p>Si de algo estamos orgullosos es de que cada día somos más los que establecemos este vínculo. Gracias a todos los que confiáis en nosotros, desde la familia que formamos todos.</p>
+        </div>
+        <div class="identity__photo">{img("assets/img/empresa/planchas-1.webp", "Palés de planchas de goma y fieltro preparados en nuestra nave")}</div>
       </div>
     </section>
 
@@ -1071,6 +1119,7 @@ body = f"""
         {tarjetas_en()}
       </div>
     </section>
+{sectores("en")}
 {video_band("corte-fieltro", "Custom manufacturing", "Cut to your size.",
             "Felt, rubber and amber polyurethane cut and punched at our facility in La Rambla, Spain.",
             '<a class="btn btn--light" href="/en/products/#faldetas">Rubber skirts</a><a class="more" href="/en/about/">Our facilities</a>')}
@@ -1133,6 +1182,7 @@ INSTALACIONES_EN = [
     ("assets/img/empresa/cnc-2.webp", "CNC cutting head"),
     ("assets/img/empresa/alta-frecuencia-1.webp", "High-frequency machine for PVC belts"),
     ("assets/img/empresa/alta-frecuencia-2.webp", "Welding profiles on PVC belts"),
+    ("assets/img/empresa/planchas-2.webp", "Rubber and felt sheets in stock"),
     ("assets/img/empresa/nave-nueva-1.webp", "New building under construction"),
     ("assets/img/empresa/nave-nueva-2.webp", "Structure of the new building"),
 ]

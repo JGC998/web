@@ -8,7 +8,7 @@
 Uso (desde la raíz del proyecto):  py _fuente/herramientas/procesar_fotos.py
 La selección de fotos de cada familia se define abajo (PRODUCTOS, EMPRESA, FONDOS, VIDEOS).
 """
-import os, sys, subprocess, shutil
+import os, re, sys, subprocess, shutil, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from imagenes import procesar  # WebP sin metadatos
@@ -16,6 +16,22 @@ from imagenes import procesar  # WebP sin metadatos
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(REPO, "web fotos")
+REF = os.path.join(REPO, "WEB NUEVA 2026")   # material del borrador de on3d (noviembre 2025)
+
+
+def ref(*ruta):
+    """Foto de 'WEB NUEVA 2026/' (ruta absoluta: os.path.join(SRC, ...) la respeta)."""
+    return os.path.join(REF, *ruta)
+
+
+def jpeg_de_pdf(pdf, n=1):
+    """Extrae el JPEG n.º n incrustado en un PDF (la foto de faldetas viene dentro de un PDF)."""
+    datos = open(pdf, "rb").read()
+    fotos = [m for m in re.finditer(rb"<<(.{0,600}?)>>\s*stream\r?\n", datos, re.S) if b"DCTDecode" in m.group(1)]
+    m = fotos[n - 1]
+    destino = os.path.join(tempfile.gettempdir(), "crm-" + os.path.basename(pdf) + f"-{n}.jpg")
+    open(destino, "wb").write(datos[m.end():datos.find(b"endstream", m.end())])
+    return destino
 
 
 def lista(carpeta):
@@ -30,9 +46,15 @@ def pick(carpeta, numeros):
 
 # ---------------------------------------------------------------- selección
 PRODUCTOS = {
-    ("bandas-pvc", "bandas-de-pvc"): pick("pvc", [1, 3, 9, 11, 13, 6, 27, 28, 29, 30, 31, 22]),
+    ("bandas-pvc", "bandas-de-pvc"): pick("pvc", [1, 3, 9, 11, 13, 6, 27, 28, 29, 30, 31, 22])
+        + [ref("PVC", f) for f in ["20230425_163616.jpg", "IMG-20230424-WA0034.jpg", "IMG-20230424-WA0046.jpg",
+                                   "IMG-20230424-WA0080.jpg", "IMG-20230424-WA0049.jpg"]],
+    ("bandas-pvc", "recubrimientos"): [ref("PVC", "IMG-20230424-WA0064.jpg"), ref("PVC", "IMG-20230424-WA0065.jpg")],
+    ("bandas-transportadoras", "bandas-transportadoras"): [ref("BANDAS TRANSPORTADORAS", "BANER.jpg"),
+                                                           ref("BANDAS TRANSPORTADORAS", "BANER 32.jpg")],
     ("bandas-pvc", "grapas"): pick("pvc", [25, 26, 20, 17, 19]),
-    ("faldetas", "faldetas"): pick("goma", [2]) + pick("caramelo", [4]) + pick("fieltro", [4]) + pick("borde ondulado", [3]),
+    ("faldetas", "faldetas"): [jpeg_de_pdf(ref("COMPONENTES PARA VIBRADORES", "Faldetas – CRM – Componentes.pdf"))]
+        + pick("goma", [2]) + pick("caramelo", [4]) + pick("fieltro", [4]) + pick("borde ondulado", [3]),
     ("faldetas", "caramelo"): pick("caramelo", [4, 1, 5, 6, 2]),
     ("faldetas", "fieltro"): pick("fieltro", [4, 1, 3, 5, 7, 9, 10, 11]),
     ("faldetas", "goma"): pick("goma", [2, 3, 8, 9, 5, 6, 7, 10, 11]),
@@ -50,6 +72,13 @@ EMPRESA = {
     "alta-frecuencia-1": pick("pvc", [16])[0],
     "alta-frecuencia-2": pick("pvc", [14])[0],
     "corte-cnc-goma": pick("goma", [5])[0],
+    "planchas-1": ref("PORTADA", "FOTOS GARANTIA DE SATISFACION", "ea656808-0f39-414c-8a4f-1ad318fbfb96.jpg"),
+    "planchas-2": ref("PORTADA", "FOTOS GARANTIA DE SATISFACION", "45825f85-56c1-4ae9-9d1f-3f407adb661d.jpg"),
+}
+SECTORES = {  # franja "Sectores" de la portada
+    "olivar": ref("PORTADA", "FOTOS BANER", "OLIVAR.jpg"),
+    "girasol": ref("PORTADA", "FOTOS BANER", "4755e41b-30be-4391-8f06-ffb60381a17a.jpg"),
+    "ajos": ref("PORTADA", "FOTOS BANER", "AJOS.jpg"),
 }
 FONDOS = {
     "campo": pick("fotos de fondo", [8])[0],
@@ -80,6 +109,11 @@ for nombre, f in EMPRESA.items():
     total += foto(f, os.path.join(REPO, "assets", "img", "empresa", f"{nombre}.webp"))
     n += 1
 print(f"empresa: {len(EMPRESA)} fotos")
+
+for nombre, f in SECTORES.items():
+    total += foto(f, os.path.join(REPO, "assets", "img", "sectores", f"{nombre}.webp"), lado_max=1200)
+    n += 1
+print(f"sectores: {len(SECTORES)} fotos")
 
 for nombre, f in FONDOS.items():
     total += foto(f, os.path.join(REPO, "assets", "img", "fondos", f"{nombre}.webp"), lado_max=2400, calidad=80)

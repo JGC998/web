@@ -4,7 +4,7 @@
       "slug": "elevacion",
       "nombre": "Elevación",
       "icono": "elevator",
-      "intro": "Componentes para elevadores de cangilones.",
+      "intro": "Componentes para elevadores de cangilones, para silos e instalaciones de cereal.",
       "corto": "Componentes para elevadores de cangilones.",
       "familias": [
         {
@@ -47,7 +47,8 @@
           "slug": "cadenas-transportadoras",
           "nombre": "Cadenas transportadoras",
           "icono": "chain",
-          "nombre_en": "Conveyor chains"
+          "nombre_en": "Conveyor chains",
+          "oculta": true
         }
       ],
       "nombre_en": "Bucket elevators",
@@ -57,7 +58,7 @@
       "slug": "bandas-transportadoras",
       "nombre": "Bandas transportadoras",
       "icono": "belt-incline",
-      "intro": "Disponemos de un amplio stock permanente para entrega inmediata.",
+      "intro": "Amplio stock permanente para entrega inmediata. Para almazaras, canteras, reciclaje y todo tipo de procesos industriales.",
       "corto": "Amplio stock permanente para entrega inmediata.",
       "familias": [
         {
@@ -132,10 +133,10 @@
     },
     {
       "slug": "faldetas",
-      "nombre": "Faldetas",
+      "nombre": "Componentes para vibradores",
       "icono": "skirt",
-      "intro": "Fabricación de faldetas de goma, fieltro y caramelo.",
-      "corto": "Fabricación en goma, fieltro y caramelo.",
+      "intro": "Faldetas y componentes para vibradores de olivar, fabricados en goma, fieltro y caramelo.",
+      "corto": "Faldetas de goma, fieltro y caramelo para el olivar.",
       "familias": [
         {
           "slug": "faldetas",
@@ -190,17 +191,23 @@
           "nombre": "Red",
           "icono": "net",
           "nombre_en": "Netting"
+        },
+        {
+          "slug": "cierre-tronco",
+          "nombre": "Cierre tronco",
+          "icono": "parts",
+          "nombre_en": "Trunk seals"
         }
       ],
-      "nombre_en": "Rubber skirts",
-      "corto_en": "Made in rubber, felt and amber polyurethane."
+      "nombre_en": "Tree shaker components",
+      "corto_en": "Rubber, felt and amber skirts for olive tree shakers."
     },
     {
       "slug": "bandas-pvc",
       "nombre": "Bandas PVC",
       "icono": "cleated",
-      "intro": "Bandas alimentarias e industriales para todo tipo de sectores agrícolas e industriales.",
-      "corto": "Bandas alimentarias e industriales.",
+      "intro": "Bandas alimentarias e industriales fabricadas a medida, para el envasado y la clasificación de frutas y hortalizas y todo tipo de procesos agroindustriales.",
+      "corto": "Fabricación a medida, alimentarias e industriales.",
       "familias": [
         {
           "slug": "bandas-de-pvc",
@@ -213,6 +220,12 @@
           "nombre": "Bandas modulares",
           "icono": "modular",
           "nombre_en": "Modular belts"
+        },
+        {
+          "slug": "bandas-vendimiadoras",
+          "nombre": "Bandas vendimiadoras",
+          "icono": "belt",
+          "nombre_en": "Grape harvester belts"
         },
         {
           "slug": "cadenas-de-charnelas",
@@ -234,9 +247,9 @@
         },
         {
           "slug": "recubrimientos",
-          "nombre": "Recubrimientos",
+          "nombre": "Recubrimientos PVC",
           "icono": "lagging",
-          "nombre_en": "Coatings"
+          "nombre_en": "PVC coatings"
         },
         {
           "slug": "grapas",
@@ -246,7 +259,7 @@
         }
       ],
       "nombre_en": "PVC belts",
-      "corto_en": "Food-grade and industrial belts."
+      "corto_en": "Made to measure, food-grade and industrial."
     }
   ]
 }

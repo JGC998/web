@@ -38,7 +38,13 @@ TEXT = {
 <p>Disponemos de un amplio stock permanente para entrega inmediata, tanto de metrajes como de bobinas completas. Nuestro stock consta de bandas de anchos desde 400 hasta 1200 mm; para otros anchos disponemos de stock en la fábrica de Francia.</p>
 <p><strong>Resistencias:</strong> 250/2 · 400/3 · 500/4 · 630/4 · 800/4<br><strong>Recubrimientos:</strong> 3+1,5 · 4+2 · 6+2 · 8+3</p>
 <p>Otros recubrimientos y resistencias, bajo pedido.</p>
-{tags("Antiabrasiva y antiaceite G", "Antillama K", "Alimentaria FDA")}
+<h3>Calidades y usos</h3>
+<ul>
+<li><strong>Antiabrasiva Y:</strong> procesos industriales y agrícolas.</li>
+<li><strong>Antiaceite G:</strong> plantas de RSU y reciclaje.</li>
+<li><strong>Antillama K:</strong> siderurgia y productos calientes.</li>
+<li><strong>Alimentaria FDA y EN 1935/2004</strong> (reglamento europeo): almazaras e industria de procesos alimentarios.</li>
+</ul>
 <h3>Bandas transportadoras nervadas</h3>
 <p>Para el transporte de materiales con inclinaciones moderadas —que, dependiendo del tipo de material, su granulometría y, sobre todo, su forma, puede llegar hasta los 45º— aconsejamos utilizar la banda nervada estándar, con nervios de 14 mm de altura.</p>
 <p>Este tipo de banda, con la carcasa y el recubrimiento adecuados para cada instalación y material a transportar, es la de mayor uso por ser la primera de la serie de nervios, y ha sido utilizada con éxito probado en los más variados tipos de transportes inclinados de tipo general.</p>
@@ -123,7 +129,16 @@ TEXT = {
         "bandas-de-pvc": """
 <p>Las bandas de PVC se utilizan para aplicaciones ligeras de transporte de materiales alimentarios, así como en procesos industriales con propiedades químicas.</p>
 <p>Las bandas pueden ser lisas, con recubrimientos, espesores y terminaciones diferentes.</p>
-<p>Se pueden servir con tacos, guías y runners, así como cerradas sinfín en caliente o con grapas galvanizadas o inoxidables.</p>""",
+<p>Se pueden servir con tacos, guías y runners, así como cerradas sinfín en caliente o con grapas galvanizadas o inoxidables.</p>
+<p>Las fabricamos a medida en nuestras instalaciones, para el envasado y la clasificación de frutas y hortalizas, y para todo tipo de procesos agroindustriales.</p>""",
+        "bandas-modulares": """
+<p>Bandas para procesos agroindustriales de alimentos.</p>
+<p>Consúltanos modelos, medidas y disponibilidad.</p>""",
+        "bandas-vendimiadoras": """
+<p>Bandas para máquinas vendimiadoras.</p>
+<p>Consúltanos modelos, medidas y disponibilidad.</p>""",
+        "grapas": """
+<p>Uniones metálicas para la reparación o el montaje de bandas transportadoras.</p>""",
     },
     "elevacion": {
         "bandas-elevadoras": f"""
@@ -171,6 +186,19 @@ TEXT = {
         "faldetas": """
 <p>Con varios fabricantes de bandas europeos hemos confeccionado una nueva generación de gomas para las faldetas de los vibradores.</p>
 <p>Disponemos de las faldetas estándar y las nuevas súper antiabrasivas. También estamos desarrollando nuevos modelos que se adapten mejor a los tacos y resistan más rozamiento, con más recubrimiento de goma y menos lonas, pero más resistentes.</p>""",
+        "goma": f"""
+<p>Goma para faldetas de vibradores, en las calidades estándar y súper antiabrasiva.</p>
+{tags("Verde · 10 mm con 2 lonas", "Negra · 12 mm con 2 lonas")}
+<p>Consulta en <a href="#faldetas">Faldetas</a> todos los recubrimientos, lonas y espesores.</p>""",
+        "caramelo": f"""
+<p>Goma blanda de color caramelo.</p>
+{tags("8 mm con lona", "12 mm")}""",
+        "fieltro": f"""
+<p>Fieltro para faldetas de vibradores.</p>
+{tags("10 mm", "15 mm")}""",
+        "cierre-tronco": """
+<p>Piezas de cierre del tronco para vibradores de olivar, fabricadas a medida.</p>
+<p>Consúltanos medidas y disponibilidad.</p>""",
     },
 }
 
@@ -193,9 +221,9 @@ EXTRA = {  # contenido a ancho completo bajo la galería
     )
     + '<div class="grid grid--2">'
     + table("Perfiles", ["Modelo", "Color", "Mín. tambor"],
-            [[m, "Verde / Blanco", t] for m, t in [("X-6", "25 mm"), ("Y-8", "50 mm"), ("Z-10", "70 mm"), ("A-13", "90 mm"), ("B-17", "100 mm")]])
+            [[m, "Verde / Blanco / Azul" if m in ("X-6", "R-20") else "Verde / Blanco", t] for m, t in [("X-6", "25 mm"), ("Y-8", "50 mm"), ("Z-10", "70 mm"), ("A-13", "90 mm"), ("B-17", "100 mm")]])
     + table("Tacos", ["Modelo", "Color", "Mín. tambor"],
-            [[m, "Verde / Blanco", t] for m, t in [("R-20", "120 mm"), ("R/I-30", "120 mm"), ("R/I-40", "120 mm"), ("R/I-50", "150 mm"), ("R/I-60", "150 mm"), ("R-80", "180 mm")]])
+            [[m, "Verde / Blanco / Azul" if m in ("X-6", "R-20") else "Verde / Blanco", t] for m, t in [("R-20", "120 mm"), ("R/I-30", "120 mm"), ("R/I-40", "120 mm"), ("R/I-50", "150 mm"), ("R/I-60", "150 mm"), ("R-80", "180 mm")]])
     + "</div>",
     ("faldetas", "faldetas"): table(
         "Datos técnicos para la fabricación de faldetas",

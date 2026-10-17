@@ -1657,3 +1657,132 @@ a.contact-tile:hover {
     margin-bottom: 8px;
   }
 }
+
+/* ---------- Sectores (portada) ---------- */
+
+.sectors {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.sector {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--tile);
+  color: #fff;
+  text-decoration: none;
+}
+
+.sector img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+
+.sector::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0) 55%);
+}
+
+.sector__text {
+  position: absolute;
+  z-index: 1;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sector__text strong {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.sector__text span {
+  font-size: 0.95rem;
+  opacity: 0.88;
+}
+
+.sector:hover img,
+.sector:focus-visible img {
+  transform: scale(1.04);
+}
+
+@media (max-width: 900px) {
+  .sectors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .sectors {
+    gap: 12px;
+  }
+
+  .sector {
+    aspect-ratio: 3 / 4;
+  }
+
+  .sector__text {
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+  }
+
+  .sector__text strong {
+    font-size: 1.05rem;
+  }
+
+  .sector__text span {
+    font-size: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sector img {
+    transition: none;
+  }
+}
+
+/* ---------- Seña de identidad (quiénes somos) ---------- */
+
+.identity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+
+.identity__text h2 {
+  margin: 8px 0 18px;
+}
+
+.identity__text p {
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.identity__photo img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 800px) {
+  .identity {
+    grid-template-columns: 1fr;
+  }
+}
