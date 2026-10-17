@@ -106,7 +106,7 @@ SECTORES = [
         "nombre": "Industria, canteras y reciclaje",
         "nombre_en": "Industry, quarries and recycling",
         "icono": "belt-incline",
-        "foto": "assets/img/productos/bandas-transportadoras/bandas-transportadoras/01.webp",
+        "foto": "assets/img/sectores/industria.webp",
         "titulo": "Bandas transportadoras para industria, canteras y reciclaje",
         "descripcion": "Bandas transportadoras antiabrasivas, antiaceite y antillama, rodillos, tambores, limpiadores y vulcanizados para canteras, reciclaje e industria. CRM, La Rambla (Córdoba).",
         "intro": "Bandas transportadoras y todos sus componentes para canteras, plantas de reciclaje e industria.",

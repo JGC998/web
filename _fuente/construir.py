@@ -22,6 +22,7 @@ from PIL import Image
 from iconos import ICONS, icon, badge
 from textos_productos import TEXT, EXTRA
 from sectores import SECTORES
+import idiomas as I
 from noticias import leer_noticias, fecha_larga
 from compartir import generar as generar_imagen_compartir
 
@@ -46,7 +47,7 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261017d"
+VERSION = "20261017e"
 # Estadísticas de visitas (Cloudflare Web Analytics: sin cookies). Vacío = desactivado.
 ANALITICA_TOKEN = "c9bd8190b2be4939ae6689fd3909c441"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
@@ -63,8 +64,7 @@ NAMES_EN = {c["slug"]: c["nombre_en"] for c in CATEGORIAS}
 SHORT_EN = {c["slug"]: c["corto_en"] for c in CATEGORIAS}
 
 # Páginas que existen en los dos idiomas (para el enlace English/Español y hreflang)
-ALTERNATIVAS = {"/": "/en/", "/productos/": "/en/products/", "/quienes-somos/": "/en/about/", "/contacto/": "/en/contact/"}
-ALTERNATIVAS.update({v: k for k, v in list(ALTERNATIVAS.items())})
+PAGINA_IDIOMA = {ruta: clave for rutas in I.RUTAS.values() for clave, ruta in rutas.items()}   # ruta -> página
 CAT_ICON = {c["slug"]: c["icono"] for c in CATEGORIAS}
 SEC_ICON = {c["slug"]: {f["slug"]: f["icono"] for f in c["familias"]} for c in CATEGORIAS}
 C = {"products": {c["slug"]: [{"slug": f["slug"], "title": f["nombre"]} for f in c["familias"]] for c in CATEGORIAS}}
@@ -134,11 +134,10 @@ def analitica():
 def head(title, desc, og_img=None, lang="es", path="/"):
     full = f"{title} | CRM Componentes" if title else "CRM Componentes — Comercial de Recambios Montemayor"
     idiomas = ""
-    if path in ALTERNATIVAS:
-        es, en = (path, ALTERNATIVAS[path]) if lang == "es" else (ALTERNATIVAS[path], path)
-        idiomas = (f'\n  <link rel="alternate" hreflang="es" href="{SITE}{es}">'
-                   f'\n  <link rel="alternate" hreflang="en" href="{SITE}{en}">'
-                   f'\n  <link rel="alternate" hreflang="x-default" href="{SITE}{es}">')
+    if path in PAGINA_IDIOMA:
+        clave = PAGINA_IDIOMA[path]
+        idiomas = "".join(f'\n  <link rel="alternate" hreflang="{l}" href="{SITE}{I.RUTAS[l][clave]}">' for l in I.IDIOMAS)
+        idiomas += f'\n  <link rel="alternate" hreflang="x-default" href="{SITE}{I.RUTAS["es"][clave]}">'
     return f"""<!doctype html>
 <html lang="{lang}">
 <head>
@@ -148,7 +147,7 @@ def head(title, desc, og_img=None, lang="es", path="/"):
   <meta name="description" content="{e(desc)}">
   <meta name="theme-color" content="#ffffff">
   <meta property="og:type" content="website">
-  <meta property="og:locale" content="{"es_ES" if lang == "es" else "en_GB"}">
+  <meta property="og:locale" content="{"es_ES" if lang == "es" else I.T[lang]["locale"]}">
   <meta property="og:site_name" content="CRM Componentes">
   <meta property="og:title" content="{e(full)}">
   <meta property="og:description" content="{e(desc)}">
@@ -217,51 +216,69 @@ def mega_menu(active):
             </div>"""
 
 
-def enlace_idioma(path, lang):
-    if lang == "es":
-        return f'<li><a class="nav__link nav__lang" href="{ALTERNATIVAS.get(path, "/en/")}" hreflang="en" lang="en">English</a></li>'
-    return f'<li><a class="nav__link nav__lang" href="{ALTERNATIVAS.get(path, "/")}" hreflang="es" lang="es">Español</a></li>'
+BANDERA = {  # banderas simplificadas en SVG (los emojis de bandera no se ven en Windows)
+    "es": '<rect width="30" height="20" fill="#AA151B"/><rect y="5" width="30" height="10" fill="#F1BF00"/>',
+    "en": ('<rect width="30" height="20" fill="#012169"/>'
+           '<path d="M0 0 30 20M30 0 0 20" stroke="#fff" stroke-width="4"/>'
+           '<path d="M0 0 30 20M30 0 0 20" stroke="#C8102E" stroke-width="1.6"/>'
+           '<path d="M15 0v20M0 10h30" stroke="#fff" stroke-width="6.5"/>'
+           '<path d="M15 0v20M0 10h30" stroke="#C8102E" stroke-width="3.6"/>'),
+    "fr": '<rect width="10" height="20" fill="#002654"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#CE1126"/>',
+    "de": '<rect width="30" height="20" fill="#000"/><rect y="6.67" width="30" height="6.66" fill="#DD0000"/><rect y="13.33" width="30" height="6.67" fill="#FFCE00"/>',
+}
 
 
-NAV_EN = [
-    ("/en/", "Home", "en-inicio"),
-    ("/en/products/", "Products", "en-productos"),
-    ("/en/about/", "About us", "en-empresa"),
-    ("/en/contact/", "Contact", "en-contacto"),
-]
+def bandera(lang):
+    return f'<svg class="flag" viewBox="0 0 30 20" aria-hidden="true">{BANDERA[lang]}</svg>'
 
 
-def header_en(active, path):
+def selector_idioma(path, lang):
+    """Banderas para cambiar de idioma. Llevan a la misma página en el otro idioma si existe;
+    si no, a la portada de ese idioma."""
+    clave = PAGINA_IDIOMA.get(path, "inicio")
+    enlaces = []
+    for l in I.IDIOMAS:
+        actual = ' aria-current="true"' if l == lang else ""
+        enlaces.append(f'<a class="lang" href="{I.RUTAS[l][clave]}" hreflang="{l}" lang="{l}" title="{I.NOMBRE_IDIOMA[l]}"{actual}>'
+                       f'{bandera(l)}<span class="lang__name">{I.NOMBRE_IDIOMA[l]}</span></a>')
+    aria = "Idioma" if lang == "es" else I.T[lang]["idioma"]
+    return f'<li class="nav__langs" role="group" aria-label="{aria}">{"".join(enlaces)}</li>'
+
+
+def header_int(lang, active, path):
+    """Cabecera de las versiones en otros idiomas (inglés, francés, alemán)."""
+    t, rutas = I.T[lang], I.RUTAS[lang]
     items = "".join(
-        f'<li><a class="nav__link" href="{h}"{" aria-current=\"page\"" if k == active else ""}>{l}</a></li>'
-        for h, l, k in NAV_EN
-    ) + enlace_idioma(path, "en")
+        f'<li><a class="nav__link" href="{rutas[k]}"{" aria-current=\"page\"" if f"{lang}-{k}" == active else ""}>{t["nav"][k]}</a></li>'
+        for k in ("inicio", "productos", "empresa", "contacto")
+    ) + selector_idioma(path, lang)
     return f"""<body>
-  <a class="skip-link" href="#contenido">Skip to content</a>
+  <a class="skip-link" href="#contenido">{t["saltar"]}</a>
 
   <header class="site-header">
     <div class="container">
-      <a class="brand" href="/en/" aria-label="CRM Componentes — Home">
+      <a class="brand" href="{rutas["inicio"]}" aria-label="{t["inicio_aria"]}">
         <img src="/assets/img/brand/logo-crm.png" alt="CRM" width="500" height="173">
       </a>
-      <nav class="nav" id="menu" aria-label="Main">
+      <nav class="nav" id="menu" aria-label="{t["menu_aria"]}">
         <ul class="nav__list">
           {items}
         </ul>
         <div class="nav__extra">
-          Customer service
+          {t["atencion"]}
           <a href="tel:{PHONE_TEL}">{PHONE}</a>
-          <a href="{wa("Hello, I would like some information.")}" target="_blank" rel="noopener">WhatsApp +34 {WHATSAPP_VER}</a>
+          <a href="{wa(t["wa"])}" target="_blank" rel="noopener">WhatsApp +34 {WHATSAPP_VER}</a>
           <a href="mailto:{EMAIL}">{EMAIL}</a>
         </div>
       </nav>
-      <a class="header-call" href="tel:{PHONE_TEL}">{icon("phone")} Call</a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+      <a class="header-call" href="tel:{PHONE_TEL}">{icon("phone")} {t["llamar"]}</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="{t["abrir_menu"]}">
         <span class="nav-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
         <span class="nav-toggle__label" aria-hidden="true"></span>
       </button>
     </div>
   </header>
+  <div class="nav-scrim" aria-hidden="true"></div>
 """
 
 
@@ -279,7 +296,7 @@ def header(active, path="/"):
             items.append(f'<li><a class="nav__link" href="{href}" aria-current="page">{label}</a></li>')
         else:
             items.append(f'<li><a class="nav__link" href="{href}">{label}</a></li>')
-    items.append(enlace_idioma(path, "es"))
+    items.append(selector_idioma(path, "es"))
     return f"""<body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
@@ -367,52 +384,84 @@ FOOTER = f"""
 """
 
 
-FOOTER_EN = f"""
+def nombre_cat(lang, slug):
+    if lang == "es":
+        return NAMES[slug]
+    return NAMES_EN[slug] if lang == "en" else I.CATEGORIAS[lang][slug][0]
+
+
+def corto_cat(lang, slug):
+    if lang == "es":
+        return SHORT[slug]
+    return SHORT_EN[slug] if lang == "en" else I.CATEGORIAS[lang][slug][1]
+
+
+def nombre_fam(lang, cat, f):
+    return f["nombre_en"] if lang == "en" else I.FAMILIAS[lang][f"{cat}/{f['slug']}"]
+
+
+def footer_int(lang):
+    """Pie de las versiones en otros idiomas."""
+    t, rutas = I.T[lang], I.RUTAS[lang]
+    wa_url = wa(t["wa"])
+    ayuda = t["pie_ayuda"].format(
+        tel=f'<a href="tel:{PHONE_TEL}"><strong>{PHONE}</strong></a>',
+        wa=f'<a href="{wa_url}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a>',
+        mail=f'<a href="mailto:{EMAIL}"><strong>{EMAIL}</strong></a>')
+    otros = "".join(f'<li><a href="{I.RUTAS[l]["inicio"]}" hreflang="{l}" lang="{l}">{I.NOMBRE_IDIOMA[l]}</a></li>'
+                    for l in I.IDIOMAS if l != lang)
+    return f"""
   <footer class="site-footer">
     <div class="container">
-      <p class="footer__lead">Need help? Call us on <a href="tel:{PHONE_TEL}"><strong>{PHONE}</strong></a>, message us on <a href="{wa("Hello, I would like some information.")}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a> or email <a href="mailto:{EMAIL}"><strong>{EMAIL}</strong></a>.</p>
+      <p class="footer__lead">{ayuda}</p>
       <div class="footer__grid">
         <div>
-          <h2>Products</h2>
+          <h2>{t["pie_productos"]}</h2>
           <ul class="footer__links">
-            {"".join(f'<li><a href="/en/products/#{s}">{NAMES_EN[s]}</a></li>' for s, _, _ in PRODUCTS)}
+            {"".join(f'<li><a href="{rutas["productos"]}#{s}">{nombre_cat(lang, s)}</a></li>' for s, _, _ in PRODUCTS)}
           </ul>
         </div>
         <div>
-          <h2>Company</h2>
+          <h2>{t["pie_empresa"]}</h2>
           <ul class="footer__links">
-            <li><a href="/en/about/">About us</a></li>
-            <li><a href="/en/contact/">Contact</a></li>
-            <li><a href="/" hreflang="es" lang="es">Español</a></li>
+            <li><a href="{rutas["empresa"]}">{t["nav"]["empresa"]}</a></li>
+            <li><a href="{rutas["contacto"]}">{t["nav"]["contacto"]}</a></li>
           </ul>
         </div>
         <div>
-          <h2>Legal</h2>
+          <h2>{t["idioma"]}</h2>
           <ul class="footer__links">
-            <li><a href="/legal/aviso-legal/" hreflang="es">Legal notice (Spanish)</a></li>
-            <li><a href="/legal/politica-de-privacidad/" hreflang="es">Privacy policy (Spanish)</a></li>
+            {otros}
           </ul>
         </div>
         <div>
-          <h2>Visit us</h2>
-          <p style="margin:0">P.I. Los Alfares<br>Calle La Jarra 41<br>14540 La Rambla (Córdoba), Spain</p>
+          <h2>{t["pie_legal"]}</h2>
+          <ul class="footer__links">
+            <li><a href="/legal/aviso-legal/" hreflang="es">{t["aviso_legal"]}</a></li>
+            <li><a href="/legal/politica-de-privacidad/" hreflang="es">{t["privacidad"]}</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>{t["pie_visita"]}</h2>
+          <p style="margin:0">P.I. Los Alfares<br>Calle La Jarra 41<br>14540 La Rambla (Córdoba), {t["pais"]}</p>
         </div>
       </div>
       <div class="footer__bottom">
         <span>© <span data-year>2026</span> Comercial de Recambios Montemayor, S.L.</span>
-        <span>VAT ES-B14392799</span>
+        <span>{t["cif"]}</span>
       </div>
     </div>
   </footer>
 
-  <nav class="callbar" aria-label="Quick contact">
-    <a href="tel:{PHONE_TEL}">{icon("phone")} Call</a>
-    <a class="callbar__wa" href="{wa("Hello, I would like some information.")}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
+  <nav class="callbar" aria-label="{t["contacto_rapido"]}">
+    <a href="tel:{PHONE_TEL}">{icon("phone")} {t["llamar"]}</a>
+    <a class="callbar__wa" href="{wa_url}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
     <a href="mailto:{EMAIL}">{icon("mail")} Email</a>
   </nav>
 </body>
 </html>
 """
+
 
 
 FRASE_COMPARTIR = "Componentes para elevación y transporte · La Rambla (Córdoba)"
@@ -436,8 +485,8 @@ def write(path, title, desc, active, body, og_img=None, og_titulo=None, og_frase
         if path != "/presupuesto/gracias/":   # la página de gracias no va al sitemap
             PAGINAS.append(path)
         compartir = imagen_compartir(path, og_titulo or title, og_img, og_frase)
-    cabecera = header(active, path) if lang == "es" else header_en(active, path)
-    pie = FOOTER if lang == "es" else FOOTER_EN
+    cabecera = header(active, path) if lang == "es" else header_int(lang, active, path)
+    pie = FOOTER if lang == "es" else footer_int(lang)
     out = head(title, desc, compartir, lang, path) + "\n" + cabecera + '\n  <main id="contenido">' + body + "\n  </main>\n" + pie
     file = os.path.join(REPO, path.strip("/"), "index.html") if path != "/404" else os.path.join(REPO, "404.html")
     os.makedirs(os.path.dirname(file), exist_ok=True)
@@ -493,7 +542,7 @@ def cta():
 
 CAT_FOTO = {  # foto representativa que aparece al pasar el ratón por la tarjeta
     "elevacion": "assets/img/categorias/elevacion.webp",
-    "bandas-transportadoras": "assets/img/productos/bandas-transportadoras/bandas-transportadoras/01.webp",
+    "bandas-transportadoras": "assets/img/categorias/bandas-transportadoras.webp",
     "faldetas": "assets/img/productos/faldetas/faldetas/01.webp",
     "bandas-pvc": "assets/img/productos/bandas-pvc/bandas-de-pvc/13.webp",
 }
@@ -595,13 +644,13 @@ def sectores(lang="es"):
         if lang == "es":
             nombre, href, sub = x["nombre"], f"/sectores/{x['slug']}/", "Ver productos"
         else:
-            nombre, href, sub = x["nombre_en"], "/en/products/", "See products"
+            nombre, href, sub = I.SECTORES[lang][x["slug"]], I.RUTAS[lang]["productos"], I.T[lang]["ver_productos"]
         tarjetas.append(f"""
           <a class="sector" href="{href}">{sector_media(x, "(max-width: 900px) 50vw, 240px")}
             <span class="sector__text"><strong>{nombre}</strong><span>{sub}</span></span>
           </a>""")
     titulo, lead = (("Para tu sector.", "Del campo a la industria: soluciones para cada tipo de instalación.") if lang == "es"
-                    else ("For your sector.", "From the field to industry: solutions for every kind of installation."))
+                    else (I.T[lang]["sectores_h2"], I.T[lang]["sectores_lead"]))
     return f"""
     <section class="section section--flush-top">
       <div class="container container--wide">
@@ -912,19 +961,20 @@ write("/sectores/", "Sectores", "Productos de CRM por sector: olivar, almendro, 
 body = intro("Una empresa familiar <span class=\"gradient\">desde 1994.</span>", "Pasado, tecnología. Presente, innovación. Futuro, sostenible.",
              eyebrow="Quiénes somos")
 INSTALACIONES = [
-    ("assets/img/empresa/fachada.webp", "Fachada de CRM en el P.I. Los Alfares"),
+    ("assets/img/empresa/oficinas.webp", "Oficinas de CRM en el P.I. Los Alfares"),
     ("assets/img/empresa/cnc-1.webp", "Máquina de corte por control numérico (CNC)"),
     ("assets/img/empresa/corte-cnc-goma.webp", "Corte de goma en la CNC"),
     ("assets/img/empresa/cnc-2.webp", "Cabezal de corte de la CNC"),
     ("assets/img/empresa/alta-frecuencia-1.webp", "Máquina de alta frecuencia para bandas de PVC"),
     ("assets/img/empresa/alta-frecuencia-2.webp", "Soldadura de perfiles en bandas de PVC"),
     ("assets/img/empresa/planchas-2.webp", "Planchas de goma y fieltro en stock"),
+    ("assets/img/empresa/fachada.webp", "Fachada de la nueva nave"),
     ("assets/img/empresa/nave-nueva-1.webp", "Nueva nave en construcción"),
     ("assets/img/empresa/nave-nueva-2.webp", "Estructura de la nueva nave"),
 ]
 body += f"""
 
-    <div class="container container--wide page-photo">{img("assets/img/empresa/fachada.webp", "Nave de CRM en el P.I. Los Alfares, La Rambla", lazy=False)}</div>
+    <div class="container container--wide page-photo">{img("assets/img/empresa/oficinas.webp", "Oficinas de CRM en el P.I. Los Alfares, La Rambla", lazy=False)}</div>
 
     <section class="section section--flush-top">
       <div class="container">
@@ -994,7 +1044,7 @@ body += f"""
       </div>
     </section>
 {cta()}"""
-write("/quienes-somos/", "Quiénes somos", "CRM S.L. es una empresa familiar fundada en 1994 en La Rambla (Córdoba), especializada en componentes para elevación y transporte de materiales.", "quienes-somos", body, og_img="assets/img/empresa/fachada.webp", og_titulo="Una empresa familiar desde 1994")
+write("/quienes-somos/", "Quiénes somos", "CRM S.L. es una empresa familiar fundada en 1994 en La Rambla (Córdoba), especializada en componentes para elevación y transporte de materiales.", "quienes-somos", body, og_img="assets/img/empresa/oficinas.webp", og_titulo="Una empresa familiar desde 1994")
 
 # ---------------------------------------------------------------- catálogos
 
@@ -1119,7 +1169,7 @@ body += f"""
       </div>
     </section>"""
 write("/contacto/", "Contacto", f"Contacta con CRM en La Rambla (Córdoba): teléfono {PHONE}, email {EMAIL}. Horario y ubicación.", "contacto", body,
-      og_img="assets/img/empresa/fachada.webp", og_frase=f"Teléfono {PHONE} · WhatsApp {WHATSAPP_VER}")
+      og_img="assets/img/empresa/oficinas.webp", og_frase=f"Teléfono {PHONE} · WhatsApp {WHATSAPP_VER}")
 
 def opciones_producto():
     grupos = []
@@ -1221,52 +1271,61 @@ for slug, title in LEG:
     </section>"""
     write(f"/legal/{slug}/", title, f"{title} de Comercial de Recambios Montemayor, S.L.", "legal", body)
 
-# ---------------------------------------------------------------- versión en inglés
-WA_EN = wa("Hello, I would like some information about your products.")
+# ---------------------------------------------------------------- otros idiomas (inglés, francés, alemán)
+# Portada, productos, empresa y contacto. Los textos están en _fuente/contenido/idiomas.py.
+
+INSTALACIONES_FOTOS = [r for r, _ in INSTALACIONES]   # mismas fotos que en español, con el texto traducido
 
 
-def cta_en():
+def cta_int(lang):
+    t = I.T[lang]
     return f"""
     <section class="section section--tile center">
       <div class="container">
         <span class="badge-icon" style="margin:0 auto">{icon("handshake")}</span>
-        <h2 style="margin-top:28px">Let's talk.</h2>
-        <p class="lead" style="max-width:600px;margin:0 auto 28px">We help you choose the right product for your installation. We reply in English.</p>
+        <h2 style="margin-top:28px">{t["cta_titulo"]}</h2>
+        <p class="lead" style="max-width:600px;margin:0 auto 28px">{t["cta_texto"]}</p>
         <div class="actions">
-          <a class="btn" href="mailto:{EMAIL}?subject=Enquiry%20from%20the%20website">{icon("mail")} {EMAIL}</a>
-          <a class="btn btn--wa" href="{WA_EN}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
-          <a class="more" href="tel:{PHONE_TEL}">Call {PHONE}</a>
+          <a class="btn" href="mailto:{EMAIL}?subject={urllib.parse.quote(t["asunto"])}">{icon("mail")} {EMAIL}</a>
+          <a class="btn btn--wa" href="{wa(t["wa"])}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
+          <a class="more" href="tel:{PHONE_TEL}">{t["llamar"]} {PHONE}</a>
         </div>
       </div>
     </section>"""
 
 
-def tarjetas_en():
+def tarjetas_int(lang):
+    t, prod = I.T[lang], I.RUTAS[lang]["productos"]
     out = []
     for c in CATEGORIAS:
         fams = c["familias"]
-        lista = "".join(f'<li><a href="/en/products/#{c["slug"]}">{e(f["nombre_en"])}</a></li>' for f in fams[:5])
+        lista = "".join(f'<li><a href="{prod}#{c["slug"]}">{e(nombre_fam(lang, c["slug"], f))}</a></li>' for f in fams[:5])
         if len(fams) > 5:
-            lista += f'<li><a class="catcard__rest" href="/en/products/#{c["slug"]}">and {len(fams) - 5} more</a></li>'
+            lista += f'<li><a class="catcard__rest" href="{prod}#{c["slug"]}">{t["y_mas"].format(n=len(fams) - 5)}</a></li>'
         out.append(f"""
           <article class="catcard">
-            {catcard_head(c["slug"], c["nombre_en"], c["corto_en"], f'/en/products/#{c["slug"]}')}
+            {catcard_head(c["slug"], nombre_cat(lang, c["slug"]), corto_cat(lang, c["slug"]), f'{prod}#{c["slug"]}')}
             <ul class="catcard__list">{lista}</ul>
-            <a class="more" href="/en/products/#{c["slug"]}">See range</a>
+            <a class="more" href="{prod}#{c["slug"]}">{t["ver_gama"]}</a>
           </article>""")
     return '<div class="catcards">' + "".join(out) + "\n        </div>"
 
 
-# Portada
-body = f"""
+for lang in ("en", "fr", "de"):
+    t, rutas = I.T[lang], I.RUTAS[lang]
+
+    # Portada
+    datos = "".join(f'<li>{icon(ic)}<strong>{a}</strong><span>{b}</span></li>'
+                    for ic, (a, b) in zip(("calendar", "box", "ruler", "award"), t["datos"]))
+    body = f"""
     <section class="hero hero--photo" style="--hero-img:url('/assets/img/fondos/campo.webp')">
       <div class="container">
-        <span class="eyebrow">Since 1994 · La Rambla, Córdoba (Spain)</span>
-        <h1>Solutions and <span class="gradient">maximum efficiency.</span></h1>
-        <p class="lead">Components for bucket elevators and bulk material handling: conveyor belts, PVC belts and rubber skirts. Permanent stock and custom manufacturing.</p>
+        <span class="eyebrow">{t["hero_eyebrow"]}</span>
+        <h1>{t["hero_h1"]}</h1>
+        <p class="lead">{t["hero_texto"]}</p>
         <div class="actions">
-          <a class="btn" href="/en/products/">View products</a>
-          <a class="more" href="/en/contact/">Contact us</a>
+          <a class="btn" href="{rutas["productos"]}">{t["hero_productos"]}</a>
+          <a class="more" href="{rutas["contacto"]}">{t["hero_contacto"]}</a>
         </div>
       </div>
     </section>
@@ -1274,131 +1333,107 @@ body = f"""
     <section class="section">
       <div class="container container--wide">
         <div class="headline">
-          <h2>Our products.</h2>
-          <p class="lead">Everything your installation needs, from a single supplier.</p>
+          <h2>{t["productos_h2"]}</h2>
+          <p class="lead">{t["productos_lead"]}</p>
         </div>
-        {tarjetas_en()}
+        {tarjetas_int(lang)}
       </div>
     </section>
-{sectores("en")}
-{video_band("corte-fieltro", "Custom manufacturing", "Cut to your size.",
-            "Felt, rubber and amber polyurethane cut and punched at our facility in La Rambla, Spain.",
-            '<a class="btn btn--light" href="/en/products/#faldetas">Rubber skirts</a><a class="more" href="/en/about/">Our facilities</a>')}
+{sectores(lang)}
+{video_band("corte-fieltro", t["video_eyebrow"], t["video_titulo"], t["video_texto"],
+            f'<a class="btn btn--light" href="{rutas["productos"]}#faldetas">{t["video_boton"]}</a><a class="more" href="{rutas["empresa"]}">{t["video_instalaciones"]}</a>')}
 
     <section class="section section--tight section--tile">
       <div class="container container--wide">
-        <ul class="facts">
-          <li>{icon("calendar")}<strong>Since 1994</strong><span>Family business</span></li>
-          <li>{icon("box")}<strong>Permanent stock</strong><span>Immediate delivery</span></li>
-          <li>{icon("ruler")}<strong>Custom-made</strong><span>Cutting, punching and parts</span></li>
-          <li>{icon("award")}<strong>Leading brands</strong><span>European and Spanish</span></li>
-        </ul>
+        <ul class="facts">{datos}</ul>
       </div>
     </section>
 
     <section class="section section--dark">
       <div class="container center">
-        <p class="statement">Quality over quantity. <span>We would rather have good customers and give them a personalised service.</span></p>
-        <div class="actions" style="margin-top:32px"><a class="more" href="/en/about/">About us</a></div>
+        <p class="statement">{t["lema"]} <span>{t["lema_texto"]}</span></p>
+        <div class="actions" style="margin-top:32px"><a class="more" href="{rutas["empresa"]}">{t["conocenos"]}</a></div>
       </div>
     </section>
-{cta_en()}"""
-write("/en/", "Conveyor belts, bucket elevator parts and rubber skirts", "CRM (La Rambla, Spain): conveyor belts, PVC belts, rubber skirts and components for bucket elevators. Permanent stock and custom manufacturing since 1994.",
-      "en-inicio", body, og_img="assets/img/fondos/campo.webp", og_titulo="Solutions and maximum efficiency.",
-      og_frase="CRM · Components for elevators and conveyors since 1994", lang="en")
+{cta_int(lang)}"""
+    write(rutas["inicio"], t["inicio_titulo"], t["inicio_desc"], f"{lang}-inicio", body,
+          og_img="assets/img/fondos/campo.webp", og_titulo=t["inicio_og"], og_frase=t["inicio_frase"], lang=lang)
 
-# Productos
-secciones = []
-for c in CATEGORIAS:
-    fams = "".join(f'<li>{icon(f["icono"])}<span>{e(f["nombre_en"])}</span></li>' for f in c["familias"])
-    secciones.append(f"""
+    # Productos
+    secciones = []
+    for c in CATEGORIAS:
+        nombre = nombre_cat(lang, c["slug"])
+        fams = "".join(f'<li>{icon(f["icono"])}<span>{e(nombre_fam(lang, c["slug"], f))}</span></li>' for f in c["familias"])
+        secciones.append(f"""
         <article class="en-cat" id="{c["slug"]}">
           <div class="en-cat__head">
             {badge(c["icono"])}
             <div>
-              <h2>{c["nombre_en"]}</h2>
-              <p class="lead">{c["corto_en"]}</p>
+              <h2>{nombre}</h2>
+              <p class="lead">{corto_cat(lang, c["slug"])}</p>
             </div>
           </div>
           <ul class="en-cat__list">{fams}</ul>
           <div class="actions actions--start">
-            <a class="btn" href="mailto:{EMAIL}?subject={urllib.parse.quote("Quote request: " + c["nombre_en"])}">Request a quote</a>
-            <a class="more" href="/productos/{c["slug"]}/" hreflang="es">Technical details and photos (in Spanish)</a>
+            <a class="btn" href="mailto:{EMAIL}?subject={urllib.parse.quote(t["pedir_asunto"] + nombre)}">{t["pedir"]}</a>
+            <a class="more" href="/productos/{c["slug"]}/" hreflang="es">{t["ficha"]}</a>
           </div>
         </article>""")
-body = intro("Products.", "Components for bucket elevators, belt conveyors and custom parts in rubber, felt and PVC.")
-body += f"""
+    body = intro(t["prod_h1"], t["prod_lead"])
+    body += f"""
     <section class="section section--flush-top">
       <div class="container">{"".join(secciones)}
       </div>
-    </section>""" + cta_en()
-write("/en/products/", "Products", "CRM products: bucket elevator components, conveyor belts, rubber skirts and PVC belts.", "en-productos", body,
-      og_frase="Bucket elevators · Conveyor belts · Rubber skirts · PVC belts", lang="en")
+    </section>""" + cta_int(lang)
+    write(rutas["productos"], t["prod_titulo"], t["prod_desc"], f"{lang}-productos", body,
+          og_frase=" · ".join(nombre_cat(lang, s) for s, _, _ in PRODUCTS), lang=lang)
 
-# Empresa
-INSTALACIONES_EN = [
-    ("assets/img/empresa/fachada.webp", "CRM premises at P.I. Los Alfares"),
-    ("assets/img/empresa/cnc-1.webp", "CNC cutting machine"),
-    ("assets/img/empresa/corte-cnc-goma.webp", "Cutting rubber on the CNC"),
-    ("assets/img/empresa/cnc-2.webp", "CNC cutting head"),
-    ("assets/img/empresa/alta-frecuencia-1.webp", "High-frequency machine for PVC belts"),
-    ("assets/img/empresa/alta-frecuencia-2.webp", "Welding profiles on PVC belts"),
-    ("assets/img/empresa/planchas-2.webp", "Rubber and felt sheets in stock"),
-    ("assets/img/empresa/nave-nueva-1.webp", "New building under construction"),
-    ("assets/img/empresa/nave-nueva-2.webp", "Structure of the new building"),
-]
-body = intro("A family business <span class=\"gradient\">since 1994.</span>", "Past, technology. Present, innovation. Future, sustainability.", eyebrow="About us")
-body += f"""
+    # Empresa
+    valores = "".join(f'<li>{badge(ic, "sm")}<h3>{a}</h3><p>{b}</p></li>' for ic, a, b in t["valores"])
+    anos = "".join(f'<li><span class="years__num gradient">{a}</span><h3>{h}</h3><p>{p}</p></li>' for a, h, p in t["historia"])
+    body = intro(t["emp_h1"], t["emp_lead"], eyebrow=t["emp_eyebrow"])
+    body += f"""
 
-    <div class="container container--wide page-photo">{img("assets/img/empresa/fachada.webp", "CRM premises in La Rambla", lazy=False)}</div>
+    <div class="container container--wide page-photo">{img("assets/img/empresa/oficinas.webp", t["emp_foto"], lazy=False)}</div>
 
     <section class="section section--flush-top">
       <div class="container">
-        <ul class="values">
-          <li>{badge("wrench", "sm")}<h3>Professionals</h3><p>We are a company for professionals, with long experience in every product we sell.</p></li>
-          <li>{badge("award", "sm")}<h3>Leading brands</h3><p>We are backed by European manufacturers that were not present in Spain and by leading Spanish brands.</p></li>
-          <li>{badge("refresh", "sm")}<h3>An up-to-date range</h3><p>We listen to our customers' experience and keep updating our products.</p></li>
-          <li>{badge("truck", "sm")}<h3>Well connected</h3><p>20 minutes from Córdoba and one hour from Seville, Málaga, Granada and Jaén, on fast roads.</p></li>
-        </ul>
+        <ul class="values">{valores}</ul>
       </div>
     </section>
 
     <section class="section section--tile">
       <div class="container">
         <div class="headline">
-          <h2>Our facilities.</h2>
-          <p class="lead">Our own machinery to cut, punch and manufacture to measure. And a new building on the way.</p>
+          <h2>{t["inst_h2"]}</h2>
+          <p class="lead">{t["inst_lead"]}</p>
         </div>
-        {carousel_html("facilities", INSTALACIONES_EN, "Photos of our facilities")}
+        {carousel_html("instalaciones", list(zip(INSTALACIONES_FOTOS, t["inst_fotos"])), t["inst_aria"])}
       </div>
     </section>
 
     <section class="section">
       <div class="container container--wide">
         <div class="headline">
-          <h2>Our story.</h2>
+          <h2>{t["historia_h2"]}</h2>
         </div>
-        <ol class="years">
-          <li><span class="years__num gradient">1994</span><h3>CRM S.L. is founded.</h3><p>With the will to do something different and many years of experience in the sector.</p></li>
-          <li><span class="years__num gradient">1999</span><h3>A new 500 m² building.</h3><p>From 2000 we started to have customers all over Spain, and in 2002 we bought a new plot.</p></li>
-          <li><span class="years__num gradient">2005</span><h3>Another 500 m².</h3><p>We extended the building to store new products and house new machinery.</p></li>
-        </ol>
+        <ol class="years">{anos}</ol>
       </div>
     </section>
-{cta_en()}"""
-write("/en/about/", "About us", "CRM S.L. is a family business founded in 1994 in La Rambla (Córdoba, Spain), specialised in components for bucket elevators and conveyors.", "en-empresa", body,
-      og_img="assets/img/empresa/fachada.webp", og_titulo="A family business since 1994", lang="en")
+{cta_int(lang)}"""
+    write(rutas["empresa"], t["emp_titulo"], t["emp_desc"], f"{lang}-empresa", body,
+          og_img="assets/img/empresa/oficinas.webp", og_titulo=t["emp_og"], lang=lang)
 
-# Contacto
-body = intro("Contact.", "Call us, send us a WhatsApp message or an email. We reply in English.", eyebrow="Comercial de Recambios Montemayor S.L.")
-body += f"""
+    # Contacto
+    body = intro(t["con_h1"], t["con_lead"], eyebrow="Comercial de Recambios Montemayor S.L.")
+    body += f"""
     <section class="section section--flush-top">
       <div class="container container--wide">
         <div class="contact-tiles">
-          <a class="contact-tile" href="mailto:{EMAIL}">{badge("mail")}<h3>Email</h3><strong>{EMAIL}</strong><span>We reply as soon as possible</span></a>
-          <a class="contact-tile" href="tel:{PHONE_TEL}">{badge("phone")}<h3>Phone</h3><strong>{PHONE}</strong><span>Office hours (CET)</span></a>
-          <a class="contact-tile" href="{WA_EN}" target="_blank" rel="noopener">{badge("whatsapp")}<h3>WhatsApp</h3><strong>+34 {WHATSAPP_VER}</strong><span>Messages and photos</span></a>
-          <a class="contact-tile" href="{DIR}" target="_blank" rel="noopener">{badge("pin")}<h3>Visit us</h3><strong>C/ La Jarra 41</strong><span>P.I. Los Alfares · 14540 La Rambla (Córdoba), Spain</span></a>
+          <a class="contact-tile" href="mailto:{EMAIL}">{badge("mail")}<h3>Email</h3><strong>{EMAIL}</strong><span>{t["con_email_txt"]}</span></a>
+          <a class="contact-tile" href="tel:{PHONE_TEL}">{badge("phone")}<h3>{t["con_tel"]}</h3><strong>{PHONE}</strong><span>{t["con_tel_txt"]}</span></a>
+          <a class="contact-tile" href="{wa(t["wa"])}" target="_blank" rel="noopener">{badge("whatsapp")}<h3>WhatsApp</h3><strong>+34 {WHATSAPP_VER}</strong><span>{t["con_wa_txt"]}</span></a>
+          <a class="contact-tile" href="{DIR}" target="_blank" rel="noopener">{badge("pin")}<h3>{t["con_visita"]}</h3><strong>C/ La Jarra 41</strong><span>P.I. Los Alfares · 14540 La Rambla (Córdoba), {t["pais"]}</span></a>
         </div>
       </div>
     </section>
@@ -1406,17 +1441,17 @@ body += f"""
     <section class="section section--tile">
       <div class="container">
         <div class="headline">
-          <h2>Opening hours.</h2>
-          <p class="lead">Monday to Friday, Central European Time.</p>
+          <h2>{t["horario_h2"]}</h2>
+          <p class="lead">{t["horario_lead"]}</p>
         </div>
         <div class="hours">
-          <div class="hours__card"><h3>Winter</h3><p>Monday to Friday</p><span class="hours__time">8:30 – 13:30</span><span class="hours__time">16:00 – 19:00</span></div>
-          <div class="hours__card"><h3>Summer</h3><p>Monday to Friday</p><span class="hours__time">8:00 – 15:00</span></div>
+          <div class="hours__card"><h3>{t["invierno"]}</h3><p>{t["lunes_viernes"]}</p><span class="hours__time">8:30 – 13:30</span><span class="hours__time">16:00 – 19:00</span></div>
+          <div class="hours__card"><h3>{t["verano"]}</h3><p>{t["lunes_viernes"]}</p><span class="hours__time">8:00 – 15:00</span></div>
         </div>
       </div>
     </section>"""
-write("/en/contact/", "Contact", f"Contact CRM in La Rambla (Córdoba, Spain): phone {PHONE}, email {EMAIL}.", "en-contacto", body,
-      og_img="assets/img/empresa/fachada.webp", og_frase=f"Phone {PHONE} · {EMAIL}", lang="en")
+    write(rutas["contacto"], t["con_titulo"], t["con_desc"].format(tel=PHONE, mail=EMAIL), f"{lang}-contacto", body,
+          og_img="assets/img/empresa/oficinas.webp", og_frase=t["con_frase"].format(tel=PHONE, mail=EMAIL), lang=lang)
 
 # ---------------------------------------------------------------- 404
 

@@ -12,6 +12,7 @@ import os, re, sys, subprocess, shutil, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from imagenes import procesar  # WebP sin metadatos
+from PIL import Image, ImageOps, ImageEnhance, ImageFilter
 
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -96,6 +97,26 @@ VIDEOS = {
 }
 
 
+ANTIGUAS = os.path.join(REPO, "fotos-antiguas")
+
+
+def retocada(ruta):
+    """Retoque suave de una foto antigua de la web anterior: contraste, color y nitidez."""
+    im = ImageOps.autocontrast(Image.open(ruta).convert("RGB"), cutoff=0.5)
+    im = ImageEnhance.Color(im).enhance(1.06)
+    im = im.filter(ImageFilter.UnsharpMask(radius=1.2, percent=60, threshold=3))
+    destino = os.path.join(tempfile.gettempdir(), "crm-retocada-" + os.path.basename(ruta))
+    im.save(destino, quality=95)
+    return destino
+
+
+RETOCADAS = {  # fotos antiguas retocadas: destino en assets/img/ -> origen en fotos-antiguas/
+    "categorias/bandas-transportadoras": "productos/bandas-transportadoras/bandas-transportadoras-12.jpg",
+    "sectores/industria": "productos/bandas-transportadoras/bandas-transportadoras-04.jpg",
+    "empresa/oficinas": "noticias/nuevas-oficinas-crm-01.jpg",
+}
+
+
 def foto(origen, destino, lado_max=1400, calidad=78):
     return procesar(os.path.join(SRC, origen), destino, lado_max, calidad)
 
@@ -124,6 +145,11 @@ for nombre, f in CATEGORIAS.items():
     total += foto(f, os.path.join(REPO, "assets", "img", "categorias", f"{nombre}.webp"), lado_max=900, calidad=80)
     n += 1
 print(f"categorías: {len(CATEGORIAS)} fotos")
+
+for nombre, f in RETOCADAS.items():
+    total += foto(retocada(os.path.join(ANTIGUAS, f)), os.path.join(REPO, "assets", "img", nombre + ".webp"))
+    n += 1
+print(f"retocadas: {len(RETOCADAS)} fotos")
 
 for nombre, f in FONDOS.items():
     total += foto(f, os.path.join(REPO, "assets", "img", "fondos", f"{nombre}.webp"), lado_max=2400, calidad=80)

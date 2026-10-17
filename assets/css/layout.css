@@ -771,23 +771,122 @@
   }
 }
 
-/* ---------- Enlace de idioma y textos del menú en inglés ---------- */
+/* ---------- Selector de idioma (banderas) y textos del botón de menú ---------- */
 
-.nav__lang {
-  color: var(--green) !important;
+.nav__langs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lang {
+  display: grid;
+  place-items: center;
+  padding: 6px 4px;
+  border-radius: 6px;
+  opacity: 0.55;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.lang:hover,
+.lang:focus-visible {
+  opacity: 1;
+  background: var(--tile);
+}
+
+.lang[aria-current="true"] {
+  opacity: 1;
+}
+
+.flag {
+  display: block;
+  width: 21px;
+  height: 14px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.lang[aria-current="true"] .flag {
+  box-shadow: 0 0 0 2px var(--green);
+}
+
+.lang__name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 @media (min-width: 901px) {
-  .nav__lang {
-    margin-left: 6px;
+  .nav__langs {
+    margin-left: 8px;
+    padding-left: 10px;
     border-left: 1px solid var(--line);
   }
 }
 
-html[lang="en"] .nav-toggle__label::before {
+@media (max-width: 900px) {
+  /* En el menú del móvil: banderas grandes con el nombre del idioma */
+  .nav__langs {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .lang {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    opacity: 1;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .lang[aria-current="true"] {
+    border-color: var(--green);
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .lang[aria-current="true"] .flag {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+
+  .lang__name {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+
+  .flag {
+    width: 24px;
+    height: 16px;
+  }
+}
+
+html[lang="en"] .nav-toggle__label::before,
+html[lang="fr"] .nav-toggle__label::before {
   content: "Menu";
+}
+
+html[lang="de"] .nav-toggle__label::before {
+  content: "Menü";
 }
 
 html[lang="en"] .nav-open .nav-toggle__label::before {
   content: "Close";
+}
+
+html[lang="fr"] .nav-open .nav-toggle__label::before {
+  content: "Fermer";
+}
+
+html[lang="de"] .nav-open .nav-toggle__label::before {
+  content: "Schließen";
 }
