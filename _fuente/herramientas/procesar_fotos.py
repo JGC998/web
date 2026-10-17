@@ -24,12 +24,13 @@ def ref(*ruta):
     return os.path.join(REF, *ruta)
 
 
-def jpeg_de_pdf(pdf, n=1):
-    """Extrae el JPEG n.º n incrustado en un PDF (la foto de faldetas viene dentro de un PDF)."""
+def jpeg_de_pdf(pdf):
+    """Extrae la foto incrustada en un PDF (la de faldetas viene dentro de un PDF). Se queda con el
+    JPEG que más ocupa: el PDF lleva además un recuadro en blanco que es más grande pero casi vacío."""
     datos = open(pdf, "rb").read()
     fotos = [m for m in re.finditer(rb"<<(.{0,600}?)>>\s*stream\r?\n", datos, re.S) if b"DCTDecode" in m.group(1)]
-    m = fotos[n - 1]
-    destino = os.path.join(tempfile.gettempdir(), "crm-" + os.path.basename(pdf) + f"-{n}.jpg")
+    m = max(fotos, key=lambda m: datos.find(b"endstream", m.end()) - m.end())
+    destino = os.path.join(tempfile.gettempdir(), "crm-" + os.path.basename(pdf) + ".jpg")
     open(destino, "wb").write(datos[m.end():datos.find(b"endstream", m.end())])
     return destino
 
