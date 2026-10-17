@@ -80,6 +80,9 @@ SECTORES = {  # franja "Sectores" de la portada
     "girasol": ref("PORTADA", "FOTOS BANER", "4755e41b-30be-4391-8f06-ffb60381a17a.jpg"),
     "ajos": ref("PORTADA", "FOTOS BANER", "AJOS.jpg"),
 }
+CATEGORIAS = {  # foto que aparece al pasar el ratón por la tarjeta de la categoría (solo las que no tienen fotos de producto)
+    "elevacion": ref("ELEVACION", "BANER ELEVACION.JPG"),
+}
 FONDOS = {
     "campo": pick("fotos de fondo", [8])[0],
 }
@@ -114,6 +117,11 @@ for nombre, f in SECTORES.items():
     total += foto(f, os.path.join(REPO, "assets", "img", "sectores", f"{nombre}.webp"), lado_max=1200)
     n += 1
 print(f"sectores: {len(SECTORES)} fotos")
+
+for nombre, f in CATEGORIAS.items():
+    total += foto(f, os.path.join(REPO, "assets", "img", "categorias", f"{nombre}.webp"), lado_max=900, calidad=80)
+    n += 1
+print(f"categorías: {len(CATEGORIAS)} fotos")
 
 for nombre, f in FONDOS.items():
     total += foto(f, os.path.join(REPO, "assets", "img", "fondos", f"{nombre}.webp"), lado_max=2400, calidad=80)

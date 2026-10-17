@@ -45,7 +45,7 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261017a"
+VERSION = "20261017b"
 # Estadísticas de visitas (Cloudflare Web Analytics: sin cookies). Vacío = desactivado.
 ANALITICA_TOKEN = "c9bd8190b2be4939ae6689fd3909c441"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
@@ -452,6 +452,24 @@ def cta():
     </section>""".replace('<span class="badge-icon">', '<span class="badge-icon" style="margin:0 auto">', 1)
 
 
+CAT_FOTO = {  # foto representativa que aparece al pasar el ratón por la tarjeta
+    "elevacion": "assets/img/categorias/elevacion.webp",
+    "bandas-transportadoras": "assets/img/productos/bandas-transportadoras/bandas-transportadoras/01.webp",
+    "faldetas": "assets/img/productos/faldetas/faldetas/01.webp",
+    "bandas-pvc": "assets/img/productos/bandas-pvc/bandas-de-pvc/13.webp",
+}
+
+
+def catcard_head(s, titulo, texto, href):
+    """Cabecera de la tarjeta: icono, nombre y frase, con la foto de la categoría detrás."""
+    foto = img(CAT_FOTO[s], "", "catcard__photo") if s in CAT_FOTO else ""
+    return f"""<div class="catcard__head">{foto}
+              {badge(CAT_ICON[s], "sm")}
+              <h3><a href="{href}">{titulo}</a></h3>
+              <p>{texto}</p>
+            </div>"""
+
+
 def product_tiles():
     """Tarjetas compactas e iguales de las 4 categorías, con sus familias visibles."""
     order = ["elevacion", "bandas-transportadoras", "faldetas", "bandas-pvc"]
@@ -464,9 +482,7 @@ def product_tiles():
             fams += f'<li><a class="catcard__rest" href="/productos/{s}/#gama">y {rest} más</a></li>'
         out.append(f"""
           <article class="catcard">
-            {badge(CAT_ICON[s], "sm")}
-            <h3><a href="/productos/{s}/">{NAMES[s]}</a></h3>
-            <p>{SHORT[s]}</p>
+            {catcard_head(s, NAMES[s], SHORT[s], f"/productos/{s}/")}
             <ul class="catcard__list">{fams}</ul>
             <a class="more" href="/productos/{s}/">Ver todo</a>
           </article>""")
@@ -1087,9 +1103,7 @@ def tarjetas_en():
             lista += f'<li><a class="catcard__rest" href="/en/products/#{c["slug"]}">and {len(fams) - 5} more</a></li>'
         out.append(f"""
           <article class="catcard">
-            {badge(c["icono"], "sm")}
-            <h3><a href="/en/products/#{c["slug"]}">{c["nombre_en"]}</a></h3>
-            <p>{c["corto_en"]}</p>
+            {catcard_head(c["slug"], c["nombre_en"], c["corto_en"], f'/en/products/#{c["slug"]}')}
             <ul class="catcard__list">{lista}</ul>
             <a class="more" href="/en/products/#{c["slug"]}">See range</a>
           </article>""")
