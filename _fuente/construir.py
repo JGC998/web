@@ -47,7 +47,7 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261017e"
+VERSION = "20261029a"
 # Estadísticas de visitas (Cloudflare Web Analytics: sin cookies). Vacío = desactivado.
 ANALITICA_TOKEN = "c9bd8190b2be4939ae6689fd3909c441"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
@@ -541,8 +541,8 @@ def cta():
 
 
 CAT_FOTO = {  # foto representativa que aparece al pasar el ratón por la tarjeta
-    "elevacion": "assets/img/categorias/elevacion.webp",
-    "bandas-transportadoras": "assets/img/categorias/bandas-transportadoras.webp",
+    "elevacion": "assets/img/productos/elevacion/bandas-elevadoras/01.webp",
+    "bandas-transportadoras": "assets/img/productos/bandas-transportadoras/bandas-transportadoras/01.webp",
     "faldetas": "assets/img/productos/faldetas/faldetas/01.webp",
     "bandas-pvc": "assets/img/productos/bandas-pvc/bandas-de-pvc/13.webp",
 }
@@ -682,7 +682,7 @@ def campanas():
         c = x.get("campana")
         if not c:
             continue
-        foto = x.get("foto_grande") or x.get("foto")
+        foto = x.get("foto_campana") or x.get("foto_grande") or x.get("foto")
         media = (img(foto, "", lazy=False, sizes="(max-width: 800px) 100vw, 560px") if foto
                  else f'<span class="season__nofoto">{icon(x["icono"])}</span>')
         oculta = "" if x["slug"] == vigente else " hidden"
@@ -706,6 +706,65 @@ def campanas():
     </section>"""
 
 
+def carousel_html(name, pics, label):
+    """pics: lista de (ruta, texto alternativo). No genera nada si no hay fotos."""
+    if not pics:
+        return ""
+    slides = "".join(
+        f'<a class="carousel__slide" href="/{r}" data-gallery="{name}" data-alt="{e(alt)}" '
+        f'aria-label="Ampliar foto {i} de {len(pics)}">{img(r, alt)}</a>'
+        for i, (r, alt) in enumerate(pics, 1)
+    )
+    controls = ""
+    if len(pics) > 1:
+        controls = """
+              <div class="carousel__controls">
+                <button class="carousel__btn" type="button" data-carousel-prev aria-label="Foto anterior">‹</button>
+                <div class="carousel__dots" aria-hidden="true"></div>
+                <button class="carousel__btn" type="button" data-carousel-next aria-label="Foto siguiente">›</button>
+              </div>"""
+    return f"""
+            <div class="carousel" data-carousel aria-roledescription="carrusel" aria-label="{e(label)}">
+              <div class="carousel__track">{slides}</div>{controls}
+            </div>"""
+
+
+
+ENVIOS_FOTOS = ["assets/img/empresa/transporte-1.webp", "assets/img/empresa/transporte-2.webp", "assets/img/empresa/transporte-3.webp"]
+ENVIOS_ES = {
+    "eyebrow": "Envíos a toda España",
+    "h2": "Te lo llevamos donde estés.",
+    "texto": "Preparamos tu pedido en nuestras instalaciones de La Rambla (Córdoba) y te lo enviamos a cualquier punto de España, bien embalado y paletizado.",
+    "puntos": ["Desde una pieza suelta hasta varios palés.", "Pedidos protegidos con film y paletizados.",
+               "Pregúntanos plazos y portes por WhatsApp."],
+    "wa": "Hola, quería información sobre envíos.",
+    "aria": "Fotos de un envío",
+    "fotos": ["Carretilla con un palé de CRM preparado para el envío", "Carga de un pedido en el camión",
+              "Palé de CRM camino del camión"],
+}
+
+
+def envios(lang="es"):
+    """Sección «Envíos a toda España» con las fotos de la carga de un pedido."""
+    t = ENVIOS_ES if lang == "es" else I.T[lang]["envios"]
+    puntos = "".join(f"<li>{p}</li>" for p in t["puntos"])
+    return f"""
+    <section class="section envios">
+      <div class="container container--wide envios__grid">
+        <div class="envios__text">
+          <span class="eyebrow">{icon("truck")} {t["eyebrow"]}</span>
+          <h2>{t["h2"]}</h2>
+          <p>{t["texto"]}</p>
+          <ul class="envios__lista">{puntos}</ul>
+          <div class="actions actions--start">
+            <a class="btn btn--wa" href="{wa(t["wa"])}" target="_blank" rel="noopener">{icon("whatsapp")} WhatsApp</a>
+          </div>
+        </div>
+        <div class="envios__fotos">{carousel_html("envios", list(zip(ENVIOS_FOTOS, t["fotos"])), t["aria"])}</div>
+      </div>
+    </section>"""
+
+
 # ---------------------------------------------------------------- inicio
 
 jsonld = json.dumps({
@@ -717,6 +776,7 @@ jsonld = json.dumps({
     "telephone": PHONE_TEL,
     "email": EMAIL,
     "foundingDate": "1994",
+    "areaServed": {"@type": "Country", "name": "España"},
     "address": {"@type": "PostalAddress", "streetAddress": "P.I. Los Alfares, Calle La Jarra 41", "postalCode": "14540",
                 "addressLocality": "La Rambla", "addressRegion": "Córdoba", "addressCountry": "ES"},
 }, ensure_ascii=False)
@@ -760,11 +820,12 @@ body = f"""
           <li>{icon("calendar")}<strong>Desde 1994</strong><span>Empresa familiar</span></li>
           <li>{icon("box")}<strong>Stock permanente</strong><span>Entrega inmediata</span></li>
           <li>{icon("ruler")}<strong>A medida</strong><span>Corte, perforado y piezas</span></li>
-          <li>{icon("award")}<strong>Primeras marcas</strong><span>Europeas y españolas</span></li>
+          <li>{icon("truck")}<strong>Envíos</strong><span>A toda España</span></li>
         </ul>
       </div>
     </section>
 
+{envios()}
 {ultimas_noticias()}
     <section class="section section--dark">
       <div class="container center">
@@ -798,29 +859,6 @@ def section_photos(slug, s):
         return []
     files = sorted(f for f in os.listdir(folder) if f.lower().endswith((".jpg", ".jpeg", ".png", ".webp")))
     return [f"assets/img/productos/{slug}/{s['slug']}/{f}" for f in files]
-
-
-def carousel_html(name, pics, label):
-    """pics: lista de (ruta, texto alternativo). No genera nada si no hay fotos."""
-    if not pics:
-        return ""
-    slides = "".join(
-        f'<a class="carousel__slide" href="/{r}" data-gallery="{name}" data-alt="{e(alt)}" '
-        f'aria-label="Ampliar foto {i} de {len(pics)}">{img(r, alt)}</a>'
-        for i, (r, alt) in enumerate(pics, 1)
-    )
-    controls = ""
-    if len(pics) > 1:
-        controls = """
-              <div class="carousel__controls">
-                <button class="carousel__btn" type="button" data-carousel-prev aria-label="Foto anterior">‹</button>
-                <div class="carousel__dots" aria-hidden="true"></div>
-                <button class="carousel__btn" type="button" data-carousel-next aria-label="Foto siguiente">›</button>
-              </div>"""
-    return f"""
-            <div class="carousel" data-carousel aria-roledescription="carrusel" aria-label="{e(label)}">
-              <div class="carousel__track">{slides}</div>{controls}
-            </div>"""
 
 
 def carousel(slug, s):
@@ -967,6 +1005,8 @@ INSTALACIONES = [
     ("assets/img/empresa/cnc-2.webp", "Cabezal de corte de la CNC"),
     ("assets/img/empresa/alta-frecuencia-1.webp", "Máquina de alta frecuencia para bandas de PVC"),
     ("assets/img/empresa/alta-frecuencia-2.webp", "Soldadura de perfiles en bandas de PVC"),
+    ("assets/img/empresa/troqueladora.webp", "Troqueladora cortando estrellas de goma"),
+    ("assets/img/empresa/prensa-fieltro.webp", "Prensa de corte junto a los rollos de fieltro"),
     ("assets/img/empresa/planchas-2.webp", "Planchas de goma y fieltro en stock"),
     ("assets/img/empresa/fachada.webp", "Fachada de la nueva nave"),
     ("assets/img/empresa/nave-nueva-1.webp", "Nueva nave en construcción"),
@@ -982,7 +1022,7 @@ body += f"""
           <li>{badge("wrench", "sm")}<h3>Profesionales</h3><p>Somos una empresa dedicada a profesionales, con una gran experiencia en todos nuestros productos.</p></li>
           <li>{badge("award", "sm")}<h3>Primeras marcas</h3><p>Contamos con el apoyo de fabricantes europeos que no tenían presencia en España y de primeras marcas españolas.</p></li>
           <li>{badge("refresh", "sm")}<h3>Gama siempre al día</h3><p>Recogemos la experiencia de nuestros clientes y actualizamos constantemente nuestros productos.</p></li>
-          <li>{badge("truck", "sm")}<h3>Bien comunicados</h3><p>A 20 minutos de Córdoba, a una hora de Sevilla, Málaga, Granada y Jaén, y a 2 horas de Cádiz, Huelva y Ciudad Real.</p></li>
+          <li>{badge("truck", "sm")}<h3>Bien comunicados</h3><p>A 20 minutos de Córdoba, a una hora de Sevilla, Málaga, Granada y Jaén, y a 2 horas de Cádiz, Huelva y Ciudad Real. Enviamos a toda España.</p></li>
         </ul>
       </div>
     </section>
@@ -1316,7 +1356,7 @@ for lang in ("en", "fr", "de"):
 
     # Portada
     datos = "".join(f'<li>{icon(ic)}<strong>{a}</strong><span>{b}</span></li>'
-                    for ic, (a, b) in zip(("calendar", "box", "ruler", "award"), t["datos"]))
+                    for ic, (a, b) in zip(("calendar", "box", "ruler", "truck"), t["datos"]))
     body = f"""
     <section class="hero hero--photo" style="--hero-img:url('/assets/img/fondos/campo.webp')">
       <div class="container">
@@ -1348,6 +1388,7 @@ for lang in ("en", "fr", "de"):
         <ul class="facts">{datos}</ul>
       </div>
     </section>
+{envios(lang)}
 
     <section class="section section--dark">
       <div class="container center">

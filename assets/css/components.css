@@ -2085,3 +2085,72 @@ a.contact-tile:hover {
     transition: none;
   }
 }
+
+/* ---------- Envíos a toda España ---------- */
+
+.envios__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+
+.envios .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.envios .eyebrow .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.envios__text h2 {
+  margin: 10px 0 16px;
+}
+
+.envios__text p {
+  margin: 0 0 18px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.envios__lista {
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+}
+
+.envios__lista li {
+  position: relative;
+  padding: 8px 0 8px 28px;
+  border-top: 1px solid var(--line);
+}
+
+.envios__lista li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.envios__lista li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 12px;
+  height: 7px;
+  border-left: 2px solid var(--green);
+  border-bottom: 2px solid var(--green);
+  transform: translateY(-70%) rotate(-45deg);
+}
+
+@media (max-width: 800px) {
+  .envios__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .envios__fotos {
+    order: -1;
+  }
+}

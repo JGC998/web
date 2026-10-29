@@ -43,8 +43,8 @@ Para probar cambios grandes sin tocar la web publicada, crea una rama a partir d
 │       ├── empresa/              # Nave, maquinaria (Quiénes somos)
 │       └── fondos/               # Foto de fondo de la portada
 │   └── video/                    # Vídeos de fondo (MP4 720p sin sonido) + imagen fija (.jpg)
-├── fotos-antiguas/               # Fotos de la web anterior, pendientes de retocar (NO se publican)
-├── web fotos/                    # Originales del móvil (NO se suben a git ni se publican)
+├── web fotos/                    # Originales de todas las fotos y vídeos (NO se suben a git ni se publican)
+│   └── web anterior/             # Fotos de la web anterior (WordPress)
 ├── favicon.svg
 ├── _redirects                    # Redirecciones 301 de las URLs antiguas de WordPress
 ├── _headers                      # Cabeceras HTTP (seguridad y caché)
@@ -85,7 +85,8 @@ Archivos de configuración:
 - **Noticias:** una carpeta por noticia en `_fuente/contenido/noticias/` (ver el `LEEME.txt` de esa carpeta).
 - **WhatsApp:** número en `WHATSAPP` al principio de `_fuente/construir.py`.
 - **Formulario de presupuesto:** `/presupuesto/`, lo recibe `_fuente/worker/index.js` y lo envía por email con Cloudflare Email Routing (ver "Activar el formulario").
-- **Inglés:** `/en/`, `/en/products/`, `/en/about/` y `/en/contact/`. Nombres en inglés de categorías y familias en `productos.json` (`nombre_en`).
+- **Idiomas:** inglés (`/en/`), francés (`/fr/`) y alemán (`/de/`): portada, productos, empresa y contacto. Textos en `_fuente/contenido/idiomas.py`; nombres en inglés de categorías y familias en `productos.json` (`nombre_en`).
+- **Sectores y campañas:** páginas `/sectores/` y aviso de temporada de la portada (aceituna, ajo, almendra), en `_fuente/contenido/sectores.py`.
 - **Imágenes para compartir:** se generan solas en `assets/img/compartir/`.
 
 ## Activar el formulario (una sola vez, en Cloudflare)
@@ -109,8 +110,9 @@ Archivos de configuración:
   ```
   Para usar un icono que ya existe en otra página, copia su `<svg>…</svg>`. Dentro de un recuadro verde: `<span class="badge-icon">…</span>`.
 - **Fotos de producto (carrusel):** cada familia muestra un carrusel con las fotos de su carpeta, por ejemplo `assets/img/productos/elevacion/cangilones/`. Las fotos se procesan antes (máx. 1400 px, WebP) y se nombran `01.webp`, `02.webp`… en el orden en que deben salir. Al añadirlas hay que regenerar la página de esa categoría para que el carrusel aparezca. Si una familia no tiene fotos, no se muestra carrusel.
-- **Fotos y vídeos nuevos:** los originales del móvil se dejan en `web fotos/` (está en `.gitignore`: no se suben a GitHub ni se publican). Antes de usarlos se procesan: fotos a 1400 px en WebP y sin metadatos (se elimina la ubicación GPS) y vídeos a MP4 720p sin sonido. Los vídeos de fondo solo se descargan si el visitante no tiene activado el ahorro de datos ni la reducción de animaciones.
-- **Fotos antiguas:** están en `fotos-antiguas/` (mismos nombres que tenían). No se usan ni se publican; sirven para retocarlas y volver a subirlas.
+- **Fotos y vídeos:** todos los originales están en `web fotos/`, una subcarpeta por tema (está en `.gitignore`: no se suben a GitHub ni se publican). Las fotos nuevas se dejan en su subcarpeta y se eligen por nombre en `_fuente/herramientas/procesar_fotos.py`, que las convierte: fotos a 1400 px en WebP y sin metadatos (se elimina la ubicación GPS) y vídeos a MP4 720p sin sonido. Los vídeos de fondo solo se descargan si el visitante no tiene activado el ahorro de datos ni la reducción de animaciones.
+- **Fotos de la web anterior:** en `web fotos/web anterior/`. Solo se usan las de buena resolución, con un retoque suave automático.
+- **Rótulos de terceros:** si una foto muestra el nombre o el logo de otra empresa (por ejemplo, un transportista), se recorta o se descarta antes de usarla.
 - **Caché de CSS y JS:** `_headers` hace que el navegador compruebe en cada visita si han cambiado, así que los cambios se ven al momento. Los enlaces llevan una versión (`base.css?v=20261015`); si algún día se vuelve a cachear durante más tiempo, hay que subir ese número en todas las páginas al cambiar el CSS o el JS.
 
 ## Pendiente / notas

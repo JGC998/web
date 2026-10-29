@@ -8,11 +8,7 @@ README.md
 node_modules
 .wrangler
 
-# Fotos antiguas (pendientes de retocar): se guardan en el repo pero no se publican
-fotos-antiguas
-# Fotos originales sin procesar que se vayan añadiendo
-fotos-nuevas
-# Fotos y vídeos originales del móvil
+# Originales de fotos y vídeos (también los de la web anterior)
 web fotos
 
 # Motor de la web (scripts y contenido fuente): no se publica
