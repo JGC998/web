@@ -288,7 +288,10 @@
      datos; si no, queda la imagen fija. Se pausan fuera de la pantalla. */
   var saveData = navigator.connection && navigator.connection.saveData;
   if (!reduceMotion && !saveData && "IntersectionObserver" in window) {
+    var movil = window.matchMedia("(max-width: 700px)").matches;
     document.querySelectorAll("video[data-bg-video]").forEach(function (video) {
+      // Los vídeos del collage no se descargan en el móvil: queda la imagen fija
+      if (movil && video.dataset.movil === "no") return;
       var loaded = false;
       new IntersectionObserver(function (entries) {
         if (entries[0].isIntersecting) {
@@ -432,7 +435,7 @@
    (data-campana="mes-día"). La página llega ya con la campaña del día en que se publicó;
    esto la corrige si desde entonces ha empezado otra. ?campana=03-15 permite probar una fecha. */
 (function () {
-  var avisos = document.querySelectorAll("[data-campana]");
+  var avisos = document.querySelectorAll(".season[data-campana]");
   if (!avisos.length) return;
   var prueba = /[?&]campana=(\d\d-\d\d)/.exec(location.search);
   var d = new Date();
@@ -443,4 +446,45 @@
   var empezadas = lista.filter(function (a) { return a.dataset.campana <= hoy; });
   var vigente = (empezadas.length ? empezadas : lista)[(empezadas.length ? empezadas : lista).length - 1];
   lista.forEach(function (a) { a.hidden = a !== vigente; });
+})();
+
+/* Portada como infografía:
+   - Las cifras con data-contar cuentan desde 0 al aparecer en pantalla (salvo si se reducen animaciones).
+   - El calendario de campañas marca el día de hoy y resalta la campaña en curso. */
+(function () {
+  var reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var idioma = document.documentElement.lang || "es";
+  var cifras = document.querySelectorAll("[data-contar]");
+  if (cifras.length && !reducir && "IntersectionObserver" in window) {
+    var formato = function (n) { return n.toLocaleString(idioma); };
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+        var el = e.target, fin = parseInt(el.dataset.contar, 10), ini = null, dur = 1400;
+        var paso = function (t) {
+          if (ini === null) ini = t;
+          var p = Math.min((t - ini) / dur, 1);
+          el.textContent = formato(Math.round(fin * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(paso);
+        };
+        el.textContent = formato(0);
+        requestAnimationFrame(paso);
+      });
+    }, { threshold: 0.6 });
+    cifras.forEach(function (el) { obs.observe(el); });
+  }
+
+  var hoy = document.querySelector("[data-hoy]");
+  if (hoy) {
+    var d = new Date();
+    var diasMes = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    hoy.style.left = ((d.getMonth() + (d.getDate() - 1) / diasMes) / 12 * 100).toFixed(2) + "%";
+    var mmdd = ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+    var filas = Array.prototype.slice.call(document.querySelectorAll(".cal__row[data-campana]"))
+      .sort(function (a, b) { return a.dataset.campana < b.dataset.campana ? -1 : 1; });
+    var empezadas = filas.filter(function (f) { return f.dataset.campana <= mmdd; });
+    var actual = (empezadas.length ? empezadas : filas).slice(-1)[0];
+    filas.forEach(function (f) { f.classList.toggle("is-actual", f === actual); });
+  }
 })();

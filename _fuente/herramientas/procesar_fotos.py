@@ -161,6 +161,41 @@ VIDEOS = {
 }
 
 
+COLLAGE = {
+    # Clips cortos del taller para el collage de la portada: nombre -> (archivo, inicio, duración)
+    "taller-tiras-fieltro": ("VID_20201011_200027.mp4", 3, 6),
+    "taller-cnc": ("maquina cnc/VID_20250324_115712.mp4", 4, 6),
+    "taller-troquel": ("VID_20240918_100601.mp4", 0, 5.4),
+    "taller-pvc": ("pvc/VID-20261022-WA0070.mp4", 0, 3.9),
+    "taller-bobina-fieltro": ("fieltro/VID-20261022-WA0073.mp4", 1, 6),
+    "taller-cortadora": ("VID_20201011_195624.mp4", 4, 6),
+}
+
+
+def clip_collage(nombre, archivo, ini, dur):
+    """Clip sin sonido, con el lado corto a 540 px (las teselas del collage son pequeñas), y su imagen fija."""
+    vdir = os.path.join(REPO, "assets", "video", "collage")
+    os.makedirs(vdir, exist_ok=True)
+    salida = os.path.join(vdir, f"{nombre}.mp4")
+    subprocess.run([
+        "ffmpeg", "-v", "error", "-y", "-ss", str(ini), "-t", str(dur), "-i", os.path.join(SRC, archivo), "-an",
+        "-vf", "scale='if(gt(iw,ih),-2,540)':'if(gt(iw,ih),540,-2)',fps=30",
+        "-c:v", "libx264", "-preset", "slow", "-crf", "30", "-profile:v", "high", "-pix_fmt", "yuv420p",
+        "-movflags", "+faststart", salida,
+    ], check=True)
+    fotograma = os.path.join(vdir, f"{nombre}-fotograma.png")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "1", "-i", salida, "-frames:v", "1", fotograma], check=True)
+    procesar(fotograma, os.path.join(vdir, f"{nombre}.webp"), lado_max=960, calidad=72)
+    os.remove(fotograma)
+    return os.path.getsize(salida)
+
+
+if "--solo-collage" in sys.argv:
+    for nombre, (archivo, ini, dur) in COLLAGE.items():
+        print(f"collage {nombre}: {clip_collage(nombre, archivo, ini, dur) / 1e3:.0f} KB")
+    sys.exit()
+
+
 def foto(origen, destino, lado_max=1400, calidad=78):
     return procesar(origen, destino, lado_max, calidad)
 
@@ -222,4 +257,8 @@ for nombre, (archivo, ini, dur) in VIDEOS.items():
     total += os.path.getsize(salida) + os.path.getsize(poster)
     print(f"vídeo {nombre}: {os.path.getsize(salida) / 1e6:.1f} MB")
 
-print(f"TOTAL: {n} fotos + {len(VIDEOS)} vídeos = {total / 1e6:.1f} MB")
+for nombre, (archivo, ini, dur) in COLLAGE.items():
+    total += clip_collage(nombre, archivo, ini, dur)
+print(f"collage: {len(COLLAGE)} clips")
+
+print(f"TOTAL: {n} fotos + {len(VIDEOS) + len(COLLAGE)} vídeos = {total / 1e6:.1f} MB")
