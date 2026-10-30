@@ -47,7 +47,7 @@ def presupuesto(producto=""):
 def wa(texto="Hola, quería hacer una consulta."):
     """Enlace a WhatsApp con el mensaje ya escrito."""
     return f"https://wa.me/{WHATSAPP}?text={urllib.parse.quote(texto)}"
-VERSION = "20261029c"
+VERSION = "20261030a"
 # Estadísticas de visitas (Cloudflare Web Analytics: sin cookies). Vacío = desactivado.
 ANALITICA_TOKEN = "c9bd8190b2be4939ae6689fd3909c441"   # súbelo al cambiar CSS o JS para que los navegadores los descarguen de nuevo
 
@@ -764,183 +764,22 @@ def envios(lang="es"):
     </section>"""
 
 
-# ---------------------------------------------------------------- portada como infografía
-# Secciones de la portada (cifras, proceso, collage del taller, calendario de campañas y distancias).
-# Textos en español aquí; en otros idiomas, en idiomas.py -> T[idioma]["info"].
+# ---------------------------------------------------------------- distancias (en Envíos)
+# Textos en español aquí; en otros idiomas, en idiomas.py -> T[idioma]["distancias"].
 
-import datetime
-
-ANOS = datetime.date.today().year - 1994
-N_FAMILIAS = sum(len(c["familias"]) for c in CATEGORIAS)
-
-INFO_ES = {
-    "cifras_eyebrow": "CRM en cifras",
-    "cifras_h2": "Más de tres décadas cerca del campo y de la industria.",
-    "cifras": [   # (número, número para la animación o None, unidad, explicación)
-        (str(ANOS), ANOS, "años", "desde 1994 en La Rambla"),
-        ("1.000", 1000, "m²", "de nave, y otra nueva en marcha"),
-        (str(N_FAMILIAS), N_FAMILIAS, "productos", "en 4 líneas de producto"),
-        ("400–1.200", None, "mm", "anchos de banda en stock"),
-        (str(len(SECTORES)), len(SECTORES), "sectores", "del olivar a la cantera"),
-    ],
-    "proceso_eyebrow": "Así trabajamos",
-    "proceso_h2": "De tu idea a tu máquina, en cuatro pasos.",
-    "pasos": [
-        ("whatsapp", "Nos cuentas qué necesitas", "Por teléfono o WhatsApp. Una foto, un plano o una muestra nos basta."),
-        ("handshake", "Te asesoramos", "Elegimos contigo el material, la calidad y la medida para tu instalación."),
-        ("ruler", "Lo fabricamos", "Cortamos, perforamos, troquelamos y soldamos en nuestras propias máquinas."),
-        ("truck", "Te lo enviamos", "Bien embalado y a cualquier punto de España."),
-    ],
-    "collage_eyebrow": "Nuestro taller",
-    "collage_h2": "Hecho en La Rambla.",
-    "collage_lead": "Así trabajan nuestras máquinas cada día.",
-    "clips": ["Fieltro cortado en tiras", "Corte por control numérico", "Troquelado de piezas",
-              "Bandas de PVC", "Bobinas de fieltro", "Corte a medida"],
-    "cal_eyebrow": "Calendario de campañas",
-    "cal_h2": "Cada cosecha tiene su momento.",
-    "cal_lead": "Prepara tu máquina antes de que empiece la campaña: te lo tenemos listo.",
-    "meses": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    "hoy": "Hoy",
-    "cultivos": {"olivar": "Aceituna", "ajo": "Ajo", "almendro": "Almendra"},
-    "dist_titulo": "Desde La Rambla (Córdoba)",
-    "dist": [("20 min", "Córdoba"), ("1 h", "Sevilla · Málaga · Granada · Jaén"),
-             ("2 h", "Cádiz · Huelva · Ciudad Real"), ("Envío", "A toda España")],
+DISTANCIAS_ES = {
+    "titulo": "Desde La Rambla (Córdoba)",
+    "paradas": [("20 min", "Córdoba"), ("1 h", "Sevilla · Málaga · Granada · Jaén"),
+                ("2 h", "Cádiz · Huelva · Ciudad Real"), ("Envío", "A toda España")],
 }
-
-# Collage: (clip, columnas, filas) en la rejilla de 4 columnas
-CLIPS = [("taller-tiras-fieltro", 2, 2), ("taller-cnc", 1, 2), ("taller-troquel", 1, 1),
-         ("taller-pvc", 1, 1), ("taller-bobina-fieltro", 2, 1), ("taller-cortadora", 2, 1)]
-
-
-def info(lang):
-    if lang == "es":
-        return INFO_ES
-    t = dict(I.T[lang]["info"])
-    cifras = []
-    for num, unidad, texto in t["cifras"]:
-        num = num.format(anos=ANOS, productos=N_FAMILIAS, sectores=len(SECTORES))
-        solo_cifra = num.replace(",", "").replace(".", "").replace(" ", "")
-        cifras.append((num, int(solo_cifra) if solo_cifra.isdigit() else None, unidad, texto))
-    t["cifras"] = cifras
-    return t
-
-
-def cabecera(eyebrow, h2, lead="", oscuro=False):
-    l = f'\n          <p class="lead">{lead}</p>' if lead else ""
-    return f"""<div class="headline">
-          <span class="eyebrow">{eyebrow}</span>
-          <h2>{h2}</h2>{l}
-        </div>"""
-
-
-def cifras(lang="es"):
-    t = info(lang)
-    iconos = ["calendar", "box", "parts", "belt", "pin"]
-    items = []
-    for ic, (num, contar, unidad, texto) in zip(iconos, t["cifras"]):
-        dato = f' data-contar="{contar}"' if contar else ""
-        items.append(f"""
-          <li class="stat{' stat--largo' if len(num) > 5 else ''}">
-            {icon(ic)}
-            <span class="stat__num"><strong{dato}>{num}</strong> <span>{unidad}</span></span>
-            <span class="stat__txt">{texto}</span>
-          </li>""")
-    return f"""
-    <section class="section section--dark stats">
-      <div class="container container--wide">
-        {cabecera(t["cifras_eyebrow"], t["cifras_h2"])}
-        <ul class="stats__list">{"".join(items)}
-        </ul>
-      </div>
-    </section>"""
-
-
-def proceso(lang="es"):
-    t = info(lang)
-    pasos = "".join(f"""
-          <li class="step">
-            <span class="step__num">{i}</span>
-            <span class="step__icon">{icon(ic)}</span>
-            <h3>{titulo}</h3>
-            <p>{texto}</p>
-          </li>""" for i, (ic, titulo, texto) in enumerate(t["pasos"], 1))
-    return f"""
-    <section class="section section--tile">
-      <div class="container container--wide">
-        {cabecera(t["proceso_eyebrow"], t["proceso_h2"])}
-        <ol class="steps">{pasos}
-        </ol>
-      </div>
-    </section>"""
-
-
-def collage(lang="es"):
-    t = info(lang)
-    teselas = []
-    for (clip, cols, filas), texto in zip(CLIPS, t["clips"]):
-        teselas.append(f"""
-          <figure class="bento__tile" style="--c:{cols};--f:{filas}">
-            <video class="bento__video" data-bg-video data-movil="no" muted loop playsinline preload="none"
-                   poster="/assets/video/collage/{clip}.webp" aria-hidden="true">
-              <source data-src="/assets/video/collage/{clip}.mp4" type="video/mp4">
-            </video>
-            <figcaption>{texto}</figcaption>
-          </figure>""")
-    return f"""
-    <section class="section">
-      <div class="container container--wide">
-        {cabecera(t["collage_eyebrow"], t["collage_h2"], t["collage_lead"])}
-        <div class="bento">{"".join(teselas)}
-        </div>
-      </div>
-    </section>"""
-
-
-def tramos_campanas():
-    """[(slug, mes_inicio, mes_fin)] con meses 1-12; una campaña puede pasar de diciembre a enero."""
-    c = sorted((int(x["campana"]["desde"][:2]), x["slug"]) for x in SECTORES if x.get("campana"))
-    out = []
-    for i, (mes, slug) in enumerate(c):
-        fin = c[(i + 1) % len(c)][0] - 1 or 12
-        out.append((slug, mes, fin, SECTOR[slug]["campana"]["desde"]))
-    return out
-
-
-def calendario(lang="es"):
-    t = info(lang)
-    hoy = datetime.date.today()
-    meses = "".join(f'<span class="cal__mes">{m}</span>' for m in t["meses"])
-    filas = []
-    for slug, ini, fin, desde in tramos_campanas():
-        tramos = [(ini, fin)] if ini <= fin else [(ini, 12), (1, fin)]
-        barras = "".join(f'<span class="cal__bar" style="grid-column:{a} / {b + 1}"></span>' for a, b in tramos)
-        href = f"/sectores/{slug}/" if lang == "es" else I.RUTAS[lang]["productos"]
-        filas.append(f"""
-          <div class="cal__row cal__row--{slug}" data-campana="{desde}">
-            <a class="cal__label" href="{href}">{icon(SECTOR[slug]["icono"])}<span>{t["cultivos"][slug]}</span></a>
-            <div class="cal__track">{barras}</div>
-          </div>""")
-    pos = (hoy.month - 1 + (hoy.day - 1) / 31) / 12 * 100
-    return f"""
-    <section class="section">
-      <div class="container container--wide">
-        {cabecera(t["cal_eyebrow"], t["cal_h2"], t["cal_lead"])}
-        <div class="cal">
-          <div class="cal__row cal__row--head"><span></span><div class="cal__track">{meses}</div></div>{"".join(filas)}
-          <div class="cal__row cal__row--hoy" aria-hidden="true"><span></span>
-            <div class="cal__track"><span class="cal__hoy" data-hoy style="left:{pos:.2f}%"><span>{t["hoy"]}</span></span></div>
-          </div>
-        </div>
-      </div>
-    </section>"""
 
 
 def distancias(lang="es"):
-    t = info(lang)
-    paradas = "".join(f'<li class="route__stop"><strong>{a}</strong><span>{b}</span></li>' for a, b in t["dist"])
+    t = DISTANCIAS_ES if lang == "es" else I.T[lang]["distancias"]
+    paradas = "".join(f'<li class="route__stop"><strong>{a}</strong><span>{b}</span></li>' for a, b in t["paradas"])
     return f"""
         <div class="route">
-          <p class="route__origen">{icon("pin")} {t["dist_titulo"]}</p>
+          <p class="route__origen">{icon("pin")} {t["titulo"]}</p>
           <ol class="route__stops">{paradas}</ol>
         </div>"""
 
@@ -978,7 +817,6 @@ body = f"""
       </div>
     </section>
 {campanas()}
-{cifras()}
 
     <section class="section">
       <div class="container container--wide">
@@ -989,9 +827,21 @@ body = f"""
         {product_tiles()}
       </div>
     </section>
-{proceso()}
-{collage()}
-{calendario()}
+
+{video_band("corte-fieltro", "Fabricación a medida", "Lo cortamos a tu medida.",
+            "Fieltro, goma y caramelo cortados y perforados en nuestras instalaciones de La Rambla.",
+            '<a class="btn btn--light" href="/productos/faldetas/">Componentes para vibradores</a><a class="more" href="/quienes-somos/#instalaciones">Nuestras instalaciones</a>')}
+
+    <section class="section section--tight section--tile">
+      <div class="container container--wide">
+        <ul class="facts">
+          <li>{icon("calendar")}<strong>Desde 1994</strong><span>Empresa familiar</span></li>
+          <li>{icon("box")}<strong>Stock permanente</strong><span>Entrega inmediata</span></li>
+          <li>{icon("ruler")}<strong>A medida</strong><span>Corte, perforado y piezas</span></li>
+          <li>{icon("truck")}<strong>Envíos</strong><span>A toda España</span></li>
+        </ul>
+      </div>
+    </section>
 {sectores()}
 {envios()}
 {ultimas_noticias()}
@@ -1523,6 +1373,8 @@ for lang in ("en", "fr", "de"):
     t, rutas = I.T[lang], I.RUTAS[lang]
 
     # Portada
+    datos = "".join(f'<li>{icon(ic)}<strong>{a}</strong><span>{b}</span></li>'
+                    for ic, (a, b) in zip(("calendar", "box", "ruler", "truck"), t["datos"]))
     body = f"""
     <section class="hero hero--photo" style="--hero-img:url('/assets/img/fondos/campo.webp')">
       <div class="container">
@@ -1535,7 +1387,6 @@ for lang in ("en", "fr", "de"):
         </div>
       </div>
     </section>
-{cifras(lang)}
 
     <section class="section">
       <div class="container container--wide">
@@ -1546,9 +1397,15 @@ for lang in ("en", "fr", "de"):
         {tarjetas_int(lang)}
       </div>
     </section>
-{proceso(lang)}
-{collage(lang)}
-{calendario(lang)}
+
+{video_band("corte-fieltro", t["video_eyebrow"], t["video_titulo"], t["video_texto"],
+            f'<a class="btn btn--light" href="{rutas["productos"]}#faldetas">{t["video_boton"]}</a><a class="more" href="{rutas["empresa"]}">{t["video_instalaciones"]}</a>')}
+
+    <section class="section section--tight section--tile">
+      <div class="container container--wide">
+        <ul class="facts">{datos}</ul>
+      </div>
+    </section>
 {sectores(lang)}
 {envios(lang)}
 
